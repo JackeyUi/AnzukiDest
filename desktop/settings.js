@@ -1,9 +1,14 @@
 'use strict';
 (async()=>{
- const api=window.Anzuki,config=await api.config();const choices=new Map();
+ const api=window.Anzuki;let config=await api.config();const choices=new Map();
  const idle=document.querySelector('#idle'),speed=document.querySelector('#speed'),label=document.querySelector('#speed-label');
- const render=p=>{idle.value=p.idle;speed.value=p.clickSpeed;label.value=Number(p.clickSpeed).toFixed(1)+'×';};
- render(config.settings);api.onSettings(render);idle.onchange=()=>api.setPreferences({idle:idle.value});
+ const clickChoice=document.querySelector('#click-animation');
+ const render=p=>{idle.value=p.idle;clickChoice.value=p.clickAnimation||'builtin';speed.value=p.clickSpeed;label.value=Number(p.clickSpeed).toFixed(1)+'×';};
+ function library(next){config=next;idle.replaceChildren();for(const [i,name] of next.idleOptions.entries()){const option=document.createElement('option');option.value=name;option.textContent=next.animations[name].label||(i===0?'長循環':'短循環');idle.append(option);}clickChoice.replaceChildren();for(const item of next.clickOptions||[{id:'builtin',label:'內建隨機'}]){const option=document.createElement('option');option.value=item.id;option.textContent=item.label;clickChoice.append(option);}render(next.settings);
+  const list=document.querySelector('#animation-library');list.replaceChildren();for(const item of next.custom||[]){const row=document.createElement('div');row.className='voice-row';const name=document.createElement('strong');name.textContent=item.label+' · '+(item.role==='idle'?'待機':'點擊')+' · '+item.width+'×'+item.height+' · '+item.frames+' 幀';const remove=document.createElement('button');remove.textContent='移除';remove.onclick=async()=>{try{await api.removeAnimation(item.id);}catch{document.querySelector('#animation-status').textContent='移除失敗';}};row.append(name,remove);list.append(row);}}
+ library(config);api.onLibrary(library);api.onSettings(render);clickChoice.onchange=()=>api.setPreferences({clickAnimation:clickChoice.value});
+ for(const role of ['idle','click']){const button=document.querySelector('#import-'+role);button.onclick=async()=>{button.disabled=true;const status=document.querySelector('#animation-status');status.textContent='請選擇透明動態 WebP；匯入時會檢查影格。';try{const item=await api.importAnimation(role);status.textContent=item?'已原樣匯入並套用：'+item.label:'已取消';}catch(error){status.textContent=String(error.message).split('Error: ').pop();}finally{button.disabled=false;}};}
+idle.onchange=()=>api.setPreferences({idle:idle.value});
  speed.oninput=()=>{const value=Number(speed.value);label.value=value.toFixed(1)+'×';api.setPreferences({clickSpeed:value});};
  const muted=document.querySelector('#voice-muted'),volume=document.querySelector('#voice-volume'),idleEnabled=document.querySelector('#voice-idle-enabled'),interval=document.querySelector('#voice-interval'),groups=document.querySelector('#voice-clips'),status=document.querySelector('#voice-status');
  const report=message=>{status.textContent=message;};api.onVoiceStatus(report);

@@ -78,14 +78,16 @@ public class MainActivity extends Activity {
         stop.setOnClickListener(v -> { stopService(new Intent(this,PetService.class));Toast.makeText(this,"桌寵已停止",Toast.LENGTH_SHORT).show(); });
         root.addView(text("待機動畫",16,Color.rgb(226,234,250)));
         Spinner idleChoice=new Spinner(this);
-        final String[] idleNames={"idle-loop-long","idle-loop-short"};
-        ArrayAdapter<String> choices=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,new String[]{"長循環","短循環"}){
+        String[] names={"idle-loop-long","idle-loop-short"},labels={"長循環","短循環"};
+        try{PetAssets options=new PetAssets(this);org.json.JSONArray ids=options.index.getJSONArray("idleOptions");names=new String[ids.length()];labels=new String[ids.length()];for(int n=0;n<ids.length();n++){names[n]=ids.getString(n);labels[n]=options.index.getJSONObject("animations").getJSONObject(names[n]).optString("label",n==0?"長循環":"短循環");}}catch(Exception ignored){}
+        final String[] idleNames=names;
+        ArrayAdapter<String> choices=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,labels){
             private View styled(View view){((TextView)view).setTextColor(Color.rgb(226,234,250));view.setBackgroundColor(Color.rgb(33,47,70));view.setPadding(dp(12),dp(12),dp(12),dp(12));return view;}
             @Override public View getView(int pos,View view,ViewGroup parent){return styled(super.getView(pos,view,parent));}
             @Override public View getDropDownView(int pos,View view,ViewGroup parent){return styled(super.getDropDownView(pos,view,parent));}
         };
         choices.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);idleChoice.setAdapter(choices);
-        idleChoice.setSelection("idle-loop-short".equals(prefs.getString("selected_idle","idle-loop-long"))?1:0);
+        int selectedIdle=0;for(int n=0;n<idleNames.length;n++)if(idleNames[n].equals(prefs.getString("selected_idle","idle-loop-long")))selectedIdle=n;idleChoice.setSelection(selectedIdle);
         root.addView(idleChoice,new LinearLayout.LayoutParams(-1,dp(52)));
         idleChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             public void onNothingSelected(AdapterView<?> parent){}
@@ -105,6 +107,7 @@ public class MainActivity extends Activity {
         });
         root.addView(text("1.0×–2.0×，每格 0.1。套用於下一次點擊，待機維持原速。\n點上方角色可預覽點擊動作。",13,Color.rgb(164,181,208)));
         preview.setOnClickListener(v->{try{PetAssets a=new PetAssets(this);showPreview(a.click(),false);}catch(Exception ignored){}});
+        Button animationSettings=button("自訂動畫",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(animationSettings);animationSettings.setOnClickListener(v->startActivity(new Intent(this,AnimationActivity.class)));
         Button voiceSettings=button("音聲設定與試聽",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(voiceSettings);voiceSettings.setOnClickListener(v->startActivity(new Intent(this,VoiceActivity.class)));
         root.addView(text("角色大小",16,Color.rgb(226,234,250)));
         SeekBar size=new SeekBar(this);size.setMax(120);size.setProgress(prefs.getInt("size",160)-120);root.addView(size);

@@ -25,7 +25,7 @@
     "max": 10,
     "step": 1
   },
-  "clickCooldownMs": 2500,
+  "clickCooldownMs": 0,
   "maxClipsPerEvent": 12,
   "maxFileBytes": 52428800,
   "extensions": [

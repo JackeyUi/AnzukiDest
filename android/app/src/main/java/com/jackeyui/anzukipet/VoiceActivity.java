@@ -46,7 +46,7 @@ public class VoiceActivity extends Activity {
         TextView intervalLabel=text("閒聊間隔  "+store.idleMinutes()+" 分鐘",16);root.addView(intervalLabel);SeekBar interval=new SeekBar(this);interval.setMax(9);interval.setProgress(store.idleMinutes()-1);interval.setEnabled(store.idleEnabled());root.addView(interval);
         automatic.setOnCheckedChangeListener((v,value)->{store.prefs.edit().putBoolean("idleEnabled",value).apply();interval.setEnabled(value);notifyPlayer();});
         interval.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){public void onStartTrackingTouch(SeekBar b){}public void onProgressChanged(SeekBar b,int p,boolean user){intervalLabel.setText("閒聊間隔  "+(p+1)+" 分鐘");}public void onStopTrackingTouch(SeekBar b){store.prefs.edit().putInt("idleMinutes",b.getProgress()+1).apply();notifyPlayer();}});
-        root.addView(text("連點有冷卻、不疊音。自動播放避開其他媒體與系統靜音；沒有當前時段適用的音檔時保持安靜。試聽可手動播放任一句。",13));
+        root.addView(text("連點重新播放動畫；音檔播完前不打斷、不排隊。自動播放避開其他媒體與系統靜音；沒有當前時段適用的音檔時保持安靜。試聽可手動播放任一句。",13));
         status=text("尚未錄製的台詞可之後再匯入。",14);root.addView(status);Button stop=button("停止播放");root.addView(stop);stop.setOnClickListener(v->stopVoice());
         JSONArray events=store.policy.getJSONArray("events");
         for(int e=0;e<events.length();e++){

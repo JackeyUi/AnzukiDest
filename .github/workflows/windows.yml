@@ -49,6 +49,8 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           node scripts/check-voice.cjs
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node scripts/check-custom-animation.cjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           node scripts/check-frame-clock.cjs
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Package standalone Windows EXE with unchanged artwork

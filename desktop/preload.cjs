@@ -1,6 +1,11 @@
 'use strict';
 const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('Anzuki',{
+ setHit:inside=>ipcRenderer.send('pet:hit',inside),
+ onCursor:fn=>ipcRenderer.on('pet:cursor',(_e,p)=>fn(p)),
+ importAnimation:role=>ipcRenderer.invoke('pet:animation-import',role),
+ removeAnimation:id=>ipcRenderer.invoke('pet:animation-remove',id),
+ onLibrary:fn=>ipcRenderer.on('pet:library',(_e,p)=>fn(p)),
  config:()=>ipcRenderer.invoke('pet:config'),
  importVoice:(event,lineId)=>ipcRenderer.invoke('pet:voice-import',event,lineId),
  setVoicePreferences:p=>ipcRenderer.send('pet:voice-preferences',p),

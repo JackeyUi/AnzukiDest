@@ -1,12 +1,12 @@
 {
-  "apkBytes": 89498569,
-  "apkSha256": "fb1cf63198450306c37fc3e7395f05fb1be9cd7aa6d75275f12ab8809483de9e",
-  "literalSha256": "787cfe392892014446ee61e566c63527579af9e4be765c12237f4afcfb309348",
+  "apkBytes": 89506761,
+  "apkSha256": "f2c52ee089338bf76934ccbffe3aee5a9d5127ba2ce8db80ecd1630b3aa9fa7e",
+  "literalSha256": "0ec6a9992a62ea8798e6a7b8dfee8ea8d15c95e0dc862227ab69698e7169de41",
   "parts": [
     {
       "kind": "literal",
       "offset": 0,
-      "length": 3176
+      "length": 3200
     },
     {
       "kind": "artwork",
@@ -16,7 +16,7 @@
     },
     {
       "kind": "literal",
-      "offset": 3176,
+      "offset": 3200,
       "length": 64
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "kind": "literal",
-      "offset": 3240,
+      "offset": 3264,
       "length": 62
     },
     {
@@ -38,7 +38,7 @@
     },
     {
       "kind": "literal",
-      "offset": 3302,
+      "offset": 3326,
       "length": 66
     },
     {
@@ -49,8 +49,8 @@
     },
     {
       "kind": "literal",
-      "offset": 3368,
-      "length": 36737
+      "offset": 3392,
+      "length": 44905
     }
   ]
 }

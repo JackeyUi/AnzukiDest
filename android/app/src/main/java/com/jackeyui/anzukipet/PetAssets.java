@@ -14,14 +14,17 @@ import java.nio.ByteBuffer;
 final class PetAssets {
     final JSONObject index;
     private final Context context;
+    private final java.util.LinkedHashMap<String,Drawable> cache=new java.util.LinkedHashMap<String,Drawable>(4,.75f,true);
+    private final AnimationStore library;
     private final Random random = new Random();
     PetAssets(Context context) throws Exception {
-        this.context = context;
+        this.context = context;this.library=new AnimationStore(context);
         try (InputStream in = context.getAssets().open("animations.json")) {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte[] buf = new byte[4096]; int n;
             while ((n = in.read(buf)) != -1) out.write(buf, 0, n);
             index = new JSONObject(out.toString("UTF-8"));
+            JSONArray custom=library.items();for(int i=0;i<custom.length();i++){JSONObject row=custom.getJSONObject(i);if(!library.file(row).isFile())continue;index.getJSONObject("animations").put(row.getString("id"),row);if("idle".equals(row.getString("role")))index.getJSONArray("idleOptions").put(row.getString("id"));}
         }
     }
     String idle() throws Exception {
@@ -33,22 +36,17 @@ final class PetAssets {
     double clickSpeed(){return 1+Math.max(0,Math.min(10,context.getSharedPreferences("pet",Context.MODE_PRIVATE).getInt("click_speed_step",0)))/10.0;}
 
     String click() throws Exception {
+        String selected=context.getSharedPreferences("pet",Context.MODE_PRIVATE).getString("click_animation","builtin");JSONObject custom=library.get(selected);if(custom!=null&&"click".equals(custom.optString("role"))&&library.file(custom).isFile())return selected;
         JSONArray choices = index.getJSONArray("clicks");
         return choices.length() == 0 ? idle() : choices.getString(random.nextInt(choices.length()));
     }
     Drawable load(String name, boolean loop) throws Exception {
-        String file = index.getJSONObject("animations").getJSONObject(name).getString("file");
-        double speed=loop?1:clickSpeed();
-        Drawable drawable;
-        if(speed==1)drawable=ImageDecoder.decodeDrawable(ImageDecoder.createSource(context.getAssets(), file));
-        else {
-            byte[] original;
-            try(InputStream in=context.getAssets().open(file)){
-                ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] chunk=new byte[65536];int n;
-                while((n=in.read(chunk))!=-1)out.write(chunk,0,n);original=out.toByteArray();
-            }
-            drawable=ImageDecoder.decodeDrawable(ImageDecoder.createSource(ByteBuffer.wrap(WebPTiming.retime(original,speed))));
-        }
+        JSONObject record=index.getJSONObject("animations").getJSONObject(name);String file=record.getString("file");double speed=loop?1:clickSpeed();String key=name+":"+speed+":"+loop;if(cache.containsKey(key))return cache.get(key);
+        ImageDecoder.Source source;
+        if(name.startsWith("custom-")){byte[] original=java.nio.file.Files.readAllBytes(library.file(record).toPath());source=ImageDecoder.createSource(ByteBuffer.wrap(speed==1?original:WebPTiming.retime(original,speed)));}
+        else if(speed==1)source=ImageDecoder.createSource(context.getAssets(),file);
+        else{byte[] original;try(InputStream in=context.getAssets().open(file)){ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] chunk=new byte[65536];int n;while((n=in.read(chunk))!=-1)out.write(chunk,0,n);original=out.toByteArray();}source=ImageDecoder.createSource(ByteBuffer.wrap(WebPTiming.retime(original,speed)));}
+        Drawable drawable=ImageDecoder.decodeDrawable(source,(decoder,info,src)->decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE));cache.put(key,drawable);if(cache.size()>4)cache.remove(cache.keySet().iterator().next());
         if (drawable instanceof AnimatedImageDrawable) {
             ((AnimatedImageDrawable) drawable).setRepeatCount(loop ? AnimatedImageDrawable.REPEAT_INFINITE : 0);
         }

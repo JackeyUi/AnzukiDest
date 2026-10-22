@@ -2,6 +2,8 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'">
 <link rel="stylesheet" href="settings.css"></head><body><h1>動畫與音聲設定</h1>
 <label for="idle">待機動畫</label><select id="idle"><option value="idle-loop-long">長循環</option><option value="idle-loop-short">短循環</option></select>
+<label for="click-animation">點擊動畫</label><select id="click-animation"><option value="builtin">內建隨機</option></select>
+<section id="custom-animations"><h2>自訂動畫</h2><p>加入透明背景的動態 WebP，原尺寸、原幀率保存。匯入後會自動套用，可在上方切回內建動畫。</p><div class="clip-actions"><button id="import-idle">加入待機動畫</button><button id="import-click">加入點擊動畫</button></div><div id="animation-library"></div><p id="animation-status" role="status" aria-live="polite"></p></section>
 <label for="speed">點擊動畫速度 <output id="speed-label" for="speed">1.0×</output></label>
 <input id="speed" type="range" min="1" max="2" step="0.1" value="1"><div class="ends"><span>1.0×</span><span>2.0×</span></div>
 <p>自動儲存。倍速套用於下一次點擊，待機維持原速。</p><section id="voice-settings"><h2>角色音聲</h2>
@@ -9,7 +11,7 @@
 <label for="voice-volume">音聲音量 <output id="voice-volume-label">70%</output></label><input id="voice-volume" type="range" min="0" max="100" step="1" value="70">
 <label class="check"><input id="voice-idle-enabled" type="checkbox">待機時自動閒聊</label>
 <label for="voice-interval">閒聊間隔 <output id="voice-interval-label">3 分鐘</output></label><input id="voice-interval" type="range" min="1" max="10" step="1" value="3">
-<p>依本機時間及平日／假日選擇檔案。同條件有多段時隨機播放。連點時不會疊音。動畫倍速不改變音聲速度。</p>
+<p>依本機時間及平日／假日選擇檔案。同條件有多段時隨機播放。連點會重新播放動畫；聲音播完前不打斷、不排隊。動畫倍速不改變音聲速度。</p>
 <p>平日為週一至週五，假日為週六、週日。僅接受音檔，檔名自由、不必對應台詞編號；每檔最多 50 MB。不接受影片。依裝置解碼能力播放，不轉檔、不壓縮。</p>
 <div id="voice-clips"></div><button id="voice-stop" type="button">停止試聽</button><p id="voice-status" role="status" aria-live="polite"></p></section>
 <script src="settings.js"></script></body></html>

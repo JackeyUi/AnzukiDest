@@ -10,7 +10,7 @@ import java.util.*;
 final class PetVoicePlayer {
     interface Status {void show(String message);}
     final VoiceStore store;private final AudioManager manager;private final Status status;
-    private MediaPlayer player;private AudioFocusRequest focus;private String currentId;private long lastClick=-100000;
+    private MediaPlayer player;private AudioFocusRequest focus;private String currentId;
     PetVoicePlayer(Context context,Status status) throws Exception {store=new VoiceStore(context);manager=context.getSystemService(AudioManager.class);this.status=status;}
     void apply(){
         try{if(store.muted()||store.volume()==0||(currentId!=null&&!store.contains(currentId))){stop();return;}}
@@ -20,7 +20,7 @@ final class PetVoicePlayer {
     boolean play(String event,String id,boolean preview){
         if(store.muted()||store.volume()==0){if(preview)status.show("目前為靜音或音量為 0");return false;}
         if(!preview&&(player!=null||manager.getRingerMode()!=AudioManager.RINGER_MODE_NORMAL||manager.isMusicActive()))return false;
-        if(!preview&&"click".equals(event)&&SystemClock.elapsedRealtime()-lastClick<store.policy.optInt("clickCooldownMs",2500))return false;
+        if(player!=null){if(preview)status.show("目前的音檔播完後，才可播放下一段");return false;}
         try{
             JSONObject chosen=null;
             if(preview&&id!=null){JSONArray list=store.clips(event);for(int i=0;i<list.length();i++)if(id.equals(list.getJSONObject(i).getString("id")))chosen=list.getJSONObject(i);}
@@ -34,7 +34,7 @@ final class PetVoicePlayer {
             final MediaPlayer next=new MediaPlayer();player=next;currentId=chosen.getString("id");next.setAudioAttributes(attributes);next.setDataSource(store.file(chosen).getAbsolutePath());float v=store.volume()/100f;next.setVolume(v,v);
             next.setOnCompletionListener(done->{if(player==done)stop();});next.setOnErrorListener((failed,what,extra)->{if(player==failed){stop();status.show("音檔無法解碼，請確認格式");}return true;});
             final String name=chosen.getString("name");next.setOnPreparedListener(ready->{if(player==ready){ready.start();if(preview)status.show("播放："+name);}});
-            next.prepareAsync();if("click".equals(event)&&!preview)lastClick=SystemClock.elapsedRealtime();return true;
+            next.prepareAsync();return true;
         }catch(Exception e){stop();status.show("音聲播放失敗，請確認音檔仍可讀取");return false;}
     }
     void stop(){MediaPlayer old=player;player=null;currentId=null;if(old!=null){old.setOnPreparedListener(null);old.setOnCompletionListener(null);old.setOnErrorListener(null);old.release();}AudioFocusRequest request=focus;focus=null;if(request!=null)manager.abandonAudioFocusRequest(request);}

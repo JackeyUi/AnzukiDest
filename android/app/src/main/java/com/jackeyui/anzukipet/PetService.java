@@ -32,7 +32,7 @@ public class PetService extends Service {
     private PetVoicePlayer voices;
     private final Runnable idleVoice=new Runnable(){public void run(){if(!destroyed&&voices!=null){voices.play("idle",null,false);scheduleVoice();}}};
     private void scheduleVoice(){handler.removeCallbacks(idleVoice);if(voices!=null&&voices.store.idleEnabled()&&!voices.store.muted()&&voices.store.volume()>0)handler.postDelayed(idleVoice,voices.store.idleMinutes()*60000L);}
-    private WindowManager wm; private WindowManager.LayoutParams position; private ImageView pet;
+    private WindowManager wm; private WindowManager.LayoutParams position; private AlphaPetView pet;
     private Drawable drawable; private PetAssets assets; private SharedPreferences prefs;
     private final Handler handler=new Handler(Looper.getMainLooper());
     private float startX,startY; private int originX,originY; private boolean dragging,longPressed,destroyed,looping=true;
@@ -60,12 +60,12 @@ public class PetService extends Service {
         try {
             if(pet==null)createPet();
             else if(intent!=null&&RESIZE.equals(intent.getAction()))resize();
-            else if(intent!=null&&UPDATE.equals(intent.getAction())&&looping)play(assets.idle(),true);
+            else if(intent!=null&&UPDATE.equals(intent.getAction())){assets=new PetAssets(this);play(assets.idle(),true);}
         }catch(Exception e){Toast.makeText(this,"桌寵無法顯示，請回設定檢查權限",Toast.LENGTH_LONG).show();stopSelf();}
         return START_NOT_STICKY;
     }
     private void createPet() throws Exception {
-        assets=new PetAssets(this);pet=new ImageView(this);pet.setScaleType(ImageView.ScaleType.FIT_CENTER);pet.setContentDescription("Anzuki：拖曳移動，點擊彈動，長按設定");
+        assets=new PetAssets(this);pet=new AlphaPetView(this);pet.setScaleType(ImageView.ScaleType.FIT_CENTER);pet.setContentDescription("Anzuki：拖曳移動，點擊彈動，長按設定");
         position=new WindowManager.LayoutParams(dp(prefs.getInt("size",160)),1,WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,PixelFormat.TRANSLUCENT);
         position.height=Math.round(position.width*assets.aspect());position.gravity=Gravity.TOP|Gravity.LEFT;
@@ -76,6 +76,7 @@ public class PetService extends Service {
         pet.setOnTouchListener((view,event)->{
             switch(event.getActionMasked()){
                 case MotionEvent.ACTION_DOWN:
+                    if(!pet.hits(event.getX(),event.getY()))return false;
                     startX=event.getRawX();startY=event.getRawY();originX=position.x;originY=position.y;dragging=false;longPressed=false;handler.postDelayed(longPress,550);return true;
                 case MotionEvent.ACTION_MOVE:
                     if(Math.hypot(event.getRawX()-startX,event.getRawY()-startY)>dp(8)){dragging=true;handler.removeCallbacks(longPress);}
