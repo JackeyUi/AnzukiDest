@@ -52,7 +52,7 @@ else app.whenReady().then(()=>{
  y:Number.isFinite(state.y)?state.y:area.y+area.height-height-20});
  win=new BrowserWindow({...bounds,transparent:true,backgroundColor:'#00000000',frame:false,
   hasShadow:false,resizable:false,alwaysOnTop:true,skipTaskbar:true,focusable:false,
-  title:'Anzuki',webPreferences:{autoplayPolicy:'no-user-gesture-required',preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
+  title:'Anzuki',webPreferences:{backgroundThrottling:false,autoplayPolicy:'no-user-gesture-required',preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
  win.webContents.setWindowOpenHandler(()=>({action:'deny'}));
  win.webContents.on('will-navigate',event=>event.preventDefault());
  const valid=ev=>win&&!win.isDestroyed()&&ev.sender===win.webContents;
@@ -71,8 +71,8 @@ else app.whenReady().then(()=>{
  ipcMain.handle('pet:animation',async(ev,name)=>{if(!valid(ev)||!index.clicks.includes(name))throw new Error('Unknown click animation');return new Uint8Array(await fs.promises.readFile(path.join(ROOT,'pet','anzuki-animation',index.animations[name].file)));});
  ipcMain.on('pet:preferences',(ev,p)=>{if(trusted(ev))updatePreferences(p);});
  ipcMain.on('pet:drag-start',(ev,p)=>{if(valid(ev)&&p&&Number.isFinite(p.x)&&Number.isFinite(p.y))drag={...win.getBounds(),startX:p.x,startY:p.y};});
- ipcMain.on('pet:drag-move',(ev,p)=>{if(valid(ev)&&drag&&p&&Number.isFinite(p.x)&&Number.isFinite(p.y))win.setBounds(clamp({x:Math.round(drag.x+p.x-drag.startX),y:Math.round(drag.y+p.y-drag.startY),width:drag.width,height:drag.height}));});
- ipcMain.on('pet:drag-end',ev=>{if(valid(ev)){drag=null;save();}});
+ ipcMain.on('pet:drag-move',(ev,p)=>{if(valid(ev)&&drag&&p&&Number.isFinite(p.x)&&Number.isFinite(p.y)){drag.moved=true;win.setBounds(clamp({x:Math.round(drag.x+p.x-drag.startX),y:Math.round(drag.y+p.y-drag.startY),width:drag.width,height:drag.height}));}});
+ ipcMain.on('pet:drag-end',ev=>{if(valid(ev)){const moved=drag?.moved;drag=null;if(moved)save();}});
  ipcMain.on('pet:menu',ev=>{if(valid(ev))menu();});
  ipcMain.on('pet:quit',ev=>{if(valid(ev))app.quit();});
  win.loadFile(path.join(__dirname,'index.html'));win.on('closed',()=>{win=null;});

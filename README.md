@@ -6,11 +6,13 @@
 
 ## Windows 桌面版（免裝 Node.js）
 
-[下載 Windows x64 桌面版](https://github.com/JackeyUi/AnzukiDest/actions/workflows/windows.yml)
+[第一次安裝：Windows x64 完整版](https://github.com/JackeyUi/AnzukiDest/actions/workflows/windows.yml)
 
 1. 登入 GitHub，進入「Windows desktop release」最新成功紀錄。
 2. 在下方 Artifacts 下載 `Anzuki-Windows-x64` ZIP。
 3. **完整解壓縮整個資料夾**，雙擊 `Anzuki.exe`。
+
+已有 Windows 版時，往後下載同一成功紀錄中的 **`Anzuki-Windows-Update`** 即可。先退出桌寵，再將更新 ZIP 完整解壓到原本 `Anzuki.exe` 所在資料夾並覆蓋同名檔案。更新包只含必要變更，會以先前發行版實際套用驗證，不重送未變更的 Electron、動畫或個人資料。更新基準與檔案雜湊見包內 `update-manifest.json`。
 
 適用 Windows 10／11 64 位元，已內附 Electron、原尺寸無損動畫與音聲功能，不需要 Node.js。請保留同資料夾內的 `resources/`、DLL 與其他檔案。右鍵角色可設定動畫與音聲。設定及個人錄音保存在 `%APPDATA%\Anzuki\desktop`，更新程式時仍會保留。此版未做 Windows 程式碼簽章。
 
@@ -51,6 +53,8 @@ Android 9 以上的原生 App，內建素材、離線可用，不需要 Node.js�
 | 點擊一 | `click-bounce-1.webp` | 10 秒影片第 6–59 幀，54 幀 |
 | 點擊二 | `click-bounce-2.webp` | 10 秒影片第 72–127 幀，56 幀 |
 | 可選短待機 | `idle-loop-short.webp` | loop_short 全段，60 幀 |
+
+PC 點擊動作會先預解碼並快取，再依播放時鐘顯示原始畫面，避免每次點擊都重新解碼大檔或因連點而重播開頭。快取會增加記憶體用量。原片約 24 fps，2 倍約為每秒 48 張畫面，沒有做補幀；顯示順暢度也受螢幕更新率和電腦負載影響。
 
 預設仍是長循環。短循環現在也可由桌面選單或 Android 設定選取。來源均為 24 fps，未補幀。WebP 使用毫秒時間戳呈現幀間距。原片腳底幾乎固定，點擊片段為表情、身體與衣髮的原地彈動。
 
