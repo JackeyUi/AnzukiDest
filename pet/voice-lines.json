@@ -1,0 +1,302 @@
+{
+  "schema": 1,
+  "clock": "device-local",
+  "weekdayConvention": "ISO Monday=1, Sunday=7",
+  "lines": [
+    {
+      "id": "greeting-mon-morning",
+      "event": "greeting",
+      "label": "星期一早安",
+      "days": [
+        1
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "早安，星期一了。今天也讓我陪你慢慢開始吧。"
+    },
+    {
+      "id": "greeting-tue-morning",
+      "event": "greeting",
+      "label": "星期二早安",
+      "days": [
+        2
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "早安呀，今天是星期二。先伸個懶腰，再一起出發吧。"
+    },
+    {
+      "id": "greeting-wed-morning",
+      "event": "greeting",
+      "label": "星期三早安",
+      "days": [
+        3
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "星期三的早安，送給你。走到一週中間，也別忘了休息喔。"
+    },
+    {
+      "id": "greeting-thu-morning",
+      "event": "greeting",
+      "label": "星期四早安",
+      "days": [
+        4
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "早安，星期四了。願今天的小事，都能順順利利。"
+    },
+    {
+      "id": "greeting-fri-morning",
+      "event": "greeting",
+      "label": "星期五早安",
+      "days": [
+        5
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "星期五，早安呀。今天也一起好好度過吧。"
+    },
+    {
+      "id": "greeting-sat-morning",
+      "event": "greeting",
+      "label": "星期六早安",
+      "days": [
+        6
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "早安，今天是星期六。想忙一點，還是放慢腳步，都可以喔。"
+    },
+    {
+      "id": "greeting-sun-morning",
+      "event": "greeting",
+      "label": "星期日早安",
+      "days": [
+        7
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "星期日，早安。讓今天留一點空白，給自己喜歡的事吧。"
+    },
+    {
+      "id": "greeting-morning",
+      "event": "greeting",
+      "label": "早晨招呼",
+      "days": [],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 10,
+      "text": "早安呀。星星先去休息了，換我來陪你。"
+    },
+    {
+      "id": "click-morning",
+      "event": "click",
+      "label": "早晨點擊",
+      "days": [],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 10,
+      "text": "嗯？早安，我有聽見你喔。"
+    },
+    {
+      "id": "greeting-noon",
+      "event": "greeting",
+      "label": "午間招呼",
+      "days": [],
+      "hours": {
+        "start": 11,
+        "end": 14
+      },
+      "priority": 10,
+      "text": "午安。忙到現在，記得留一點時間吃飯喔。"
+    },
+    {
+      "id": "click-noon",
+      "event": "click",
+      "label": "午間點擊",
+      "days": [],
+      "hours": {
+        "start": 11,
+        "end": 14
+      },
+      "priority": 10,
+      "text": "我在呀。午餐有好好吃嗎？"
+    },
+    {
+      "id": "greeting-afternoon",
+      "event": "greeting",
+      "label": "午後招呼",
+      "days": [],
+      "hours": {
+        "start": 14,
+        "end": 18
+      },
+      "priority": 10,
+      "text": "下午好呀。要不要稍微休息，再繼續呢？"
+    },
+    {
+      "id": "click-afternoon",
+      "event": "click",
+      "label": "午後點擊",
+      "days": [],
+      "hours": {
+        "start": 14,
+        "end": 18
+      },
+      "priority": 10,
+      "text": "叫我嗎？來，休息一下下。"
+    },
+    {
+      "id": "greeting-evening",
+      "event": "greeting",
+      "label": "晚間招呼",
+      "days": [],
+      "hours": {
+        "start": 18,
+        "end": 22
+      },
+      "priority": 10,
+      "text": "晚上好。今天過得怎麼樣？我在這裡聽你說。"
+    },
+    {
+      "id": "click-evening",
+      "event": "click",
+      "label": "晚間點擊",
+      "days": [],
+      "hours": {
+        "start": 18,
+        "end": 22
+      },
+      "priority": 10,
+      "text": "嗯，我在這裡。今晚也陪著你。"
+    },
+    {
+      "id": "greeting-night",
+      "event": "greeting",
+      "label": "深夜招呼",
+      "days": [],
+      "hours": {
+        "start": 22,
+        "end": 5
+      },
+      "priority": 10,
+      "text": "夜深了，我會小聲一點。累了，就讓自己休息吧。"
+    },
+    {
+      "id": "click-night",
+      "event": "click",
+      "label": "深夜點擊",
+      "days": [],
+      "hours": {
+        "start": 22,
+        "end": 5
+      },
+      "priority": 10,
+      "text": "噓……我在喔。這麼晚了，輕輕叫我就好。"
+    },
+    {
+      "id": "idle-mon",
+      "event": "idle",
+      "label": "星期一閒聊",
+      "days": [
+        1
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "星期一不用急著把所有事情都完成。先做好眼前這一點點吧。"
+    },
+    {
+      "id": "idle-tue",
+      "event": "idle",
+      "label": "星期二閒聊",
+      "days": [
+        2
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "今天是星期二。喝口水，讓腦袋也喘口氣，好嗎？"
+    },
+    {
+      "id": "idle-wed",
+      "event": "idle",
+      "label": "星期三閒聊",
+      "days": [
+        3
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "一週走到中間了。你可以停一下，我會乖乖等你。"
+    },
+    {
+      "id": "idle-thu",
+      "event": "idle",
+      "label": "星期四閒聊",
+      "days": [
+        4
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "星期四的星光，也有留一份給你。希望今天有一件讓你開心的小事。"
+    },
+    {
+      "id": "idle-fri",
+      "event": "idle",
+      "label": "星期五閒聊",
+      "days": [
+        5
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "星期五了。等手邊的事告一段落，記得給自己一點小獎勵。"
+    },
+    {
+      "id": "idle-sat",
+      "event": "idle",
+      "label": "星期六閒聊",
+      "days": [
+        6
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "星期六想怎麼過，都聽你的。我就在旁邊陪著。"
+    },
+    {
+      "id": "idle-sun",
+      "event": "idle",
+      "label": "星期日閒聊",
+      "days": [
+        7
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "今天是星期日。先把今天過好，明天的事，明天再慢慢來吧。"
+    }
+  ]
+}

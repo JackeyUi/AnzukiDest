@@ -45,6 +45,9 @@ jobs:
           node --check desktop/renderer.js
           node --check preview.js
           node --check desktop/settings.js
+          node --check desktop/voice-store.cjs
+          node --check desktop/voice-player.js
+          node scripts/check-voice.cjs
           node scripts/check-playback.cjs
           node launch.mjs --check
       - name: Verify committed desktop and Android assets

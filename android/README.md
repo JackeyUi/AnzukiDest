@@ -4,7 +4,7 @@
 
 ## 安裝
 
-1. 下載 [`releases/Anzuki-Android.apk`](releases/Anzuki-Android.apk)。
+1. 開啟 [Signed Android release](https://github.com/JackeyUi/AnzukiDest/actions/workflows/release.yml)，進入最新成功紀錄，於 Artifacts 下載 `Anzuki-Android-signed-release`，解壓縮取得 APK（需登入 GitHub）。也可下載完整倉庫 ZIP，在電腦執行 `Restore-Android-APK.cmd`，或 `node scripts/restore-android-release.mjs`，產生同一份原簽章 APK，不需要 Android SDK。
 2. 在手機的檔案管理員開啟 APK，依系統要求允許這個來源安裝應用程式。
 3. 開啟「Anzuki 桌寵」，按「啟動懸浮桌寵」。
 4. 首次使用會進入系統設定，開啟「顯示在其他應用程式上層」後回到 App。Android 13 以上也會詢問通知權限，以便從通知停止桌寵。
@@ -23,6 +23,14 @@
 - 不會在開機後自行啟動，不會自動安裝新版 APK。
 
 App 只有懸浮顯示、前景服務及通知相關權限，沒有網路、相機、麥克風、聯絡人或檔案讀取權限。
+
+## 音聲
+
+在主設定按「音聲設定與試聽」，為啟動招呼、點擊回應、待機閒聊匯入自己的錄音。支援 WAV、MP3、OGG、M4A、FLAC、AAC；匯入原樣複製到 App 私有空間，不需儲存空間權限、不重新編碼、不自動上傳。
+
+[24 句文本與命名表](../materials/voice-v1/RECORDING-SCRIPT.md) 提供音檔檔名與星期／時段。匯入時可依檔名辨識，或先指定台詞；手動試聽不受時段限制。自動播放會依本機時間選擇，沒有適用的音檔就保持安靜。這版尚未附正式角色音檔。
+
+提供音量、靜音、停止播放、移除及 1–10 分鐘自動閒聊間隔。待機閒聊預設關閉；點擊音聲有冷卻、不疊音，播放速度獨立於動畫。自動播放避開其他媒體與系統靜音；耳機與媒體音量沿用 Android 系統設定。
 
 ## 與桌面版同步
 
@@ -45,7 +53,7 @@ python scripts/check-platform-sync.py
 
 需要 Java JDK 17 以上、Python 3、numpy、Pillow、FFmpeg，以及 Android SDK platform 35 與 build-tools 35.0.0。此純 Java 專案直接使用 Android 原生工具建置，不需要 Gradle 或 Android Studio。建置腳本目前用於 Linux／GitHub Actions，Windows 使用者直接下載 APK 即可。
 
-GitHub Actions 會在 Android、桌面素材或相關腳本更新時檢查同步並建置測試 APK。正式提供給你下載的檔案位於 `android/releases/`；Actions 的測試產物使用臨時開發簽章，不一定能覆蓋已安裝的版本。
+GitHub Actions 會在 Android、桌面素材或相關腳本更新時檢查同步並建置測試 APK。供你安裝的 `Anzuki-Android-signed-release` 沿用原簽章；`Android + desktop sync` 的測試產物使用臨時開發簽章，不一定能覆蓋已安裝的版本。舊 APK 另存於 `releases/archive/`，不要拿來測試這次音聲功能。
 
 開發簽章金鑰只保存在建置工作區 `.local/android-signing/`，不會上傳 GitHub。之後發行更新應保留同一把金鑰；若換了簽章，需要移除舊 App 再安裝。後續處理此專案時，會一起更新桌面素材、手機素材與 APK。
 

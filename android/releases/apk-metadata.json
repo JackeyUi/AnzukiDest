@@ -1,12 +1,12 @@
 {
   "package": "com.jackeyui.anzukipet",
   "versionName": "0.1.20e2acd6",
-  "versionCode": 29877615,
+  "versionCode": 29877770,
   "minimumAndroid": 9,
   "minimumSdk": 28,
   "targetSdk": 35,
   "assetRevision": "20e2acd627e0c890",
-  "sha256": "d10c551b7db1404ec9473a8fd2c13209af70644ba4e16e4423e832d94645b3f0",
-  "bytes": 89486142,
+  "sha256": "f3ab3c3f818f7fc72d972174e275cd6280aff5188aac119845ad66453e5a24df",
+  "bytes": 89498569,
   "signing": "development key; private keystore is not published"
 }

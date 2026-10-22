@@ -1,7 +1,14 @@
-<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>Anzuki 動畫設定</title>
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>Anzuki 動畫與音聲設定</title>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'">
-<link rel="stylesheet" href="settings.css"></head><body><h1>動畫設定</h1>
+<link rel="stylesheet" href="settings.css"></head><body><h1>動畫與音聲設定</h1>
 <label for="idle">待機動畫</label><select id="idle"><option value="idle-loop-long">長循環</option><option value="idle-loop-short">短循環</option></select>
 <label for="speed">點擊動畫速度 <output id="speed-label" for="speed">1.0×</output></label>
 <input id="speed" type="range" min="1" max="2" step="0.1" value="1"><div class="ends"><span>1.0×</span><span>2.0×</span></div>
-<p>自動儲存。倍速套用於下一次點擊，待機維持原速。</p><script src="settings.js"></script></body></html>
+<p>自動儲存。倍速套用於下一次點擊，待機維持原速。</p><section id="voice-settings"><h2>角色音聲</h2>
+<label class="check"><input id="voice-muted" type="checkbox">靜音</label>
+<label for="voice-volume">音聲音量 <output id="voice-volume-label">70%</output></label><input id="voice-volume" type="range" min="0" max="100" step="1" value="70">
+<label class="check"><input id="voice-idle-enabled" type="checkbox">待機時自動閒聊</label>
+<label for="voice-interval">閒聊間隔 <output id="voice-interval-label">3 分鐘</output></label><input id="voice-interval" type="range" min="1" max="10" step="1" value="3">
+<p>依本機時間與星期選台詞，適用音檔會隨機播放。連點時不會疊音。動畫倍速不改變音聲速度。</p>
+<div id="voice-clips"></div><button id="voice-stop" type="button">停止試聽</button><p id="voice-status" role="status" aria-live="polite"></p></section>
+<script src="settings.js"></script></body></html>

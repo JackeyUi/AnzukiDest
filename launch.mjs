@@ -10,6 +10,7 @@ if(args.some(a=>!['--check','--prepare-only'].includes(a)))throw new Error('Usag
 const index=JSON.parse(await readFile(join(root,'pet','animations.json'),'utf8'));
 if(index.width!==720||index.height!==1280)throw new Error('Original-resolution artwork is required');
 for(const a of Object.values(index.animations))await readFile(join(root,'pet','anzuki-animation',a.file));
+for(const name of ['voice-config.json','voice-lines.json'])JSON.parse(await readFile(join(root,'pet',name),'utf8'));
 console.log('Anzuki original-resolution lossless artwork ready: '+index.revision);
 if(!args.includes('--check')&&!args.includes('--prepare-only')){
  const npmArgs=['exec','--yes','--package=electron@43.3.0','--','electron','desktop'];

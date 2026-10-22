@@ -1,0 +1,56 @@
+name: Signed Android release
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - 'pet/**'
+      - 'desktop/**'
+      - 'scripts/**'
+      - '.github/workflows/release.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - name: Install Android tools
+        run: |
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+          python -m pip install pillow
+      - name: Restore original signed release and check both platforms
+        run: |
+          node scripts/restore-android-release.mjs
+          python scripts/check-platform-sync.py
+          node scripts/check-voice.cjs
+          node scripts/check-playback.cjs
+          node launch.mjs --check
+          for file in desktop/*.js desktop/*.cjs; do node --check "$file"; done
+          java -jar "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" verify --verbose android/releases/Anzuki-Android.apk
+      - name: Compile separate test APK
+        run: python android/build.py --sdk "$ANDROID_HOME" --out "$RUNNER_TEMP/anzuki-test/Anzuki-Android.apk"
+      - name: Verify original release is still synchronized
+        run: python scripts/check-platform-sync.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Anzuki-Android-signed-release
+          path: |
+            android/releases/Anzuki-Android.apk
+            android/releases/apk-metadata.json
+          retention-days: 90

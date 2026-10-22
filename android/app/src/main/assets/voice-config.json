@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "events": [
+    {"id": "greeting", "label": "啟動招呼"},
+    {"id": "click", "label": "點擊回應"},
+    {"id": "idle", "label": "待機閒聊"}
+  ],
+  "defaults": {"volume": 70, "muted": false, "idleEnabled": false, "idleMinutes": 3},
+  "idleMinutes": {"min": 1, "max": 10, "step": 1},
+  "clickCooldownMs": 2500,
+  "maxClipsPerEvent": 12,
+  "maxFileBytes": 52428800,
+  "extensions": ["wav", "mp3", "ogg", "m4a", "flac", "aac"]
+}

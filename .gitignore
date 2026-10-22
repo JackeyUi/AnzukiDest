@@ -7,3 +7,6 @@ android/**/*.jks
 android/releases/*.idsig
 __pycache__/
 *.pyc
+
+/android/releases/Anzuki-Android.apk
+/android/releases/*.apk.new

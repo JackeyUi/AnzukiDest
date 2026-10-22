@@ -1,0 +1,56 @@
+{
+  "apkBytes": 89498569,
+  "apkSha256": "f3ab3c3f818f7fc72d972174e275cd6280aff5188aac119845ad66453e5a24df",
+  "literalSha256": "bdc347cd87ce42c05be46013cc39f9e4a5fe8cba03dec2e6c3e8961ff7e3136a",
+  "parts": [
+    {
+      "kind": "literal",
+      "offset": 0,
+      "length": 3176
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/click-bounce-1.webp",
+      "length": 18293764,
+      "sha256": "56ffc143754e4407e9ce0dade4b1d3fc48d3fbfc8b4f0137494bb6e2c3addfd7"
+    },
+    {
+      "kind": "literal",
+      "offset": 3176,
+      "length": 64
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/click-bounce-2.webp",
+      "length": 18996694,
+      "sha256": "6b216258cc66769845756c4933b9579e084d7c90056c247a676c7915e1e18409"
+    },
+    {
+      "kind": "literal",
+      "offset": 3240,
+      "length": 62
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/idle-loop-long.webp",
+      "length": 31911354,
+      "sha256": "703bbc38358c42379d85d9a560aa503d059d8f5e0f1ad86c0f5a86c728ba73f3"
+    },
+    {
+      "kind": "literal",
+      "offset": 3302,
+      "length": 66
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/idle-loop-short.webp",
+      "length": 20256652,
+      "sha256": "85163a90769d1577f04d3549de4df8dc82c267fb96b988fa4ec97c36c0a6d0e0"
+    },
+    {
+      "kind": "literal",
+      "offset": 3368,
+      "length": 36737
+    }
+  ]
+}

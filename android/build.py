@@ -61,5 +61,6 @@ def main():
         'minimumAndroid':9,'minimumSdk':28,'targetSdk':35,'assetRevision':index['revision'],
         'sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'bytes':out.stat().st_size,
         'signing':'development key; private keystore is not published'},indent=2)+'\n')
+    if out.resolve()==(ROOT/'android/releases/Anzuki-Android.apk').resolve():run([sys.executable,ROOT/'scripts/pack-android-release.py'])
     print(verification);print(badging.splitlines()[0]);print('APK:',out)
 if __name__=='__main__':main()

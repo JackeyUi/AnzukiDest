@@ -2,6 +2,9 @@
 (async()=>{
  const api=window.Anzuki,config=await api.config(),pet=document.querySelector('#pet');
  if(!config)return;
+ const voices=new AnzukiVoice.VoicePlayer(config.voice,{status:message=>api.reportVoice(message)});
+ api.onVoiceChanged(p=>voices.update(p));api.onVoicePlay(p=>voices.play(p.event,{id:p.id,preview:true}));api.onVoiceStop(()=>voices.stop());
+ window.addEventListener('beforeunload',()=>voices.destroy());
  let settings={idle:config.idle,clickSpeed:1,...config.settings};
  let serial=0,timer=null,down=null,dragging=false,current=config.idle,activeURL=null;
  const sources=new Map();
@@ -28,12 +31,12 @@
   }catch(error){console.error('Animation load failed',error);if(url)URL.revokeObjectURL(url);if(token===serial&&once){sources.delete(name);play(settings.idle);}}
  }
  api.onSettings(next=>{settings={...settings,...next};if(!config.clicks.includes(current))play(settings.idle);});
- function click(){const pool=config.clicks;if(pool.length)play(pool[Math.floor(Math.random()*pool.length)],true);}
+ function click(){voices.play('click');const pool=config.clicks;if(pool.length)play(pool[Math.floor(Math.random()*pool.length)],true);}
  pet.addEventListener('pointerdown',e=>{if(e.button!==0)return;down={x:e.screenX,y:e.screenY};dragging=false;pet.setPointerCapture(e.pointerId);api.dragStart(down);});
  pet.addEventListener('pointermove',e=>{if(!down)return;if(Math.hypot(e.screenX-down.x,e.screenY-down.y)>5)dragging=true;if(dragging)api.dragMove({x:e.screenX,y:e.screenY});});
  pet.addEventListener('pointerup',()=>{if(!down)return;api.dragEnd();down=null;if(!dragging)click();});
  pet.addEventListener('pointercancel',()=>{api.dragEnd();down=null;});
  pet.addEventListener('contextmenu',e=>{e.preventDefault();api.menu();});
  pet.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();click();}else if(e.key==='Escape')api.quit();});
- play(settings.idle);
+ play(settings.idle);voices.play('greeting');
 })();

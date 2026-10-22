@@ -12,6 +12,7 @@ def sync():
     assert idle in options
     names=list(dict.fromkeys([*options,*clicks]))
     out=ROOT/'android/app/src/main/assets';out.mkdir(parents=True,exist_ok=True)
+    for voice_file in ['voice-config.json','voice-lines.json']:shutil.copy2(ROOT/'pet'/voice_file,out/voice_file)
     manifest=json.loads((ROOT/'materials/animation-v2-lossless/manifest.json').read_text())
     verified={c['name']:c for c in manifest['clips']}
     animations={};revision=hashlib.sha256()

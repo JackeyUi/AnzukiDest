@@ -8,6 +8,7 @@ def main():
     parser=argparse.ArgumentParser();parser.add_argument('--assets-only',action='store_true');args=parser.parse_args()
     config=json.loads((ROOT/'pet/anzuki-config.json').read_text())
     folder=ROOT/'android/app/src/main/assets';index=json.loads((folder/'animations.json').read_text())
+    for voice_file in ['voice-config.json','voice-lines.json']:assert (ROOT/'pet'/voice_file).read_bytes()==(folder/voice_file).read_bytes(), 'Voice configuration differs between platforms'
     assert index['idle']==config['animations']['idle'][0], 'Android idle differs from desktop'
     assert index['idleOptions']==config['playback']['idleOptions'], 'Idle menu differs between platforms'
     assert index['clickSpeed']==config['playback']['clickSpeed'], 'Click speed range differs between platforms'
