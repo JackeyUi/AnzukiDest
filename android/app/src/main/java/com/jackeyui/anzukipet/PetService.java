@@ -26,12 +26,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 public class PetService extends Service {
-    public static final String STOP="com.jackeyui.anzukipet.STOP", RESIZE="com.jackeyui.anzukipet.RESIZE";
+    public static final String STOP="com.jackeyui.anzukipet.STOP", RESIZE="com.jackeyui.anzukipet.RESIZE", UPDATE="com.jackeyui.anzukipet.UPDATE";
     static boolean running=false;
     private WindowManager wm; private WindowManager.LayoutParams position; private ImageView pet;
     private Drawable drawable; private PetAssets assets; private SharedPreferences prefs;
     private final Handler handler=new Handler(Looper.getMainLooper());
-    private float startX,startY; private int originX,originY; private boolean dragging,longPressed,destroyed;
+    private float startX,startY; private int originX,originY; private boolean dragging,longPressed,destroyed,looping=true;
     private int dp(float n){return Math.round(n*getResources().getDisplayMetrics().density);}
     private final Runnable longPress=()->{
         if(!dragging&&pet!=null){longPressed=true;Intent i=new Intent(this,MainActivity.class);i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_SINGLE_TOP);try{startActivity(i);}catch(Exception ignored){}}
@@ -54,6 +54,7 @@ public class PetService extends Service {
         try {
             if(pet==null)createPet();
             else if(intent!=null&&RESIZE.equals(intent.getAction()))resize();
+            else if(intent!=null&&UPDATE.equals(intent.getAction())&&looping)play(assets.idle(),true);
         }catch(Exception e){Toast.makeText(this,"桌寵無法顯示，請回設定檢查權限",Toast.LENGTH_LONG).show();stopSelf();}
         return START_NOT_STICKY;
     }
@@ -85,6 +86,7 @@ public class PetService extends Service {
     private void play(String name,boolean loop) throws Exception {
         if(destroyed||pet==null)return;
         if(drawable instanceof AnimatedImageDrawable){((AnimatedImageDrawable)drawable).clearAnimationCallbacks();((AnimatedImageDrawable)drawable).stop();}
+        looping=loop;
         final Drawable next=assets.load(name,loop);drawable=next;pet.setImageDrawable(next);
         if(next instanceof AnimatedImageDrawable){AnimatedImageDrawable animation=(AnimatedImageDrawable)next;
             if(!loop)animation.registerAnimationCallback(new Animatable2.AnimationCallback(){@Override public void onAnimationEnd(Drawable ended){

@@ -1,0 +1,7 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>Anzuki 動畫設定</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'">
+<link rel="stylesheet" href="settings.css"></head><body><h1>動畫設定</h1>
+<label for="idle">待機動畫</label><select id="idle"><option value="idle-loop-long">長循環</option><option value="idle-loop-short">短循環</option></select>
+<label for="speed">點擊動畫速度 <output id="speed-label" for="speed">1.0×</output></label>
+<input id="speed" type="range" min="1" max="2" step="0.1" value="1"><div class="ends"><span>1.0×</span><span>2.0×</span></div>
+<p>自動儲存。倍速套用於下一次點擊，待機維持原速。</p><script src="settings.js"></script></body></html>

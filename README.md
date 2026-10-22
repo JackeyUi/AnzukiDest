@@ -17,7 +17,7 @@ Android 9 以上的原生 App，內建素材、離線可用，不需要 Node.js�
 3. Windows 雙擊 `Start-Windows.cmd`；macOS / Linux 執行 `sh start.sh`。
 4. 首次透過 npm 下載 Electron 43.3.0，請保持網路連線並等候。
 
-新版桌面播放器直接顯示無損動畫 WebP，支援透明懸浮、拖曳、點擊彈動。右鍵可調整大小、保持最上層、回到右下角及結束；位置保存在本機 `data/desktop/`。這是需要 Node.js 的原始碼啟動版，尚未封裝為獨立 EXE。
+新版桌面播放器直接顯示無損動畫 WebP，支援透明懸浮、拖曳、點擊彈動。右鍵的「待機動畫」可切換長／短循環；「動畫設定…」提供點擊速度滑條 **1.0×～2.0×、每格 0.1**。設定自動保留，倍速套用於下一次點擊，點擊後返回所選待機，待機維持原速。右鍵也可調整大小、保持最上層、回到右下角及結束；位置保存在本機 `data/desktop/`。這是需要 Node.js 的原始碼啟動版，尚未封裝為獨立 EXE。
 
 `node launch.mjs --check` 或 `--prepare-only` 可離線核對素材是否齊全。`node install.mjs` 也會轉到這個檢查流程；不再把舊版低解析影片安裝成預設素材。
 
@@ -30,9 +30,9 @@ Android 9 以上的原生 App，內建素材、離線可用，不需要 Node.js�
 | 一般待機 | `idle-loop-long.webp` | loop_long 全段，94 幀 |
 | 點擊一 | `click-bounce-1.webp` | 10 秒影片第 6–59 幀，54 幀 |
 | 點擊二 | `click-bounce-2.webp` | 10 秒影片第 72–127 幀，56 幀 |
-| 備用待機 | `idle-loop-short.webp` | loop_short 全段，60 幀 |
+| 可選短待機 | `idle-loop-short.webp` | loop_short 全段，60 幀 |
 
-來源均為 24 fps，未補幀。WebP 使用毫秒時間戳呈現幀間距。原片腳底幾乎固定，點擊片段為表情、身體與衣髮的原地彈動。
+預設仍是長循環。短循環現在也可由桌面選單或 Android 設定選取。來源均為 24 fps，未補幀。WebP 使用毫秒時間戳呈現幀間距。原片腳底幾乎固定，點擊片段為表情、身體與衣髮的原地彈動。
 
 下載後以 Chrome、Edge 或 Firefox 開啟 `preview.html`。可切換背景、點擊角色或使用「原尺寸檢視」檢查細節。桌寵視窗的顯示尺寸可調，素材檔始終保留 720×1280。
 
@@ -53,7 +53,7 @@ python scripts/update-all.py --sdk /path/to/android-sdk
 python scripts/check-platform-sync.py
 ```
 
-流程從原片重新去背，以無損 RGBA 編碼，逐幀比對解碼像素，再直接複製同一份素材到 Android 並重建 APK。沒有縮圖、沒有重新編碼手機素材。GitHub Actions 會檢查同步並建置測試 APK。
+流程從原片重新去背，以無損 RGBA 編碼，逐幀比對解碼像素，再直接複製同一份素材到 Android 並重建 APK。沒有縮圖、沒有重新編碼手機素材。點擊倍速只在記憶體修改 WebP 每幀停留時間，影像與 alpha 壓縮資料保持原樣；不產生降畫質的倍速影片。GitHub Actions 會檢查同步並建置測試 APK。
 
 角色參考版本另見 `materials/argon-reference-v2/`、`v3/`、`v5/`。美術優先與兩平台同步要求已記在 [AGENTS.md](AGENTS.md)。
 

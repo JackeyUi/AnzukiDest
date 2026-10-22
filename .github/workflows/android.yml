@@ -44,6 +44,8 @@ jobs:
           node --check desktop/preload.cjs
           node --check desktop/renderer.js
           node --check preview.js
+          node --check desktop/settings.js
+          node scripts/check-playback.cjs
           node launch.mjs --check
       - name: Verify committed desktop and Android assets
         run: python scripts/check-platform-sync.py --assets-only

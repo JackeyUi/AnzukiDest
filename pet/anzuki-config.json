@@ -88,5 +88,17 @@
     [
       "先別急，我們再試一次。"
     ]
-  ]
+  ],
+  "playback": {
+    "idleOptions": [
+      "idle-loop-long",
+      "idle-loop-short"
+    ],
+    "clickSpeed": {
+      "min": 1.0,
+      "max": 2.0,
+      "step": 0.1,
+      "default": 1.0
+    }
+  }
 }

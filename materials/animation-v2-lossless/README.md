@@ -2,7 +2,7 @@
 
 美術優先。從 `../animation-v1/original/` 原始 MP4 重新解碼、去背，全程不縮圖。輸出保留 720×1280，以 lossless RGBA 動畫 WebP 儲存，避免去背後的 RGB 再經 YUV 色度抽樣。
 
-`full-resolution/` 四段檔案與 `../../pet/anzuki-animation/` 對應 WebP 完全相同；一般待機及兩段點擊也以相同位元複製到 Android。備用短循環未放入預設動作池。
+`full-resolution/` 四段檔案與 `../../pet/anzuki-animation/` 對應 WebP 完全相同；長／短待機及兩段點擊也以相同位元複製到 Android。預設長循環，短循環可在兩平台設定選取。
 
 去背只處理綠幕與半透明邊緣；角色完全不透明區域的 RGB 與原始解碼畫面相同。保留原片已有的生成細節與形變，沒有新增動作、補幀或銳化。
 

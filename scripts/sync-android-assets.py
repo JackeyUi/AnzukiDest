@@ -8,7 +8,9 @@ ROOT=Path(__file__).resolve().parents[1]
 def sync():
     config=json.loads((ROOT/'pet/anzuki-config.json').read_text())
     idle=config['animations']['idle'][0];clicks=config['animations']['clicks']
-    names=list(dict.fromkeys([idle,*clicks]))
+    options=config['playback']['idleOptions']
+    assert idle in options
+    names=list(dict.fromkeys([*options,*clicks]))
     out=ROOT/'android/app/src/main/assets';out.mkdir(parents=True,exist_ok=True)
     manifest=json.loads((ROOT/'materials/animation-v2-lossless/manifest.json').read_text())
     verified={c['name']:c for c in manifest['clips']}
@@ -25,7 +27,7 @@ def sync():
         revision.update(name.encode());revision.update(sha.encode())
         animations[name]=dict(file=source.name,sourceFile=source.name,frames=record['frames'],fps=24,
             durationMs=round(record['frames']/24*1000),sourceSha256=sha,sha256=sha,losslessPixelVerified=True)
-    index=dict(schema=2,revision=revision.hexdigest()[:16],idle=idle,clicks=clicks,width=720,height=1280,
+    index=dict(schema=3,revision=revision.hexdigest()[:16],idle=idle,idleOptions=options,clickSpeed=config['playback']['clickSpeed'],clicks=clicks,width=720,height=1280,
         qualityPolicy='Original resolution; RGBA lossless; identical desktop and Android bytes',animations=animations)
     (out/'animations.json').write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n')
     # Desktop uses the same index and exact same source images.

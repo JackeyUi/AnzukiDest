@@ -9,11 +9,13 @@ def main():
     config=json.loads((ROOT/'pet/anzuki-config.json').read_text())
     folder=ROOT/'android/app/src/main/assets';index=json.loads((folder/'animations.json').read_text())
     assert index['idle']==config['animations']['idle'][0], 'Android idle differs from desktop'
+    assert index['idleOptions']==config['playback']['idleOptions'], 'Idle menu differs between platforms'
+    assert index['clickSpeed']==config['playback']['clickSpeed'], 'Click speed range differs between platforms'
     assert index['clicks']==config['animations']['clicks'], 'Android click pool differs from desktop'
     manifest=json.loads((ROOT/'materials/animation-v2-lossless/manifest.json').read_text())
     verified={clip['name']:clip for clip in manifest['clips']}
     revision=hashlib.sha256()
-    for name in dict.fromkeys([index['idle'],*index['clicks']]):
+    for name in dict.fromkeys([*index['idleOptions'],*index['clicks']]):
         source=ROOT/'pet/anzuki-animation'/(name+'.webp');source_sha=hashlib.sha256(source.read_bytes()).hexdigest()
         revision.update(name.encode());revision.update(source_sha.encode())
         record=index['animations'][name]
