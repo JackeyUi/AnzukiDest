@@ -29,6 +29,7 @@
      await decoder.tracks.ready;await decoder.completed;
      if(decoder.tracks.selectedTrack.frameCount!==clock.starts.length||clock.starts.length!==this.config.animations[name].frames)throw new Error('Decoded frame count changed');
      for(let i=0;i<clock.starts.length;i++){
+      while(this.busy&&this.playingName!==name&&!this.closed)await new Promise(resolve=>setTimeout(resolve,16));
       const {image}=await decoder.decode({frameIndex:i,completeFramesOnly:true});
       if(image.displayWidth!==this.config.width||image.displayHeight!==this.config.height){image.close();throw new Error('Decoded image resolution changed');}
       if(this.closed){image.close();throw new Error('Player closed');}
@@ -48,7 +49,7 @@
    try{const image=await entry.loaded;if(token!==this.serial||this.closed||this.busy)return;this.element.replaceChildren(image);this.element.dataset.animation=name;this.element.dataset.speed='1';this.element.dataset.renderer='native-idle';}catch(error){console.error('Idle load failed',error);}
   }
   async click(name,speed){
-   if(this.busy||this.closed)return false;this.busy=true;const token=++this.serial;
+   if(this.busy||this.closed)return false;this.busy=true;this.playingName=name;const token=++this.serial;
    try{
     const track=await this.prepare(name);if(this.closed||token!==this.serial)return false;
     this.element.replaceChildren(this.canvas);this.element.dataset.animation=name;this.element.dataset.speed=String(speed);this.element.dataset.duration=String(track.durationMs/speed);this.element.dataset.renderer='decoded-frames';
@@ -63,8 +64,8 @@
      };this.raf=requestAnimationFrame(tick);
     });
     return true;
-   }catch(error){if(!this.closed){console.warn('Decoded click failed; using native image fallback',error);await this.fallback(name,speed,token);}return false;}
-   finally{if(token===this.serial&&!this.closed){this.busy=false;this.setIdle(this.idle);}}
+   }catch(error){if(!this.closed){console.warn('Decoded click failed; using native image fallback',error);try{await this.fallback(name,speed,token);}catch(fallbackError){console.error('Native click fallback failed',fallbackError);}}return false;}
+   finally{if(token===this.serial&&!this.closed){this.busy=false;this.playingName=null;this.setIdle(this.idle);}}
   }
   async fallback(name,speed,token){
    const raw=await this.loadClick(name),timed=root.AnzukiTiming.retime(raw,speed),url=URL.createObjectURL(new Blob([timed.bytes],{type:'image/webp'}));

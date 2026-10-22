@@ -1,5 +1,6 @@
 'use strict';
 const fs=require('node:fs/promises'),path=require('node:path'),crypto=require('node:crypto');
+const {fingerprint}=require('./pe-content-fingerprint.cjs');
 const root=path.resolve(__dirname,'..'),current=path.join(root,'.local/windows-release/Anzuki-win32-x64'),baseline=path.join(root,'.local/windows-baseline'),output=path.join(root,'.local/windows-update'),patched=path.join(root,'.local/windows-patched');
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 async function walk(folder,prefix=''){let files=[];for(const entry of await fs.readdir(path.join(folder,prefix),{withFileTypes:true})){const rel=prefix?prefix+'/'+entry.name:entry.name;if(entry.isDirectory())files.push(...await walk(folder,rel));else if(entry.isFile())files.push(rel);}return files.sort();}
@@ -9,6 +10,7 @@ async function walk(folder,prefix=''){let files=[];for(const entry of await fs.r
  for(const rel of await walk(current)){
   const bytes=await fs.readFile(path.join(current,rel)),sha=hash(bytes);let oldHash=null;
   if(before.has(rel))oldHash=hash(await fs.readFile(path.join(baseline,rel)));if(oldHash===sha)continue;
+  if(rel==='Anzuki.exe'&&oldHash){const previous=await fs.readFile(path.join(baseline,rel));const a=fingerprint(bytes),b=fingerprint(previous);if(JSON.stringify(a)===JSON.stringify(b)){await fs.copyFile(path.join(baseline,rel),path.join(current,rel));console.log('Reused previous EXE: executable code/data and all icon/version/manifest resources are identical; only PE packaging differs');continue;}console.log('PE_DIFFERENCE '+JSON.stringify({code:a.sections.map((s,i)=>({name:s.name,equal:JSON.stringify(s)===JSON.stringify(b.sections[i])})),resourcesEqual:JSON.stringify(a.resources)===JSON.stringify(b.resources)}));}
   // Runtime changes require explicit inclusion; normal app updates must not silently re-ship it.
   if(!rel.startsWith('resources/app.asar')&&!rel.startsWith('resources/pet/')&&!rel.startsWith('recording-guides/')&&!['asset-manifest.json','READ-ME.txt','LICENSE.Anzuki.txt'].includes(rel))throw Error('Electron runtime changed; review required before creating incremental package: '+rel);
   await fs.mkdir(path.dirname(path.join(output,rel)),{recursive:true});await fs.writeFile(path.join(output,rel),bytes);files.push({path:rel,sha256:sha,previousSha256:oldHash,bytes:bytes.length});
