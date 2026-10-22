@@ -15,3 +15,5 @@
 - Retain original uploaded media and processed outputs when the user supplies new source footage. Keep prior character references for comparison.
 - The user has authorized publishing Anzuki reference revisions, prompts, source changes and uploads to the public `JackeyUi/AnzukiDest` repository until revoked. Do not upload to Google Drive unless separately requested.
 - Report validation accurately: successful compilation and APK signature checks do not establish successful interaction on a physical Android device.
+
+- Current recording-script request: morning/daytime/evening 15 lines each and 30 general chat lines (75 total), with no weekday/holiday distinction in the writing. Japanese recording text with Traditional Chinese translations; ground Anzuki's polite, shy, observant, curious voice in the user's Notion character and daily-life sources. All lines are spoken by Anzuki alone. This is a script update; do not silently rewrite the user's saved per-clip schedules or generate audio.
