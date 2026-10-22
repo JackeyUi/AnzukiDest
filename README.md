@@ -4,6 +4,16 @@
 
 **美術品質優先：保留原始 720×1280 解析度，使用無損 RGBA 動畫 WebP；桌面和 Android 使用逐位元相同的素材。** 不為了縮小檔案而縮圖、有損轉碼或犧牲色彩細節。去背會改動綠幕及半透明邊緣，角色完全不透明區域保留解碼後的原始 RGB。原始 MP4 原封不動保留。
 
+## Windows 桌面版（免裝 Node.js）
+
+[下載 Windows x64 桌面版](https://github.com/JackeyUi/AnzukiDest/actions/workflows/windows.yml)
+
+1. 登入 GitHub，進入「Windows desktop release」最新成功紀錄。
+2. 在下方 Artifacts 下載 `Anzuki-Windows-x64` ZIP。
+3. **完整解壓縮整個資料夾**，雙擊 `Anzuki.exe`。
+
+適用 Windows 10／11 64 位元，已內附 Electron、原尺寸無損動畫與音聲功能，不需要 Node.js。請保留同資料夾內的 `resources/`、DLL 與其他檔案。右鍵角色可設定動畫與音聲。設定及個人錄音保存在 `%APPDATA%\Anzuki\desktop`，更新程式時仍會保留。此版未做 Windows 程式碼簽章。
+
 ## Android 手機版
 
 [下載新版 Android APK（建置產物）](https://github.com/JackeyUi/AnzukiDest/actions/workflows/release.yml) · [安裝與使用說明](android/README.md)
@@ -12,7 +22,7 @@ Android 9 以上的原生 App，內建素材、離線可用，不需要 Node.js�
 
 ## 音聲與錄音文本
 
-[24 句錄音文本、檔名及時間條件](materials/voice-v1/RECORDING-SCRIPT.md)。你可先錄製常用句，之後逐步補齊；這版尚未附正式角色音檔。
+[24 句錄音文本、檔名及時間條件](materials/voice-v1/RECORDING-SCRIPT.md) · [日本語版](materials/voice-v1/RECORDING-SCRIPT.ja.md) · [日文純文字台詞](materials/voice-v1/RECORDING-LINES.ja.txt)。你可先錄製常用句，之後逐步補齊；這版尚未附正式角色音檔。
 
 桌面右鍵 →「動畫／音聲設定…」，Android 設定 →「音聲設定與試聽」。可為啟動招呼、點擊回應及待機閒聊匯入多段 WAV、MP3、OGG、M4A、FLAC、AAC，每檔最多 50 MB、每類最多 12 段，並可試聽、移除、調音量、靜音。匯入保留原始位元，不重新壓縮；錄音不跟隨動畫倍速。
 
@@ -20,14 +30,14 @@ Android 9 以上的原生 App，內建素材、離線可用，不需要 Node.js�
 
 待機閒聊預設關閉，可開啟並設定 1–10 分鐘間隔。連點有 2.5 秒冷卻且不疊音。Android 自動音聲避開系統靜音及其他媒體播放。兩平台功能與文本同步，個人音量、選項及匯入檔保存在各裝置，沒有自動跨裝置上傳。
 
-## 桌面啟動
+## 原始碼啟動（開發用）
 
 1. 安裝 [Node.js](https://nodejs.org/) 22.12 以上，建議 24 LTS。
 2. GitHub 的 Code → Download ZIP，完整解壓縮。
 3. Windows 雙擊 `Start-Windows.cmd`；macOS / Linux 執行 `sh start.sh`。
 4. 首次透過 npm 下載 Electron 43.3.0，請保持網路連線並等候。
 
-新版桌面播放器直接顯示無損動畫 WebP，支援透明懸浮、拖曳、點擊彈動。右鍵的「待機動畫」可切換長／短循環；「動畫／音聲設定…」提供點擊速度滑條 **1.0×～2.0×、每格 0.1**。設定自動保留，倍速套用於下一次點擊，點擊後返回所選待機，待機維持原速。右鍵也可調整大小、保持最上層、回到右下角及結束；位置保存在本機 `data/desktop/`。這是需要 Node.js 的原始碼啟動版，尚未封裝為獨立 EXE。
+新版桌面播放器直接顯示無損動畫 WebP，支援透明懸浮、拖曳、點擊彈動。右鍵的「待機動畫」可切換長／短循環；「動畫／音聲設定…」提供點擊速度滑條 **1.0×～2.0×、每格 0.1**。設定自動保留，倍速套用於下一次點擊，點擊後返回所選待機，待機維持原速。右鍵也可調整大小、保持最上層、回到右下角及結束；原始碼啟動版的位置保存在本機 `data/desktop/`。一般 Windows 使用者可直接下載上方的 EXE 桌面版。
 
 `node launch.mjs --check` 或 `--prepare-only` 可離線核對素材是否齊全。`node install.mjs` 也會轉到這個檢查流程；不再把舊版低解析影片安裝成預設素材。
 

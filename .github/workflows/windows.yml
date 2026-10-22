@@ -1,0 +1,48 @@
+name: Windows desktop release
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'desktop/**'
+      - 'pet/**'
+      - 'scripts/**'
+      - '.github/workflows/windows.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned packaging and test tools
+        shell: pwsh
+        run: npm install --prefix .local/windows-tools --no-save @electron/packager@18.3.6 @electron/asar@3.4.1 playwright@1.56.1
+      - name: Verify playback and voice rules
+        shell: pwsh
+        run: |
+          node scripts/check-playback.cjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node scripts/check-voice.cjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Package standalone Windows EXE with unchanged artwork
+        run: node scripts/build-windows.cjs
+      - name: Verify packaged executable and every asset byte
+        run: node scripts/check-windows-package.cjs
+      - name: Smoke-test actual packaged Windows app
+        run: node scripts/check-windows-smoke.cjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Anzuki-Windows-x64
+          path: .local/windows-release/Anzuki-win32-x64/
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Anzuki-Windows-validation
+          path: .local/windows-release/windows-smoke.png
+          if-no-files-found: ignore
+          retention-days: 30

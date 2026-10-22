@@ -2,7 +2,8 @@
 const {app,BrowserWindow,ipcMain,Menu,screen,dialog}=require('electron');
 const fs=require('node:fs');const path=require('node:path');const {pathToFileURL}=require('node:url');
 const {VoiceStore}=require('./voice-store.cjs');
-const ROOT=path.resolve(__dirname,'..');const DATA=path.join(ROOT,'data','desktop');
+const ROOT=app.isPackaged?process.resourcesPath:path.resolve(__dirname,'..');
+const DATA=app.isPackaged?path.join(app.getPath('appData'),'Anzuki','desktop'):path.join(ROOT,'data','desktop');
 fs.mkdirSync(DATA,{recursive:true});app.setPath('userData',DATA);
 const voice=new VoiceStore(DATA,JSON.parse(fs.readFileSync(path.join(ROOT,'pet','voice-config.json'),'utf8')),JSON.parse(fs.readFileSync(path.join(ROOT,'pet','voice-lines.json'),'utf8')));
 const stateFile=path.join(DATA,'position.json');
