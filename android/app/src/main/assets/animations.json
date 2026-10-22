@@ -1,43 +1,44 @@
 {
-  "schema": 1,
-  "revision": "df5094e9edae5b3e",
+  "schema": 2,
+  "revision": "8551fcf022ba14da",
   "idle": "idle-loop-long",
   "clicks": [
     "click-bounce-1",
     "click-bounce-2"
   ],
-  "width": 162,
-  "height": 252,
-  "desktopCrop": [
-    239,
-    62,
-    162,
-    252
-  ],
+  "width": 720,
+  "height": 1280,
+  "qualityPolicy": "Original resolution; RGBA lossless; identical desktop and Android bytes",
   "animations": {
     "idle-loop-long": {
       "file": "idle-loop-long.webp",
+      "sourceFile": "idle-loop-long.webp",
       "frames": 94,
       "fps": 24,
       "durationMs": 3917,
-      "sourceSha256": "e446d425cc071cdc413bc2f7da4e1b284febdd9cab528b77af57abe8f99fcbba",
-      "sha256": "445f2bf4d860753e0b0edbf142441393bbd0f873b96a90dd77f264cf067eee8e"
+      "sourceSha256": "703bbc38358c42379d85d9a560aa503d059d8f5e0f1ad86c0f5a86c728ba73f3",
+      "sha256": "703bbc38358c42379d85d9a560aa503d059d8f5e0f1ad86c0f5a86c728ba73f3",
+      "losslessPixelVerified": true
     },
     "click-bounce-1": {
       "file": "click-bounce-1.webp",
+      "sourceFile": "click-bounce-1.webp",
       "frames": 54,
       "fps": 24,
       "durationMs": 2250,
-      "sourceSha256": "0e5c3cc620cc2dd5fd1bfce7ed1a23d1b003b347dfa3e2dceda0eed57bdd3e48",
-      "sha256": "eb1b85117f51d7c1118fb0baf081ac6d9486ad47e8046bbf6dac7899b3bf07df"
+      "sourceSha256": "56ffc143754e4407e9ce0dade4b1d3fc48d3fbfc8b4f0137494bb6e2c3addfd7",
+      "sha256": "56ffc143754e4407e9ce0dade4b1d3fc48d3fbfc8b4f0137494bb6e2c3addfd7",
+      "losslessPixelVerified": true
     },
     "click-bounce-2": {
       "file": "click-bounce-2.webp",
+      "sourceFile": "click-bounce-2.webp",
       "frames": 56,
       "fps": 24,
       "durationMs": 2333,
-      "sourceSha256": "acdf14e3e67af849d38aac1202c4c32a93d4b526342ef17b9521ee7c2bb82597",
-      "sha256": "cf805642a1ba0a4abd2b701f952663723411590ad885c823c5c071e13a587616"
+      "sourceSha256": "6b216258cc66769845756c4933b9579e084d7c90056c247a676c7915e1e18409",
+      "sha256": "6b216258cc66769845756c4933b9579e084d7c90056c247a676c7915e1e18409",
+      "losslessPixelVerified": true
     }
   }
 }

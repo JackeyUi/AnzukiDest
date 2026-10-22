@@ -1,0 +1,53 @@
+name: Publish byte-exact lossless artwork
+on:
+  push:
+    branches: ['build/lossless-artwork']
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: false
+      - name: Install Android build tools
+        run: |
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+          python -m pip install pillow
+      - name: Restore exact binary bytes and verify both platforms
+        run: |
+          python scripts/restore-lossless-transfer.py
+          python scripts/check-platform-sync.py
+          node launch.mjs --check
+          node --check desktop/main.cjs
+          node --check desktop/preload.cjs
+          node --check desktop/renderer.js
+          node --check preview.js
+      - name: Compile and sign a separate test APK without changing the release signature
+        run: python android/build.py --sdk "$ANDROID_HOME" --out "$RUNNER_TEMP/anzuki-test/Anzuki-Android.apk"
+      - name: Recheck release package and original-resolution assets
+        run: python scripts/check-platform-sync.py
+      - name: Publish complete synchronized update
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/publish-lossless.yml
+          git rm -r .transfer-lossless
+          git add materials/animation-v2-lossless/full-resolution pet/anzuki-animation android/app/src/main/assets android/releases/Anzuki-Android.apk
+          git commit -m 'Restore original-resolution lossless artwork and signed Android APK'
+          git push origin HEAD:main

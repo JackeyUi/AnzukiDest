@@ -1,0 +1,147 @@
+[
+  {
+    "path": "materials/animation-v2-lossless/full-resolution/click-bounce-1.webp",
+    "bytes": 18293764,
+    "sha256": "56ffc143754e4407e9ce0dade4b1d3fc48d3fbfc8b4f0137494bb6e2c3addfd7",
+    "parts": [
+      {
+        "path": ".transfer-lossless/00-00.part",
+        "bytes": 8000001,
+        "sha256": "7ee8fe02c45b977070630abade8a882e48e65b85d95b887ba20dd1c8cfbe3a95"
+      },
+      {
+        "path": ".transfer-lossless/00-01.part",
+        "bytes": 8000001,
+        "sha256": "c4c28b302446b3a33d6c0a972616bba37bd902604a1bab66fa1f4d55d415f8ee"
+      },
+      {
+        "path": ".transfer-lossless/00-02.part",
+        "bytes": 2293762,
+        "sha256": "f0d38da19fb0e3694f42ecd7629cee99ca7ee3d0dc771d815c9ad043769023c6"
+      }
+    ]
+  },
+  {
+    "path": "materials/animation-v2-lossless/full-resolution/click-bounce-2.webp",
+    "bytes": 18996694,
+    "sha256": "6b216258cc66769845756c4933b9579e084d7c90056c247a676c7915e1e18409",
+    "parts": [
+      {
+        "path": ".transfer-lossless/01-00.part",
+        "bytes": 8000001,
+        "sha256": "2f79d4bf7a0cb2983c1cbb274dfcd3114af94464deed6d30b14ab6b3a0594d82"
+      },
+      {
+        "path": ".transfer-lossless/01-01.part",
+        "bytes": 8000001,
+        "sha256": "44a641fa4ef461ebbb89566a5c681deb8bcb0c3072f09ee2c8f48f96ccf44bea"
+      },
+      {
+        "path": ".transfer-lossless/01-02.part",
+        "bytes": 2996692,
+        "sha256": "b76e9c7c28696e6cf663298f91b376b0bcfbcbee3ce6749f515bb3f991596eb2"
+      }
+    ]
+  },
+  {
+    "path": "materials/animation-v2-lossless/full-resolution/idle-loop-long.webp",
+    "bytes": 31911354,
+    "sha256": "703bbc38358c42379d85d9a560aa503d059d8f5e0f1ad86c0f5a86c728ba73f3",
+    "parts": [
+      {
+        "path": ".transfer-lossless/02-00.part",
+        "bytes": 8000001,
+        "sha256": "c801ace72584dd3e246e68916707fcd13de294eadb8a879b4c73b157ed0f4dc1"
+      },
+      {
+        "path": ".transfer-lossless/02-01.part",
+        "bytes": 8000001,
+        "sha256": "1f0f7a257b412ab4807a205c0cd8379837d5dccf9ad487e9d241410c21d8f9bc"
+      },
+      {
+        "path": ".transfer-lossless/02-02.part",
+        "bytes": 8000001,
+        "sha256": "00840885520150c4976b257f4f2226a7c8e6ec4099a947d74ffd80fd99c756ba"
+      },
+      {
+        "path": ".transfer-lossless/02-03.part",
+        "bytes": 7911351,
+        "sha256": "b29ac7436ad09befadbfd37b88ae827dc78310ad133f9dbf58cc23990f5faa6d"
+      }
+    ]
+  },
+  {
+    "path": "materials/animation-v2-lossless/full-resolution/idle-loop-short.webp",
+    "bytes": 20256652,
+    "sha256": "85163a90769d1577f04d3549de4df8dc82c267fb96b988fa4ec97c36c0a6d0e0",
+    "parts": [
+      {
+        "path": ".transfer-lossless/03-00.part",
+        "bytes": 8000001,
+        "sha256": "edc63871a8d22bac7a1b864555ac8e568906dbafded3930aacfeb80fa73141e2"
+      },
+      {
+        "path": ".transfer-lossless/03-01.part",
+        "bytes": 8000001,
+        "sha256": "ea8e67f1b7060f98616fd273e0a1869a983bf59fa571d2731d90416f34e0c3eb"
+      },
+      {
+        "path": ".transfer-lossless/03-02.part",
+        "bytes": 4256650,
+        "sha256": "88f70d624c9c94e44a04306d17f2c0fd40d52e382d7e332f3f6f3761d8e1d63b"
+      }
+    ]
+  },
+  {
+    "path": "android/releases/Anzuki-Android.apk",
+    "bytes": 69223157,
+    "sha256": "8a2948b01757f91da03609fcef551117fe518bdd43e5f71513f099fe2155d7ae",
+    "parts": [
+      {
+        "path": ".transfer-lossless/04-00.part",
+        "bytes": 8000001,
+        "sha256": "7c56ce7009d7ba419ea0aa55c885e2e53a581e5315b7acabbae3ed0cb4fde76e"
+      },
+      {
+        "path": ".transfer-lossless/04-01.part",
+        "bytes": 8000001,
+        "sha256": "96e4ac88727a183ebdd9055ed2a772166fa1fb7657e3cdcb39dca76ef2a14aab"
+      },
+      {
+        "path": ".transfer-lossless/04-02.part",
+        "bytes": 8000001,
+        "sha256": "5155824009cf1456466cc22469edb73b0f1d80687c6068197a0428ba92cad83d"
+      },
+      {
+        "path": ".transfer-lossless/04-03.part",
+        "bytes": 8000001,
+        "sha256": "244185ec3dbd6dda2c48734c18c9eeb08ede7c0775aadafab43bc8990526a98b"
+      },
+      {
+        "path": ".transfer-lossless/04-04.part",
+        "bytes": 8000001,
+        "sha256": "5e176c0357be914ee64eaaee4adbae729ee500b1424f404cd697de16c38fea68"
+      },
+      {
+        "path": ".transfer-lossless/04-05.part",
+        "bytes": 8000001,
+        "sha256": "0c34d28bc213c17ed4fa3512d0483a8e4dc27d8a0804e6151919901a9e902db7"
+      },
+      {
+        "path": ".transfer-lossless/04-06.part",
+        "bytes": 8000001,
+        "sha256": "0dc83d5a35efe84c3b993ccfe8a6910192fe07df8de49ffd78d406bf7162a782"
+      },
+      {
+        "path": ".transfer-lossless/04-07.part",
+        "bytes": 8000001,
+        "sha256": "dd879844bb0c6648f3615d32a1dc4deeb2f02f053d6ddba2d3393e0299d3d1a1"
+      },
+      {
+        "path": ".transfer-lossless/04-08.part",
+        "bytes": 5223149,
+        "sha256": "953b38284543e790cc8331eeae8dde31527fef109506a4efb524e620a3fcf069"
+      }
+    ]
+  }
+]

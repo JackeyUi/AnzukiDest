@@ -10,14 +10,23 @@ def main():
     folder=ROOT/'android/app/src/main/assets';index=json.loads((folder/'animations.json').read_text())
     assert index['idle']==config['animations']['idle'][0], 'Android idle differs from desktop'
     assert index['clicks']==config['animations']['clicks'], 'Android click pool differs from desktop'
+    manifest=json.loads((ROOT/'materials/animation-v2-lossless/manifest.json').read_text())
+    verified={clip['name']:clip for clip in manifest['clips']}
     revision=hashlib.sha256()
     for name in dict.fromkeys([index['idle'],*index['clicks']]):
-        source=ROOT/'pet/anzuki-animation'/(name+'.webm');source_sha=hashlib.sha256(source.read_bytes()).hexdigest()
+        source=ROOT/'pet/anzuki-animation'/(name+'.webp');source_sha=hashlib.sha256(source.read_bytes()).hexdigest()
         revision.update(name.encode());revision.update(source_sha.encode())
         record=index['animations'][name]
+        assert source_sha==verified[name]['sha256'] and verified[name]['losslessPixelVerified'], 'Unverified artwork: '+name
+        assert verified[name]['opaquePixelsChanged']==0, 'Opaque character colors changed: '+name
+        master=ROOT/'materials/animation-v2-lossless'/verified[name]['master']
+        assert hashlib.sha256(master.read_bytes()).hexdigest()==source_sha, 'Master/runtime mismatch: '+name
         assert record['sourceSha256']==source_sha, 'Stale Android source: '+name
+        assert record['sha256']==source_sha, 'Android must use byte-identical lossless artwork'
         assert hashlib.sha256((folder/record['file']).read_bytes()).hexdigest()==record['sha256'], 'Corrupt Android animation: '+name
     assert index['revision']==revision.hexdigest()[:16], 'Asset revision mismatch'
+    assert (index['width'],index['height'])==(720,1280), 'Never reduce source resolution'
+    assert json.loads((ROOT/'pet/animations.json').read_text())==index, 'Desktop/Android index mismatch'
     if not args.assets_only:
         apk=ROOT/'android/releases/Anzuki-Android.apk'
         metadata=json.loads((apk.parent/'apk-metadata.json').read_text())

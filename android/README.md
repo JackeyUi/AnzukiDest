@@ -24,7 +24,7 @@ App 只有懸浮顯示、前景服務及通知相關權限，沒有網路、相�
 
 ## 與桌面版同步
 
-桌面版的 `../pet/anzuki-config.json` 是動作名稱與點擊池的唯一設定來源。`../scripts/sync-android-assets.py` 從同一批桌面 WebM 產生帶 alpha 的動畫 WebP，統一裁切安全邊界，保留 24 fps 與動作相對位置。
+桌面版的 `../pet/anzuki-config.json` 是動作名稱與點擊池的唯一設定來源。`../scripts/sync-android-assets.py` 直接複製桌面使用的 720×1280 無損 RGBA 動畫 WebP，不縮圖、不裁切、不重新編碼。兩平台檔案 SHA-256 相同，保留原始動作與相對位置。去背後的各幀已通過逐像素無損驗證；角色完全不透明區域保留原色。
 
 `animations.json` 記錄來源 SHA-256、幀數及素材版本。`check-platform-sync.py` 核對桌面設定、手機動畫與 APK 內實際封裝的內容，避免兩版各用不同素材。
 
@@ -41,10 +41,10 @@ python android/build.py --sdk /path/to/android-sdk
 python scripts/check-platform-sync.py
 ```
 
-需要 Java JDK 17 以上、Python 3、numpy、scipy、FFmpeg，以及 Android SDK platform 35 與 build-tools 35.0.0。此純 Java 專案直接使用 Android 原生工具建置，不需要 Gradle 或 Android Studio。建置腳本目前用於 Linux／GitHub Actions，Windows 使用者直接下載 APK 即可。
+需要 Java JDK 17 以上、Python 3、numpy、Pillow、FFmpeg，以及 Android SDK platform 35 與 build-tools 35.0.0。此純 Java 專案直接使用 Android 原生工具建置，不需要 Gradle 或 Android Studio。建置腳本目前用於 Linux／GitHub Actions，Windows 使用者直接下載 APK 即可。
 
 GitHub Actions 會在 Android、桌面素材或相關腳本更新時檢查同步並建置測試 APK。正式提供給你下載的檔案位於 `android/releases/`；Actions 的測試產物使用臨時開發簽章，不一定能覆蓋已安裝的版本。
 
 開發簽章金鑰只保存在建置工作區 `.local/android-signing/`，不會上傳 GitHub。之後發行更新應保留同一把金鑰；若換了簽章，需要移除舊 App 再安裝。後續處理此專案時，會一起更新桌面素材、手機素材與 APK。
 
-桌面引擎與素材格式參考：[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)。Android 原生懸浮顯示程式為本專案實作。
+早期桌面格式參考：[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)。Android 原生懸浮顯示程式為本專案實作。

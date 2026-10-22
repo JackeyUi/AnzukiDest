@@ -1,72 +1,62 @@
 # Anzuki 桌寵
 
-使用你提供的綠幕動畫製作的 dsh-pet 素材包。一般待機採用 `video2_loop_long.mp4`，點擊時隨機播放從 10 秒影片擷取的兩段原地彈動。
+以你提供的動畫製作的桌面與 Android 懸浮桌寵。平時播放 `loop_long`，點擊時隨機播放從 10 秒影片擷取的兩段原地彈動，播完回到待機。
 
-桌寵引擎與格式來自原作者：**[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)**。
+**美術品質優先：保留原始 720×1280 解析度，使用無損 RGBA 動畫 WebP；桌面和 Android 使用逐位元相同的素材。** 不為了縮小檔案而縮圖、有損轉碼或犧牲色彩細節。去背會改動綠幕及半透明邊緣，角色完全不透明區域保留解碼後的原始 RGB。原始 MP4 原封不動保留。
 
 ## Android 手機版
 
 [下載 Android APK](android/releases/Anzuki-Android.apk) · [安裝與使用說明](android/README.md)
 
-Android 9 以上可用的原生懸浮桌寵，可顯示在其他 App 上方。安裝後授予「顯示在其他應用程式上層」權限，便可拖曳角色、點擊播放彈動、長按回到設定。手機版內建素材，離線可用，不需要 Node.js。
+Android 9 以上的原生 App，內建素材、離線可用，不需要 Node.js。授予「顯示在其他應用程式上層」後可拖曳、輕點播放彈動、長按回到設定。此版換回完整解析度素材；安裝新版 APK 即可更新。
 
-手機與桌面共用相同待機／點擊來源；後續修改會同步更新兩版。`scripts/update-all.py --sdk <sdk>` 會產生桌面影片、Android 動畫及 APK，`scripts/check-platform-sync.py` 檢查兩版與安裝檔是否一致。GitHub Actions 會在相關變更時編譯並提供測試 APK。
+## 桌面啟動
 
-## 啟動
+1. 安裝 [Node.js](https://nodejs.org/) 22.12 以上，建議 24 LTS。
+2. GitHub 的 Code → Download ZIP，完整解壓縮。
+3. Windows 雙擊 `Start-Windows.cmd`；macOS / Linux 執行 `sh start.sh`。
+4. 首次透過 npm 下載 Electron 43.3.0，請保持網路連線並等候。
 
-1. 安裝 Node.js 22.12 以上版本，建議 24 LTS。
-2. 從 GitHub 的 Code → Download ZIP 下載本倉庫並完整解壓縮。
-3. Windows 雙擊 `Start-Windows.cmd`；macOS / Linux 在此資料夾執行 `sh start.sh`。
-4. 首次啟動會透過 npm 下載 `dsh-pet@0.3.7`，引擎可能另外下載 Electron；保持網路連線並等候。
+新版桌面播放器直接顯示無損動畫 WebP，支援透明懸浮、拖曳、點擊彈動。右鍵可調整大小、保持最上層、回到右下角及結束；位置保存在本機 `data/desktop/`。這是需要 Node.js 的原始碼啟動版，尚未封裝為獨立 EXE。
 
-啟動器使用資料夾內的 `data/` 作為私人設定，不修改既有 DSH 設定。保留終端機視窗，Ctrl+C 結束。這不是免安裝 EXE。
+`node launch.mjs --check` 或 `--prepare-only` 可離線核對素材是否齊全。`node install.mjs` 也會轉到這個檢查流程；不再把舊版低解析影片安裝成預設素材。
 
-- `node launch.mjs --check`：執行引擎體檢。
-- `node launch.mjs --prepare-only`：離線準備素材與私人設定。
-- `node install.mjs`：安裝到現有 DSH_HOME（未設定環境變數時使用使用者目錄 `.dsh`）。
-- `node install.mjs "D:/MyDSHData"`：指定既有 DSH_HOME。
+原先參考 [PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet) 的 WebM 素材格式。為避免播放器要求的影片格式再次造成 RGBA 細節損失，本版改用本專案的 Electron 圖像播放器。原版 dsh-pet 的甩拋、物理及工作事件整合未移植。
 
-安裝器只更新 Anzuki 目錄，原本同名素材或設定有變更時會先備份；重啟 DSH 後生效。
+## 動作與預覽
 
-## 目前動作
-
-| 用途 | 播放檔案 | 來源 |
+| 用途 | 無損播放檔案 | 原片段 |
 | --- | --- | --- |
-| 一般待機 | `idle-loop-long.webm` | loop_long 全段，94 幀／24 fps |
-| 點擊回應一 | `click-bounce-1.webm` | 10 秒影片的 0.25–2.50 秒 |
-| 點擊回應二 | `click-bounce-2.webm` | 10 秒影片的 3.00–5.333 秒 |
-| 備用待機 | `idle-loop-short.webm` | loop_short 全段，60 幀／24 fps |
+| 一般待機 | `idle-loop-long.webp` | loop_long 全段，94 幀 |
+| 點擊一 | `click-bounce-1.webp` | 10 秒影片第 6–59 幀，54 幀 |
+| 點擊二 | `click-bounce-2.webp` | 10 秒影片第 72–127 幀，56 幀 |
+| 備用待機 | `idle-loop-short.webp` | loop_short 全段，60 幀 |
 
-預設隨機動畫池只有長循環待機。短循環保留備用；兩段點擊動畫各自播放後回到待機。沒有混用舊版姿勢圖動畫，沒有新增原片不存在的跳躍。原片腳底幾乎固定，點擊片段主要呈現表情、身體與衣髮的原地彈動。
+來源均為 24 fps，未補幀。WebP 使用毫秒時間戳呈現幀間距。原片腳底幾乎固定，點擊片段為表情、身體與衣髮的原地彈動。
 
-目前未設定自動行走、轉向或拖曳專屬影片；拖動、甩拋等互動仍由 dsh-pet 引擎提供。餘額、背景碎碎念與工作事件動畫預設關閉。
+下載後以 Chrome、Edge 或 Firefox 開啟 `preview.html`。可切換背景、點擊角色或使用「原尺寸檢視」檢查細節。桌寵視窗的顯示尺寸可調，素材檔始終保留 720×1280。
 
-## 素材與預覽
-
-- [原始素材及處理說明](materials/animation-v1/README.md)
 - [未修改的三段原始 MP4](materials/animation-v1/original/)
-- [720×1280 高解析透明 WebM](materials/animation-v1/transparent-masters/)
-- [640×360 桌寵播放檔案](pet/anzuki-animation/)
-- [Anzuki 設定檔](pet/anzuki-config.json)
-- [處理參數與精確擷取幀數](materials/animation-v1/manifest.json)
+- [新版無損母版與處理說明](materials/animation-v2-lossless/README.md)
+- [逐幀像素雜湊及來源紀錄](materials/animation-v2-lossless/manifest.json)
+- [桌面與 Android 共用動作索引](pet/animations.json)
 - [驗證紀錄](VALIDATION.md)
 
-下載後用 Chrome、Edge 或 Firefox 開啟 `preview.html`，可比較四段處理後動畫；點擊角色可觸發彈動，播完回到長待機。Safari 的 WebM alpha 支援有限，未提供 HEVC alpha MOV。
+`animation-v1` 的透明 WebM 和 `pet/anzuki-animation/*.webm` 保留為舊版紀錄，具有有損壓縮或降解析度，已停用。新版播放器及 APK 只使用 `.webp`。
 
-## 重製
+## 同步重製
 
-安裝 Python 3、numpy、scipy，以及包含 libvpx-vp9 的 FFmpeg，執行：
+需要 Python 3、numpy、Pillow、支援 libwebp_anim 的 FFmpeg；建置 Android 另需 Java JDK 17+、Android SDK platform 35 和 build-tools 35.0.0。
 
 ```sh
-python scripts/process-videos.py
+python scripts/update-all.py --sdk /path/to/android-sdk
+python scripts/check-platform-sync.py
 ```
 
-程式讀取倉庫內 `materials/animation-v1/original/` 的三個檔案，重新產生透明母版、桌寵播放檔案與 manifest。使用固定比例及偏移統一角色位置，不會逐幀把動作鎖回腳底，原始的身體起伏會保留。
+流程從原片重新去背，以無損 RGBA 編碼，逐幀比對解碼像素，再直接複製同一份素材到 Android 並重建 APK。沒有縮圖、沒有重新編碼手機素材。GitHub Actions 會檢查同步並建置測試 APK。
 
-人物大小可在 `pet/anzuki-config.json` 的 `pets[0].size` 修改。圖片參考版本另見 `materials/argon-reference-v2/`、`v3/`、`v5/`。
+角色參考版本另見 `materials/argon-reference-v2/`、`v3/`、`v5/`。美術優先與兩平台同步要求已記在 [AGENTS.md](AGENTS.md)。
 
 ## 授權與致謝
 
-參考角色與使用者提供的原始動畫權利仍屬原權利人。本倉庫輔助程式採 MIT；dsh-pet 引擎由 npm 另行下載，依原專案授權使用。
-
-展示或分發此衍生桌寵時，請保留原作者連結：https://github.com/PC2005-cloud/dsh-pet
+角色與原始動畫權利仍屬原權利人；本倉庫輔助程式採 MIT。原始桌寵構想與格式參考：[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)。Electron 由 npm 另行下載，依其授權使用。
