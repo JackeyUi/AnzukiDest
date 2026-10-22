@@ -10,7 +10,20 @@ async function walk(folder,prefix=''){let files=[];for(const entry of await fs.r
  for(const rel of await walk(current)){
   const bytes=await fs.readFile(path.join(current,rel)),sha=hash(bytes);let oldHash=null;
   if(before.has(rel))oldHash=hash(await fs.readFile(path.join(baseline,rel)));if(oldHash===sha)continue;
-  if(rel==='Anzuki.exe'&&oldHash){const previous=await fs.readFile(path.join(baseline,rel));const a=fingerprint(bytes),b=fingerprint(previous);if(JSON.stringify(a)===JSON.stringify(b)){await fs.copyFile(path.join(baseline,rel),path.join(current,rel));console.log('Reused previous EXE: executable code/data and all icon/version/manifest resources are identical; only PE packaging differs');continue;}console.log('PE_DIFFERENCE '+JSON.stringify({code:a.sections.map((s,i)=>({name:s.name,equal:JSON.stringify(s)===JSON.stringify(b.sections[i])})),resourcesEqual:JSON.stringify(a.resources)===JSON.stringify(b.resources)}));}
+  if(rel==='Anzuki.exe'&&oldHash){
+   const previous=await fs.readFile(path.join(baseline,rel));let a=fingerprint(bytes),b=fingerprint(previous),same=JSON.stringify(a)===JSON.stringify(b);
+   if(!same){
+    const {getCurrentFuseWire,FuseV1Options}=require(path.join(root,'.local/windows-tools/node_modules/@electron/fuses'));
+    const oldFuses=await getCurrentFuseWire(path.join(baseline,rel)),newFuses=await getCurrentFuseWire(path.join(current,rel));
+    // Read only. Never flip or disable a security fuse. Reuse is allowed only when
+    // embedded ASAR validation was ALREADY disabled and the entire fuse wire is unchanged.
+    if(JSON.stringify(oldFuses)===JSON.stringify(newFuses)&&oldFuses[FuseV1Options.EnableEmbeddedAsarIntegrityValidation]==='0'.charCodeAt(0)){
+     a=fingerprint(bytes,{ignoreUnenforcedAsarMetadata:true});b=fingerprint(previous,{ignoreUnenforcedAsarMetadata:true});same=JSON.stringify(a)===JSON.stringify(b);
+    }
+   }
+   if(same){await fs.copyFile(path.join(baseline,rel),path.join(current,rel));console.log('Reused previous EXE: identical code/data, icons, versions, manifest and security fuse states; only unused ASAR hash/PE packaging metadata differs');continue;}
+   console.log('PE_DIFFERENCE '+JSON.stringify({code:a.sections.map((s,i)=>({name:s.name,equal:JSON.stringify(s)===JSON.stringify(b.sections[i])})),resourcesEqual:JSON.stringify(a.resources)===JSON.stringify(b.resources)}));
+  }
   // Runtime changes require explicit inclusion; normal app updates must not silently re-ship it.
   if(!rel.startsWith('resources/app.asar')&&!rel.startsWith('resources/pet/')&&!rel.startsWith('recording-guides/')&&!['asset-manifest.json','READ-ME.txt','LICENSE.Anzuki.txt'].includes(rel))throw Error('Electron runtime changed; review required before creating incremental package: '+rel);
   await fs.mkdir(path.dirname(path.join(output,rel)),{recursive:true});await fs.writeFile(path.join(output,rel),bytes);files.push({path:rel,sha256:sha,previousSha256:oldHash,bytes:bytes.length});

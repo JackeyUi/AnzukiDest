@@ -41,7 +41,7 @@ jobs:
           run-id: ${{ steps.baseline.outputs.run-id }}
       - name: Install pinned packaging and test tools
         shell: pwsh
-        run: npm install --prefix .local/windows-tools --no-save @electron/packager@18.3.6 @electron/asar@3.4.1 playwright@1.56.1
+        run: npm install --prefix .local/windows-tools --no-save @electron/packager@18.3.6 @electron/asar@3.4.1 @electron/fuses@1.8.0 playwright@1.56.1
       - name: Verify playback and voice rules
         shell: pwsh
         run: |
