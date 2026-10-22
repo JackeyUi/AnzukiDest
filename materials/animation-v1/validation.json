@@ -1,0 +1,159 @@
+{
+  "files": [
+    {
+      "file": "materials/animation-v1/transparent-masters/idle-loop-long.webm",
+      "frames": 94,
+      "duration": 3.9166666666666665,
+      "size": [
+        720,
+        1280
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "border_alpha_max": 0,
+      "midframe_bounds": [
+        57,
+        101,
+        673,
+        1169
+      ],
+      "sha256": "572cb5b4a221308b4a7343bc59765e8ca3f5a48df6f71a655bcb964bb4dc7085"
+    },
+    {
+      "file": "pet/anzuki-animation/idle-loop-long.webm",
+      "frames": 94,
+      "duration": 3.9166666666666665,
+      "size": [
+        640,
+        360
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "border_alpha_max": 1,
+      "midframe_bounds": [
+        253,
+        72,
+        386,
+        305
+      ],
+      "sha256": "e446d425cc071cdc413bc2f7da4e1b284febdd9cab528b77af57abe8f99fcbba"
+    },
+    {
+      "file": "materials/animation-v1/transparent-masters/idle-loop-short.webm",
+      "frames": 60,
+      "duration": 2.5,
+      "size": [
+        720,
+        1280
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "border_alpha_max": 0,
+      "midframe_bounds": [
+        45,
+        102,
+        681,
+        1169
+      ],
+      "sha256": "f1a3e39ec51ac81da7cc8a071329ade274f2f0dce3e4af157ea92adfab93f49d"
+    },
+    {
+      "file": "pet/anzuki-animation/idle-loop-short.webm",
+      "frames": 60,
+      "duration": 2.5,
+      "size": [
+        640,
+        360
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "border_alpha_max": 1,
+      "midframe_bounds": [
+        250,
+        72,
+        388,
+        305
+      ],
+      "sha256": "3e0892b07fe55cd414e995a745c330165213aeefba7ed8a231f62d373eed6fd7"
+    },
+    {
+      "file": "materials/animation-v1/transparent-masters/click-bounce-1.webm",
+      "frames": 54,
+      "duration": 2.25,
+      "size": [
+        720,
+        1280
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "border_alpha_max": 0,
+      "midframe_bounds": [
+        34,
+        94,
+        695,
+        1169
+      ],
+      "sha256": "4b88b9dfec2b0f09f25464f6c24bd83e0d65a2954069cece86a4e761860a1f5f"
+    },
+    {
+      "file": "pet/anzuki-animation/click-bounce-1.webm",
+      "frames": 54,
+      "duration": 2.25,
+      "size": [
+        640,
+        360
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "border_alpha_max": 1,
+      "midframe_bounds": [
+        248,
+        71,
+        391,
+        305
+      ],
+      "sha256": "0e5c3cc620cc2dd5fd1bfce7ed1a23d1b003b347dfa3e2dceda0eed57bdd3e48"
+    },
+    {
+      "file": "materials/animation-v1/transparent-masters/click-bounce-2.webm",
+      "frames": 56,
+      "duration": 2.3333333333333335,
+      "size": [
+        720,
+        1280
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "border_alpha_max": 0,
+      "midframe_bounds": [
+        64,
+        100,
+        665,
+        1169
+      ],
+      "sha256": "2c39d167fbbc375eaee3069f9da03cd1715dc1bb693f9443ea3e9b859dcd427f"
+    },
+    {
+      "file": "pet/anzuki-animation/click-bounce-2.webm",
+      "frames": 56,
+      "duration": 2.3333333333333335,
+      "size": [
+        640,
+        360
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "border_alpha_max": 1,
+      "midframe_bounds": [
+        254,
+        72,
+        385,
+        305
+      ],
+      "sha256": "acdf14e3e67af849d38aac1202c4c32a93d4b526342ef17b9521ee7c2bb82597"
+    }
+  ],
+  "loop_boundary_mad": 2.0482711791992188,
+  "adjacent_mad_median": 1.6275413036346436,
+  "adjacent_mad_max": 2.7683849334716797
+}

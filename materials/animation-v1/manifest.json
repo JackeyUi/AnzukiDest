@@ -1,0 +1,100 @@
+{
+  "fps": 24,
+  "input_size": [
+    720,
+    1280
+  ],
+  "runtime_size": [
+    640,
+    360
+  ],
+  "runtime_scale": [
+    158,
+    280
+  ],
+  "runtime_offset": [
+    241,
+    50
+  ],
+  "key": {
+    "green_excess_low": 12,
+    "green_excess_high": 85,
+    "edge_despill": true,
+    "fractional_choke": 0.35
+  },
+  "originals": [
+    {
+      "file": "gemini_generated_video_1019414a.mp4",
+      "bytes": 3944834,
+      "sha256": "1292670387ae90b41eba4042d9bad94198032044b56c805f20eb02593f4af4c2"
+    },
+    {
+      "file": "video2_loop_long.mp4",
+      "bytes": 2663687,
+      "sha256": "09b3860124403324b608619b06ea245170095f72beaacab71010da3b3775824f"
+    },
+    {
+      "file": "video2_loop_short.mp4",
+      "bytes": 1716366,
+      "sha256": "3122456bd5f4d3bd2f4be3a1ebe33b581a45bc16bc080dcd53939c58c9cb2a8b"
+    }
+  ],
+  "clips": [
+    {
+      "name": "idle-loop-long",
+      "source": "video2_loop_long.mp4",
+      "start_frame": 0,
+      "end_frame_exclusive": 94,
+      "start_seconds": 0.0,
+      "end_seconds": 3.9166666666666665,
+      "fps": 24,
+      "frames": 94,
+      "duration_seconds": 3.9166666666666665,
+      "purpose": "normal idle; user-selected loop_long",
+      "master": "transparent-masters/idle-loop-long.webm",
+      "runtime": "../../pet/anzuki-animation/idle-loop-long.webm"
+    },
+    {
+      "name": "idle-loop-short",
+      "source": "video2_loop_short.mp4",
+      "start_frame": 0,
+      "end_frame_exclusive": 60,
+      "start_seconds": 0.0,
+      "end_seconds": 2.5,
+      "fps": 24,
+      "frames": 60,
+      "duration_seconds": 2.5,
+      "purpose": "alternate idle, not in default random pool",
+      "master": "transparent-masters/idle-loop-short.webm",
+      "runtime": "../../pet/anzuki-animation/idle-loop-short.webm"
+    },
+    {
+      "name": "click-bounce-1",
+      "source": "gemini_generated_video_1019414a.mp4",
+      "start_frame": 6,
+      "end_frame_exclusive": 60,
+      "start_seconds": 0.25,
+      "end_seconds": 2.5,
+      "fps": 24,
+      "frames": 54,
+      "duration_seconds": 2.25,
+      "purpose": "first expressive in-place bounce",
+      "master": "transparent-masters/click-bounce-1.webm",
+      "runtime": "../../pet/anzuki-animation/click-bounce-1.webm"
+    },
+    {
+      "name": "click-bounce-2",
+      "source": "gemini_generated_video_1019414a.mp4",
+      "start_frame": 72,
+      "end_frame_exclusive": 128,
+      "start_seconds": 3.0,
+      "end_seconds": 5.333333333333333,
+      "fps": 24,
+      "frames": 56,
+      "duration_seconds": 2.3333333333333335,
+      "purpose": "second in-place bounce",
+      "master": "transparent-masters/click-bounce-2.webm",
+      "runtime": "../../pet/anzuki-animation/click-bounce-2.webm"
+    }
+  ]
+}

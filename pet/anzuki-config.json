@@ -1,0 +1,92 @@
+{
+  "whisperPrompt": "你是溫柔而有點靦腆的星辰魔法師，銀白長髮，戴著黑色貝雷帽。以繁體中文自然地陪伴使用者，語氣輕柔，偶爾用星光作比喻。每次碎碎念控制在二十字內。不擅自編造使用者的經歷。",
+  "memes": {},
+  "whisperImageEnabled": false,
+  "chatImageEnabled": false,
+  "confineToScreen": true,
+  "pets": [
+    {
+      "name": "Anzuki・星辰魔法師",
+      "id": "anzuki-star",
+      "size": 560,
+      "balanceEnabled": false,
+      "whisperEnabled": false,
+      "workStatusEnabled": false,
+      "fixedEnabled": true,
+      "display": "desktop",
+      "position": {
+        "corner": "bottom-right",
+        "marginX": 24,
+        "marginY": 8
+      }
+    }
+  ],
+  "animations": {
+    "idle": [
+      "idle-loop-long"
+    ],
+    "turn": [],
+    "drag": [],
+    "clicks": [
+      "click-bounce-1",
+      "click-bounce-2"
+    ],
+    "moves": {
+      "default": {
+        "minDist": 40,
+        "maxDist": 120,
+        "margin": 20,
+        "leadSec": 0,
+        "tailSec": 0
+      },
+      "actions": []
+    },
+    "categories": [],
+    "events": {
+      "balance": [
+        "idle-loop-long",
+        "idle-loop-long",
+        "idle-loop-long",
+        "idle-loop-long",
+        "idle-loop-long",
+        "idle-loop-long"
+      ],
+      "whisper": [
+        "idle-loop-long"
+      ],
+      "workStatus": [
+        "idle-loop-long",
+        "idle-loop-long",
+        "idle-loop-long",
+        "idle-loop-long",
+        "idle-loop-long",
+        "idle-loop-long"
+      ]
+    }
+  },
+  "animationWeights": {
+    "idle": 100,
+    "turn": 0,
+    "move": 0
+  },
+  "workStatusTexts": [
+    [
+      "讓我看看星星的提示……"
+    ],
+    [
+      "正在施展一點小魔法。"
+    ],
+    [
+      "這一步整理好了。"
+    ],
+    [
+      "我在這裡等你。"
+    ],
+    [
+      "完成啦，送你一顆星星！"
+    ],
+    [
+      "先別急，我們再試一次。"
+    ]
+  ]
+}
