@@ -24,7 +24,7 @@ Android 9 以上的原生 App，內建素材、離線可用，不需要 Node.js�
 
 ## 音聲與錄音文本
 
-[75 句錄音文本（日文／繁中）](materials/voice-v1/RECORDING-SCRIPT.md) · [日本語版](materials/voice-v1/RECORDING-SCRIPT.ja.md) · [日文純文字台詞](materials/voice-v1/RECORDING-LINES.ja.txt)。你可先錄製常用句，之後逐步補齊；這版尚未附正式角色音檔。
+[下載75句錄音稿ZIP](materials/voice-v3/Anzuki-Voice-Scripts-75.zip) · [75 句錄音文本（日文／繁中）](materials/voice-v1/RECORDING-SCRIPT.md) · [日本語版](materials/voice-v1/RECORDING-SCRIPT.ja.md) · [日文純文字台詞](materials/voice-v1/RECORDING-LINES.ja.txt)。你可先錄製常用句，之後逐步補齊；這版尚未附正式角色音檔。
 
 桌面右鍵 →「動畫／音聲設定…」，Android 設定 →「音聲設定與試聽」。可為啟動招呼、點擊回應及待機閒聊匯入多段裝置能解碼的音檔，每檔最多 50 MB、每類最多 12 段，並可試聽、移除、調音量、靜音。匯入保留原始位元，不重新壓縮；錄音不跟隨動畫倍速。
 
