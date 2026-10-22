@@ -4,6 +4,14 @@
 
 桌寵引擎與格式來自原作者：**[PC2005-cloud/dsh-pet](https://github.com/PC2005-cloud/dsh-pet)**。
 
+## Android 手機版
+
+[下載 Android APK](android/releases/Anzuki-Android.apk) · [安裝與使用說明](android/README.md)
+
+Android 9 以上可用的原生懸浮桌寵，可顯示在其他 App 上方。安裝後授予「顯示在其他應用程式上層」權限，便可拖曳角色、點擊播放彈動、長按回到設定。手機版內建素材，離線可用，不需要 Node.js。
+
+手機與桌面共用相同待機／點擊來源；後續修改會同步更新兩版。`scripts/update-all.py --sdk <sdk>` 會產生桌面影片、Android 動畫及 APK，`scripts/check-platform-sync.py` 檢查兩版與安裝檔是否一致。GitHub Actions 會在相關變更時編譯並提供測試 APK。
+
 ## 啟動
 
 1. 安裝 Node.js 22.12 以上版本，建議 24 LTS。

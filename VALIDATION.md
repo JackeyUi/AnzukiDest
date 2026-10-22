@@ -1,5 +1,14 @@
 # 影片素材驗證紀錄
 
+## Android 版本
+
+- Android SDK 35 原生 Java 編譯、D8 dex 轉換、資源連結及 APK 封裝成功。
+- APK 已以工作區保留的開發金鑰簽章，Android apksigner 驗證通過；最低 API 28（Android 9），目標 API 35。
+- 三段透明動畫 WebP 的幀數為 94、54、56；逐幀檢查透明通道，並核對來源 SHA-256 與桌面影片一致。
+- `scripts/check-platform-sync.py` 核對動作設定、素材雜湊、APK 雜湊及 APK 內的實際動畫檔案。
+- 沒有網路、相機、麥克風、聯絡人或儲存空間權限；前景服務有持續通知及停止操作。
+- 尚未在 Android 實機或模擬器完成拖曳、點擊及跨 App 顯示的互動測試。
+
 ## 已完成
 
 - 三段原始 MP4 以逐位元複製保存，SHA-256 記於 `materials/animation-v1/manifest.json`。

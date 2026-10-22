@@ -111,6 +111,9 @@ def main():
                              fractional_choke=.35),
                     originals=inputs, clips=entries)
     (MATERIALS / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    # Android is derived from the exact desktop configuration and playback clips.
+    import sys
+    subprocess.run([sys.executable, ROOT/'scripts/sync-android-assets.py'], check=True)
 
 if __name__ == '__main__':
     main()

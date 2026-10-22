@@ -1,3 +1,9 @@
 data/
 node_modules/
 *.zip
+.local/
+android/**/*.keystore
+android/**/*.jks
+android/releases/*.idsig
+__pycache__/
+*.pyc
