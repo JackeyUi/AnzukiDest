@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('Anzuki',{
  config:()=>ipcRenderer.invoke('pet:config'),
  importVoice:(event,lineId)=>ipcRenderer.invoke('pet:voice-import',event,lineId),
  setVoicePreferences:p=>ipcRenderer.send('pet:voice-preferences',p),
+ setVoiceSchedule:(id,value)=>ipcRenderer.invoke('pet:voice-schedule',id,value),
  removeVoice:id=>ipcRenderer.send('pet:voice-remove',id),
  playVoice:p=>ipcRenderer.send('pet:voice-play',p),stopVoice:()=>ipcRenderer.send('pet:voice-stop'),
  reportVoice:message=>ipcRenderer.send('pet:voice-status',message),

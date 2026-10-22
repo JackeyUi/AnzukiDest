@@ -1,8 +1,191 @@
 {
-  "schema": 1,
+  "schema": 2,
   "clock": "device-local",
   "weekdayConvention": "ISO Monday=1, Sunday=7",
   "lines": [
+    {
+      "id": "greeting-morning",
+      "event": "greeting",
+      "label": "早晨招呼",
+      "days": [],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 10,
+      "text": "早安呀。星星先去休息了，換我來陪你。"
+    },
+    {
+      "id": "click-morning",
+      "event": "click",
+      "label": "早晨點擊",
+      "days": [],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 10,
+      "text": "嗯？早安，我有聽見你喔。"
+    },
+    {
+      "id": "greeting-noon",
+      "event": "greeting",
+      "label": "午間招呼",
+      "days": [],
+      "hours": {
+        "start": 11,
+        "end": 14
+      },
+      "priority": 10,
+      "text": "午安。忙到現在，記得留一點時間吃飯喔。"
+    },
+    {
+      "id": "click-noon",
+      "event": "click",
+      "label": "午間點擊",
+      "days": [],
+      "hours": {
+        "start": 11,
+        "end": 14
+      },
+      "priority": 10,
+      "text": "我在呀。午餐有好好吃嗎？"
+    },
+    {
+      "id": "greeting-afternoon",
+      "event": "greeting",
+      "label": "午後招呼",
+      "days": [],
+      "hours": {
+        "start": 14,
+        "end": 18
+      },
+      "priority": 10,
+      "text": "下午好呀。要不要稍微休息，再繼續呢？"
+    },
+    {
+      "id": "click-afternoon",
+      "event": "click",
+      "label": "午後點擊",
+      "days": [],
+      "hours": {
+        "start": 14,
+        "end": 18
+      },
+      "priority": 10,
+      "text": "叫我嗎？來，休息一下下。"
+    },
+    {
+      "id": "greeting-evening",
+      "event": "greeting",
+      "label": "晚間招呼",
+      "days": [],
+      "hours": {
+        "start": 18,
+        "end": 22
+      },
+      "priority": 10,
+      "text": "晚上好。今天過得怎麼樣？我在這裡聽你說。"
+    },
+    {
+      "id": "click-evening",
+      "event": "click",
+      "label": "晚間點擊",
+      "days": [],
+      "hours": {
+        "start": 18,
+        "end": 22
+      },
+      "priority": 10,
+      "text": "嗯，我在這裡。今晚也陪著你。"
+    },
+    {
+      "id": "greeting-night",
+      "event": "greeting",
+      "label": "深夜招呼",
+      "days": [],
+      "hours": {
+        "start": 22,
+        "end": 5
+      },
+      "priority": 10,
+      "text": "夜深了，我會小聲一點。累了，就讓自己休息吧。"
+    },
+    {
+      "id": "click-night",
+      "event": "click",
+      "label": "深夜點擊",
+      "days": [],
+      "hours": {
+        "start": 22,
+        "end": 5
+      },
+      "priority": 10,
+      "text": "噓……我在喔。這麼晚了，輕輕叫我就好。"
+    },
+    {
+      "id": "greeting-weekday-morning",
+      "event": "greeting",
+      "label": "平日早安",
+      "days": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "早安。平日也讓我陪你，慢慢開始今天吧。"
+    },
+    {
+      "id": "greeting-holiday-morning",
+      "event": "greeting",
+      "label": "假日早安",
+      "days": [
+        6,
+        7
+      ],
+      "hours": {
+        "start": 5,
+        "end": 11
+      },
+      "priority": 20,
+      "text": "早安。假日想忙一點，或慢慢過，都可以喔。"
+    },
+    {
+      "id": "idle-weekday",
+      "event": "idle",
+      "label": "平日閒聊",
+      "days": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "忙碌的平日，也別忘了喝口水、休息一下。"
+    },
+    {
+      "id": "idle-holiday",
+      "event": "idle",
+      "label": "假日閒聊",
+      "days": [
+        6,
+        7
+      ],
+      "hours": null,
+      "priority": 10,
+      "text": "假日就照自己的步調來吧。我會陪著你。"
+    }
+  ],
+  "holidayDefinition": "Saturday and Sunday; local public holidays are not inferred",
+  "legacyLines": [
     {
       "id": "greeting-mon-morning",
       "event": "greeting",

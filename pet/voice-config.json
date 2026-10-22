@@ -1,14 +1,107 @@
 {
-  "schema": 1,
+  "schema": 2,
   "events": [
-    {"id": "greeting", "label": "啟動招呼"},
-    {"id": "click", "label": "點擊回應"},
-    {"id": "idle", "label": "待機閒聊"}
+    {
+      "id": "greeting",
+      "label": "啟動招呼"
+    },
+    {
+      "id": "click",
+      "label": "點擊回應"
+    },
+    {
+      "id": "idle",
+      "label": "待機閒聊"
+    }
   ],
-  "defaults": {"volume": 70, "muted": false, "idleEnabled": false, "idleMinutes": 3},
-  "idleMinutes": {"min": 1, "max": 10, "step": 1},
+  "defaults": {
+    "volume": 70,
+    "muted": false,
+    "idleEnabled": false,
+    "idleMinutes": 3
+  },
+  "idleMinutes": {
+    "min": 1,
+    "max": 10,
+    "step": 1
+  },
   "clickCooldownMs": 2500,
   "maxClipsPerEvent": 12,
   "maxFileBytes": 52428800,
-  "extensions": ["wav", "mp3", "ogg", "m4a", "flac", "aac"]
+  "extensions": [
+    "wav",
+    "mp3",
+    "ogg",
+    "m4a",
+    "flac",
+    "aac",
+    "mp4",
+    "webm",
+    "mkv",
+    "mov",
+    "opus",
+    "oga",
+    "weba"
+  ],
+  "dayTypes": [
+    {
+      "id": "all",
+      "label": "每天"
+    },
+    {
+      "id": "weekday",
+      "label": "平日"
+    },
+    {
+      "id": "holiday",
+      "label": "假日"
+    }
+  ],
+  "periods": [
+    {
+      "id": "all",
+      "label": "全天",
+      "hours": null
+    },
+    {
+      "id": "morning",
+      "label": "早晨 05–11",
+      "hours": {
+        "start": 5,
+        "end": 11
+      }
+    },
+    {
+      "id": "noon",
+      "label": "午間 11–14",
+      "hours": {
+        "start": 11,
+        "end": 14
+      }
+    },
+    {
+      "id": "afternoon",
+      "label": "午後 14–18",
+      "hours": {
+        "start": 14,
+        "end": 18
+      }
+    },
+    {
+      "id": "evening",
+      "label": "晚間 18–22",
+      "hours": {
+        "start": 18,
+        "end": 22
+      }
+    },
+    {
+      "id": "night",
+      "label": "深夜 22–05",
+      "hours": {
+        "start": 22,
+        "end": 5
+      }
+    }
+  ]
 }

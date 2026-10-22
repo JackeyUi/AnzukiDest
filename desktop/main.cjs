@@ -25,7 +25,7 @@ function updatePreferences(p){
 function broadcastVoice(){for(const w of [win,settingsWindow])if(w&&!w.isDestroyed())w.webContents.send('pet:voice-changed',voice.snapshot());}
 function showSettings(){
  if(settingsWindow&&!settingsWindow.isDestroyed()){settingsWindow.show();settingsWindow.focus();return;}
- settingsWindow=new BrowserWindow({width:480,height:Math.min(760,screen.getPrimaryDisplay().workArea.height-40),parent:win,resizable:true,title:'Anzuki 動畫與音聲設定',autoHideMenuBar:true,
+ settingsWindow=new BrowserWindow({width:640,height:Math.min(850,screen.getPrimaryDisplay().workArea.height-40),parent:win,resizable:true,title:'Anzuki 動畫與音聲設定',autoHideMenuBar:true,
   backgroundColor:'#10182a',webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
  settingsWindow.webContents.setWindowOpenHandler(()=>({action:'deny'}));settingsWindow.webContents.on('will-navigate',e=>e.preventDefault());
  settingsWindow.loadFile(path.join(__dirname,'settings.html'));settingsWindow.on('closed',()=>{settingsWindow=null;});
@@ -60,10 +60,14 @@ else app.whenReady().then(()=>{
  ipcMain.handle('pet:config',ev=>{if(!trusted(ev))return null;return {...index,settings:preferences(),voice:voice.snapshot(),assetRoot:pathToFileURL(path.join(ROOT,'pet','anzuki-animation')).href+'/'};});
  ipcMain.handle('pet:voice-import',async(ev,event,lineId)=>{
   if(!trusted(ev)||!voice.policy.events.some(e=>e.id===event))throw new Error('Unknown voice category');
-  const chosen=await dialog.showOpenDialog(settingsWindow||win,{title:'匯入角色音聲',properties:['openFile','multiSelections'],filters:[{name:'音訊',extensions:voice.policy.extensions}]});
-  if(chosen.canceled)return [];const errors=await voice.import(event,chosen.filePaths,lineId);broadcastVoice();return errors;
+  const chosen=await dialog.showOpenDialog(settingsWindow||win,{title:'匯入角色音聲',properties:['openFile','multiSelections'],filters:[{name:'所有檔案',extensions:['*']},{name:'音訊與影片',extensions:voice.policy.extensions}]});
+  if(chosen.canceled)return [];const errors=await voice.import(event,chosen.filePaths,lineId,source=>win.webContents.executeJavaScript(`new Promise(resolve=>{
+   const audio=new Audio();let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timer);audio.onloadeddata=null;audio.onerror=null;audio.pause();audio.removeAttribute('src');audio.load();resolve(ok);};
+   const timer=setTimeout(()=>finish(false),12000);audio.onloadeddata=()=>{try{finish(typeof audio.captureStream==='function'?audio.captureStream().getAudioTracks().length>0:audio.webkitAudioDecodedByteCount>0);}catch{finish(false);}};audio.onerror=()=>finish(false);audio.preload='auto';audio.src=${JSON.stringify(pathToFileURL(source).href)};audio.load();
+  })`));broadcastVoice();return errors;
  });
  ipcMain.on('pet:voice-preferences',(ev,p)=>{if(trusted(ev)){voice.update(p);broadcastVoice();}});
+ ipcMain.handle('pet:voice-schedule',(ev,id,value)=>{if(!trusted(ev))return;voice.setSchedule(id,value);broadcastVoice();});
  ipcMain.on('pet:voice-remove',(ev,id)=>{if(trusted(ev)&&typeof id==='string'){voice.remove(id);broadcastVoice();}});
  ipcMain.on('pet:voice-play',(ev,p)=>{if(trusted(ev)&&p&&voice.policy.events.some(e=>e.id===p.event))win.webContents.send('pet:voice-play',{event:p.event,id:typeof p.id==='string'?p.id:undefined});});
  ipcMain.on('pet:voice-stop',ev=>{if(trusted(ev))win.webContents.send('pet:voice-stop');});

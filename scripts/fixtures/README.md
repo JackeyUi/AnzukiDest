@@ -1,0 +1,1 @@
+These two 32×32 WebM clips are synthetic decoder test fixtures (flat blue frames, with/without a generated 440 Hz tone). They contain no character art or personal recordings. Base64 keeps API publication text-only. They verify that native Windows imports video audio and rejects video without an audio track.

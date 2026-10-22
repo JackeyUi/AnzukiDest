@@ -1,7 +1,7 @@
 {
   "apkBytes": 89498569,
-  "apkSha256": "f3ab3c3f818f7fc72d972174e275cd6280aff5188aac119845ad66453e5a24df",
-  "literalSha256": "bdc347cd87ce42c05be46013cc39f9e4a5fe8cba03dec2e6c3e8961ff7e3136a",
+  "apkSha256": "27d46d79682e09f1766a423320e7060469d3f4d85f1a502de602982585c8d1a5",
+  "literalSha256": "553c9cb117a5642829f7297b33a05fcd1137128f15a91394f7c2ff524512a1c0",
   "parts": [
     {
       "kind": "literal",

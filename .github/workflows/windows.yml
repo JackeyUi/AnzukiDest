@@ -81,6 +81,7 @@ jobs:
           name: Anzuki-Windows-validation
           path: |
             .local/windows-release/windows-smoke.png
+            .local/windows-release/media-settings.png
             .local/windows-release/playback-metrics*.json
           if-no-files-found: ignore
           retention-days: 30
