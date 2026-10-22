@@ -60,10 +60,10 @@ else app.whenReady().then(()=>{
  ipcMain.handle('pet:config',ev=>{if(!trusted(ev))return null;return {...index,settings:preferences(),voice:voice.snapshot(),assetRoot:pathToFileURL(path.join(ROOT,'pet','anzuki-animation')).href+'/'};});
  ipcMain.handle('pet:voice-import',async(ev,event,lineId)=>{
   if(!trusted(ev)||!voice.policy.events.some(e=>e.id===event))throw new Error('Unknown voice category');
-  const chosen=await dialog.showOpenDialog(settingsWindow||win,{title:'匯入角色音聲',properties:['openFile','multiSelections'],filters:[{name:'所有檔案',extensions:['*']},{name:'音訊與影片',extensions:voice.policy.extensions}]});
+  const chosen=await dialog.showOpenDialog(settingsWindow||win,{title:'匯入角色音聲',properties:['openFile','multiSelections'],filters:[{name:'音檔',extensions:voice.policy.extensions}]});
   if(chosen.canceled)return [];const errors=await voice.import(event,chosen.filePaths,lineId,source=>win.webContents.executeJavaScript(`new Promise(resolve=>{
-   const audio=new Audio();let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timer);audio.onloadeddata=null;audio.onerror=null;audio.pause();audio.removeAttribute('src');audio.load();resolve(ok);};
-   const timer=setTimeout(()=>finish(false),12000);audio.onloadeddata=()=>{try{finish(typeof audio.captureStream==='function'?audio.captureStream().getAudioTracks().length>0:audio.webkitAudioDecodedByteCount>0);}catch{finish(false);}};audio.onerror=()=>finish(false);audio.preload='auto';audio.src=${JSON.stringify(pathToFileURL(source).href)};audio.load();
+   const audio=document.createElement('video');let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timer);audio.onloadeddata=null;audio.onerror=null;audio.pause();audio.removeAttribute('src');audio.load();resolve(ok);};
+   const timer=setTimeout(()=>finish(false),12000);audio.onloadeddata=()=>{try{finish(audio.videoWidth===0&&audio.videoHeight===0&&(typeof audio.captureStream==='function'?audio.captureStream().getAudioTracks().length>0:audio.webkitAudioDecodedByteCount>0));}catch{finish(false);}};audio.onerror=()=>finish(false);audio.preload='auto';audio.src=${JSON.stringify(pathToFileURL(source).href)};audio.load();
   })`));broadcastVoice();return errors;
  });
  ipcMain.on('pet:voice-preferences',(ev,p)=>{if(trusted(ev)){voice.update(p);broadcastVoice();}});

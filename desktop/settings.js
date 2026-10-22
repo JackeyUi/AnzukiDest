@@ -20,15 +20,15 @@
    const group=document.createElement('section');group.className='voice-group';const title=document.createElement('h3');title.textContent=event.label;group.append(title);
    const hint=document.createElement('p');hint.textContent='選擇播放條件，再加入你的檔案。檔名自由，不必對應預設台詞。';group.append(hint);
    const fields=scheduleFields(group,p.policy,choices.get(event.id)||{dayType:'all',period:'all'},event.label+' 新檔案');fields.onChange(()=>choices.set(event.id,fields.value()));
-   const add=document.createElement('button');add.textContent='＋ 加入檔案';add.className='import-button';add.dataset.event=event.id;
-   add.onclick=async()=>{add.disabled=true;report('請選擇檔案；匯入時會檢查是否能播放音訊。');try{const errors=await api.importVoice(event.id,fields.value());report(errors.length?errors.join('；'):'檔案清單已更新');}catch{report('匯入失敗，請確認檔案仍可讀取。');}finally{add.disabled=false;}};group.append(add);
-   if(!p.clips[event.id].length){const empty=document.createElement('p');empty.className='empty';empty.textContent='尚無檔案。可一次選取多個錄音或影片。';group.append(empty);}
+   const add=document.createElement('button');add.textContent='＋ 加入音檔';add.className='import-button';add.dataset.event=event.id;
+   add.onclick=async()=>{add.disabled=true;report('請選擇音檔；不接受影片。');try{const errors=await api.importVoice(event.id,fields.value());report(errors.length?errors.join('；'):'檔案清單已更新');}catch{report('匯入失敗，請確認檔案仍可讀取。');}finally{add.disabled=false;}};group.append(add);
+   if(!p.clips[event.id].length){const empty=document.createElement('p');empty.className='empty';empty.textContent='尚無檔案。可一次選取多個音檔，檔名自由。';group.append(empty);}
    for(const clip of p.clips[event.id]){
     const row=document.createElement('article');row.className='voice-row';const name=document.createElement('strong');name.textContent=clip.name;row.append(name);
     if(!clip.schedule){const legacy=document.createElement('p');legacy.textContent='保留舊版播放條件；按「套用條件」後改用下方設定。';row.append(legacy);}
     const schedule=scheduleFields(row,p.policy,clip.schedule||{dayType:'all',period:'all'},clip.name);
     const buttons=document.createElement('div');buttons.className='clip-actions';const save=document.createElement('button');save.textContent='套用條件';save.onclick=async()=>{try{await api.setVoiceSchedule(clip.id,schedule.value());report('已儲存播放條件');}catch{report('條件儲存失敗');}};
-    const test=document.createElement('button');test.textContent='播放';test.onclick=()=>api.playVoice({event:event.id,id:clip.id});
+    const test=document.createElement('button');test.textContent=clip.unsupported?'僅接受音檔':'播放';test.disabled=!!clip.unsupported;test.onclick=()=>api.playVoice({event:event.id,id:clip.id});
     const remove=document.createElement('button');remove.textContent='移除';remove.onclick=()=>api.removeVoice(clip.id);buttons.append(test,save,remove);row.append(buttons);group.append(row);
    }groups.append(group);
   }

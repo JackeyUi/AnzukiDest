@@ -36,21 +36,29 @@ final class VoiceStore {
         for(int i=0;i<periods.length();i++)if(period.equals(periods.getJSONObject(i).getString("id")))periodOK=true;if(!dayOK||!periodOK)throw new IOException("無效的播放條件");return new JSONObject().put("dayType",day).put("period",period);
     }
     void setSchedule(String id,JSONObject value) throws Exception {JSONObject selected=schedule(value),all=clips();Iterator<String> keys=all.keys();while(keys.hasNext()){JSONArray list=all.getJSONArray(keys.next());for(int i=0;i<list.length();i++){JSONObject clip=list.getJSONObject(i);if(id.equals(clip.getString("id"))){clip.put("schedule",selected).put("lineId","generic");prefs.edit().putString("clips",all.toString()).apply();return;}}}}
-    private boolean playable(File file){MediaExtractor extractor=new MediaExtractor();try{extractor.setDataSource(file.getAbsolutePath());MediaCodecList codecs=new MediaCodecList(MediaCodecList.REGULAR_CODECS);for(int i=0;i<extractor.getTrackCount();i++){MediaFormat format=extractor.getTrackFormat(i);String mime=format.getString(MediaFormat.KEY_MIME);if(mime!=null&&mime.startsWith("audio/")&&codecs.findDecoderForFormat(format)!=null)return true;}return false;}catch(Exception e){return false;}finally{extractor.release();}}
+    boolean acceptsFilename(String name){
+        int dot=name==null?-1:name.lastIndexOf('.');if(dot<0)return true;String ext=name.substring(dot+1).toLowerCase(Locale.ROOT);JSONArray extensions=policy.optJSONArray("extensions");for(int i=0;extensions!=null&&i<extensions.length();i++)if(ext.equals(extensions.optString(i)))return true;return false;
+    }
+    private boolean playable(File file){MediaExtractor extractor=new MediaExtractor();try{
+        extractor.setDataSource(file.getAbsolutePath());MediaCodecList codecs=new MediaCodecList(MediaCodecList.REGULAR_CODECS);boolean audio=false;
+        for(int i=0;i<extractor.getTrackCount();i++){MediaFormat format=extractor.getTrackFormat(i);String mime=format.getString(MediaFormat.KEY_MIME);if(mime!=null&&mime.startsWith("video/"))return false;if(mime!=null&&mime.startsWith("audio/")&&codecs.findDecoderForFormat(format)!=null)audio=true;}return audio;
+    }catch(Exception e){return false;}finally{extractor.release();}}
+
 
     File file(JSONObject clip) throws Exception {String name=clip.getString("file");if(!name.matches("[a-f0-9-]+\\.[a-z0-9]+"))throw new IOException("Invalid audio file");return new File(folder,name);}
     String importFile(String event,JSONObject selection,Uri uri) throws Exception {
         JSONArray events=policy.getJSONArray("events");boolean known=false;for(int i=0;i<events.length();i++)if(event.equals(events.getJSONObject(i).getString("id")))known=true;
-        if(!known)throw new IOException("未知音聲分類");JSONArray list=clips(event);if(list.length()>=policy.getInt("maxClipsPerEvent"))throw new IOException("每類最多 12 段媒體檔");
+        if(!known)throw new IOException("未知音聲分類");JSONArray list=clips(event);if(list.length()>=policy.getInt("maxClipsPerEvent"))throw new IOException("每類最多 12 段音檔");
         String name="audio";try(Cursor cursor=context.getContentResolver().query(uri,new String[]{OpenableColumns.DISPLAY_NAME},null,null,null)){if(cursor!=null&&cursor.moveToFirst())name=cursor.getString(0);}
         if(name==null||name.isEmpty())name="media";int dot=name.lastIndexOf('.');String suffix=dot<0?"":name.substring(dot+1).toLowerCase(Locale.ROOT),ext=suffix.matches("[a-z0-9]{1,12}")?suffix:"bin";
+        if(!acceptsFilename(name))throw new IOException("僅接受音檔，不接受影片或其他檔案");
         JSONObject selected=schedule(selection);
         String id=UUID.randomUUID().toString();File target=new File(folder,id+"."+ext);long size=0;
         try(InputStream in=context.getContentResolver().openInputStream(uri);OutputStream out=new FileOutputStream(target)){
-            if(in==null)throw new IOException("讀取失敗");byte[] b=new byte[65536];int n;while((n=in.read(b))!=-1){size+=n;if(size>policy.getLong("maxFileBytes"))throw new IOException("單一媒體檔最多 50 MB");out.write(b,0,n);}
-            if(size==0)throw new IOException("媒體檔是空的");
+            if(in==null)throw new IOException("讀取失敗");byte[] b=new byte[65536];int n;while((n=in.read(b))!=-1){size+=n;if(size>policy.getLong("maxFileBytes"))throw new IOException("單一音檔最多 50 MB");out.write(b,0,n);}
+            if(size==0)throw new IOException("音檔是空的");
         }catch(Exception e){target.delete();throw e;}
-        if(!playable(target)){target.delete();throw new IOException("此裝置無法解碼此檔案的音訊");}
+        if(!playable(target)){target.delete();throw new IOException("只接受可解碼的純音訊檔，不接受影片");}
         JSONObject all=clips();list.put(new JSONObject().put("id",id).put("name",name).put("file",target.getName()).put("lineId","generic").put("schedule",selected));all.put(event,list);prefs.edit().putString("clips",all.toString()).apply();return name;
     }
     void remove(String id) throws Exception {
@@ -63,7 +71,7 @@ final class VoiceStore {
         List<JSONObject> result=new ArrayList<>();int best=Integer.MIN_VALUE;JSONArray list=clips(event);
         int day=(now.get(Calendar.DAY_OF_WEEK)+5)%7+1,hour=now.get(Calendar.HOUR_OF_DAY);
         for(int i=0;i<list.length();i++){
-            JSONObject clip=list.getJSONObject(i);String id=clip.getString("lineId");int priority=0;
+            JSONObject clip=list.getJSONObject(i);if(!acceptsFilename(clip.optString("name")))continue;String id=clip.getString("lineId");int priority=0;
             JSONObject selected=clip.optJSONObject("schedule");
             if(selected!=null){
                 try{schedule(selected);}catch(Exception e){continue;}

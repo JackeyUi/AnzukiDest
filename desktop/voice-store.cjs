@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),{pathToFileURL}=require('node:url');
-const {normalizeSchedule}=require('../pet/voice-rules.js');
+const {normalizeSchedule,acceptsFilename}=require('../pet/voice-rules.js');
 class VoiceStore {
  constructor(data,policy,catalog){
   this.policy=policy;this.catalog=catalog;this.folder=path.join(data,'voice');this.file=path.join(data,'voice-index.json');
@@ -17,7 +17,7 @@ class VoiceStore {
   if(write)this.persist();
  }
  persist(){const temp=this.file+'.tmp';fs.writeFileSync(temp,JSON.stringify({settings:this.settings,clips:this.clips||{}},null,2));fs.renameSync(temp,this.file);}
- snapshot(){return {policy:this.policy,catalog:this.catalog,settings:{...this.settings},clips:Object.fromEntries(Object.entries(this.clips).map(([k,v])=>[k,v.map(c=>({...c,url:pathToFileURL(path.join(this.folder,c.file)).href}))]))};}
+ snapshot(){return {policy:this.policy,catalog:this.catalog,settings:{...this.settings},clips:Object.fromEntries(Object.entries(this.clips).map(([k,v])=>[k,v.map(c=>({...c,unsupported:!acceptsFilename(c.name,this.policy),url:pathToFileURL(path.join(this.folder,c.file)).href}))]))};}
  setSchedule(id,value){const schedule=normalizeSchedule(value,this.policy);for(const clips of Object.values(this.clips)){const clip=clips.find(c=>c.id===id);if(clip){clip.schedule=schedule;clip.lineId='generic';this.persist();return;}}}
  async import(event,files,selection,validate=async()=>true){
   if(!Object.hasOwn(this.clips,event))throw new Error('Unknown voice category');const errors=[];
@@ -25,8 +25,9 @@ class VoiceStore {
    if(this.clips[event].length>=this.policy.maxClipsPerEvent){errors.push('每類最多 '+this.policy.maxClipsPerEvent+' 段');break;}
    try{const suffix=path.extname(source).slice(1).toLowerCase(),ext=/^[a-z0-9]{1,12}$/.test(suffix)?suffix:'bin',stat=await fs.promises.stat(source);
    if(!stat.isFile()||!stat.size||stat.size>this.policy.maxFileBytes){errors.push(path.basename(source)+'：檔案為空或超過 50 MB');continue;}
+   if(!acceptsFilename(path.basename(source),this.policy)){errors.push(path.basename(source)+'：僅接受音檔，不接受影片或其他檔案');continue;}
    const schedule=normalizeSchedule(selection&&typeof selection==='object'?selection:{dayType:'all',period:'all'},this.policy);
-   if(!await validate(source)){errors.push(path.basename(source)+'：此裝置無法解碼音訊，請改用支援的媒體檔');continue;}
+   if(!await validate(source)){errors.push(path.basename(source)+'：只接受可解碼的純音訊檔，不接受影片');continue;}
    const id=crypto.randomUUID(),file=id+'.'+ext;
    await fs.promises.copyFile(source,path.join(this.folder,file));this.clips[event].push({id,file,lineId:'generic',schedule,name:path.basename(source)});
    }catch(e){errors.push(path.basename(source)+'：'+e.message);}

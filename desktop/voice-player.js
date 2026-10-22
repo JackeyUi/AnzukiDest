@@ -14,13 +14,13 @@
    const {settings:p,clips,policy}=this.snapshot;
    if(this.destroyed||p.muted||p.volume===0){if(preview)this.status('目前為靜音或音量為 0，請先開啟聲音。');return false;}
    const rules=typeof module==='object'&&module.exports?require('../pet/voice-rules.js'):root.AnzukiVoiceRules;
-   const pool=preview?(clips[event]||[]):rules.eligible(this.snapshot,event),clip=id?pool.find(c=>c.id===id):pool[Math.floor(Math.random()*pool.length)];
-   if(!clip){if(preview)this.status('請先匯入這一類的媒體檔。');return false;}
+   const pool=preview?(clips[event]||[]).filter(c=>!c.unsupported&&rules.acceptsFilename(c.name,policy)):rules.eligible(this.snapshot,event),clip=id?pool.find(c=>c.id===id):pool[Math.floor(Math.random()*pool.length)];
+   if(!clip){if(preview)this.status('請先匯入這一類的音檔。');return false;}
    if(!preview&&(this.audio||(event==='click'&&this.now()-this.lastClick<policy.clickCooldownMs)))return false;
    this.stop();if(event==='click'&&!preview)this.lastClick=this.now();
    const audio=this.createAudio();this.audio=audio;this.current=clip.id;audio.volume=p.volume/100;audio.playbackRate=1;audio.src=clip.url;
    const end=()=>{if(this.audio===audio){this.audio=null;this.current=null;}};
-   audio.onended=end;audio.onerror=()=>{end();this.status('無法播放「'+clip.name+'」，此裝置無法解碼這個媒體的音訊。');};
+   audio.onended=end;audio.onerror=()=>{end();this.status('無法播放「'+clip.name+'」，此裝置無法解碼這個音檔。');};
    try{await audio.play();if(this.audio===audio)this.status('播放：'+clip.name);return this.audio===audio;}
    catch{if(this.audio!==audio)return false;end();this.status('無法播放「'+clip.name+'」，請重新匯入或確認音訊輸出。');return false;}
   }
