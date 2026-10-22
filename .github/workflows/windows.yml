@@ -6,6 +6,8 @@ on:
       - 'desktop/**'
       - 'pet/**'
       - 'scripts/**'
+      - 'materials/voice-v1/**'
+      - 'LICENSE'
       - '.github/workflows/windows.yml'
   workflow_dispatch:
 permissions:
