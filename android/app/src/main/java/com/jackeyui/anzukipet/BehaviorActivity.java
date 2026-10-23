@@ -25,10 +25,10 @@ public class BehaviorActivity extends Activity {
         try{policy=new PetAssets(this).index.getJSONObject("behavior");}catch(Exception e){root.addView(text("動畫索引讀取失敗",16));return;}
         Button menu=new Button(this);menu.setText("播放動畫 ▸");root.addView(menu);
         menu.setOnClickListener(v->{PopupMenu popup=new PopupMenu(this,menu);android.view.SubMenu sub=popup.getMenu().addSubMenu("播放動畫");JSONArray rows=policy.optJSONArray("manual");if(rows!=null)for(int n=0;n<rows.length();n++){JSONObject item=rows.optJSONObject(n);String id=item.optString("id");sub.add(item.optString("label")).setOnMenuItemClickListener(selected->{play(id);return true;});}popup.getMenu().add("喚醒／回到呼吸").setOnMenuItemClickListener(selected->{play("idle");return true;});popup.show();});
-        toggle("未操作桌寵一段時間後自動小憩","nap_enabled");slider("小憩等待時間","nap_minutes");
-        root.addView(text("先播放小憩開始，再循環小憩；觸碰或拖曳角色才喚醒。手機以未操作桌寵的時間計算，其他 App 的操作不列入。",14));
+        toggle("未操作桌寵時自動小憩","nap_enabled");slider("小憩等待時間","nap_minutes");
+        root.addView(text("依未操作桌寵的時間計算；點擊或拖曳角色喚醒。",14));
         toggle("定時隨機播放其他動作","auto_enabled");slider("隨機動作間隔","action_minutes");
-        root.addView(text("每次隨機播放拿書、扶帽子或抓星星其中一個。小憩及拖曳時暫停，動作播完交叉淡回所選呼吸動畫。\n抓起與落地固定 2 倍速，其他動作維持原速。影片原有聲音一律不播放；可在音聲設定為每支動畫加入自己的音檔。",14));
+        root.addView(text("隨機播放拿書、扶帽子或抓星星；小憩及拖曳時暫停。",14));
         Button back=new Button(this);back.setText("返回");back.setOnClickListener(v->finish());root.addView(back);
     }
 }

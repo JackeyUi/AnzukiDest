@@ -37,8 +37,8 @@ public class VoiceActivity extends Activity {
     private void build() throws Exception {
         final int oldY=scroll==null?0:scroll.getScrollY();scroll=new ScrollView(this);scroll.setBackgroundColor(Color.rgb(12,19,37));LinearLayout root=new LinearLayout(this);root.setOrientation(LinearLayout.VERTICAL);root.setPadding(dp(22),dp(30),dp(22),dp(35));scroll.addView(root);setContentView(scroll);
         root.setOnApplyWindowInsetsListener((v,insets)->{v.setPadding(dp(22),dp(20)+insets.getSystemWindowInsetTop(),dp(25),dp(25)+insets.getSystemWindowInsetBottom());return insets;});root.requestApplyInsets();
-        root.addView(text("Anzuki 音聲設定",25));root.addView(text("僅接受音檔，檔名自由、不必對應台詞編號。\n每段可選每天／平日／假日及時段。原檔不轉碼。",14));
-        root.addView(text("平日為週一至週五；假日為週六、週日，不自動判斷國定假日。不接受影片。",14));
+        root.addView(text("Anzuki 音聲設定",25));root.addView(text("加入音檔後，可設定播放日與時段。每檔最多 50 MB。",14));
+        root.addView(text("平日：週一～週五；假日：週六、週日。",14));
         root.addView(text("現在："+new SimpleDateFormat("EEEE HH:mm",Locale.TRADITIONAL_CHINESE).format(new Date()),14));
         Switch muted=new Switch(this);muted.setText("靜音");muted.setTextColor(Color.WHITE);muted.setChecked(store.muted());root.addView(muted);muted.setOnCheckedChangeListener((v,value)->{store.prefs.edit().putBoolean("muted",value).apply();notifyPlayer();});
         TextView volumeLabel=text("音聲音量  "+store.volume()+"%",16);root.addView(volumeLabel);SeekBar volume=new SeekBar(this);volume.setMax(100);volume.setProgress(store.volume());root.addView(volume);volume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){public void onStartTrackingTouch(SeekBar b){}public void onStopTrackingTouch(SeekBar b){}public void onProgressChanged(SeekBar b,int p,boolean user){volumeLabel.setText("音聲音量  "+p+"%");if(user){store.prefs.edit().putInt("volume",p).apply();notifyPlayer();}}});
@@ -46,23 +46,23 @@ public class VoiceActivity extends Activity {
         TextView intervalLabel=text("閒聊間隔  "+store.idleMinutes()+" 分鐘",16);root.addView(intervalLabel);SeekBar interval=new SeekBar(this);interval.setMax(9);interval.setProgress(store.idleMinutes()-1);interval.setEnabled(store.idleEnabled());root.addView(interval);
         automatic.setOnCheckedChangeListener((v,value)->{store.prefs.edit().putBoolean("idleEnabled",value).apply();interval.setEnabled(value);notifyPlayer();});
         interval.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){public void onStartTrackingTouch(SeekBar b){}public void onProgressChanged(SeekBar b,int p,boolean user){intervalLabel.setText("閒聊間隔  "+(p+1)+" 分鐘");}public void onStopTrackingTouch(SeekBar b){store.prefs.edit().putInt("idleMinutes",b.getProgress()+1).apply();notifyPlayer();}});
-        root.addView(text("連點重新播放動畫；音檔播完前不打斷、不排隊。自動播放避開其他媒體與系統靜音；沒有當前時段適用的音檔時保持安靜。試聽可手動播放任一句。",13));
-        status=text("尚未錄製的台詞可之後再匯入。",14);root.addView(status);Button stop=button("停止播放");root.addView(stop);stop.setOnClickListener(v->stopVoice());
-        root.addView(text("動畫聲音",22));root.addView(text("進入動畫時隨機播一段，循環不重播。聲音維持原速，不打斷、不排隊；點擊動畫沒有專屬音檔時沿用點擊回應。",13));
+        root.addView(text("依日期與時段隨機播放。聲音播完前不打斷、不排隊。",13));
+        status=text("",14);root.addView(status);Button stop=button("停止播放");root.addView(stop);stop.setOnClickListener(v->stopVoice());
+        root.addView(text("動畫聲音",22));root.addView(text("進入動畫時播一次，循環不重播。",13));
         final JSONArray animations=store.animationEvents();final Spinner animationChoice=choice(root,"選擇動畫",animations,selectedAnimation);final LinearLayout animationPanel=new LinearLayout(this);animationPanel.setOrientation(LinearLayout.VERTICAL);root.addView(animationPanel);
         animationChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){public void onNothingSelected(AdapterView<?> p){}public void onItemSelected(AdapterView<?> p,View v,int position,long id){try{JSONObject item=animations.getJSONObject(position);selectedAnimation=item.getString("id");animationPanel.removeAllViews();appendVoiceGroup(animationPanel,item);}catch(Exception e){report("動畫聲音讀取失敗");}}});
         JSONArray events=store.policy.getJSONArray("events");
         for(int e=0;e<events.length();e++)appendVoiceGroup(root,events.getJSONObject(e));
-        root.addView(text("僅可加入裝置能解碼的音檔，不接受影片；每檔最多 50 MB。匯入時會檢查音軌，無法播放的檔案會顯示原因。匯入後複製到 App 私有空間，原檔不動，也不會自動上傳。",13));scroll.post(()->scroll.scrollTo(0,oldY));
+        scroll.post(()->scroll.scrollTo(0,oldY));
     }
     private void appendVoiceGroup(LinearLayout root,JSONObject item) throws Exception {
         final String event=item.getString("id");root.addView(text(item.getString("label"),20));
-            root.addView(text("選擇播放條件後加入檔案，不必先指定台詞或改檔名。",13));final Spinner[] fields=scheduleFields(root,null);
+            final Spinner[] fields=scheduleFields(root,null);
             Button add=button("＋ 加入音檔");root.addView(add);add.setOnClickListener(v->{if(importing)return;try{pendingEvent=event;pendingLine=selection(fields).toString();Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT);intent.addCategory(Intent.CATEGORY_OPENABLE);intent.setType("audio/*");intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);startActivityForResult(intent,PICK_AUDIO);}catch(Exception ex){report("無法開啟檔案選擇器");}});
             JSONArray clips=store.clips(event);if(clips.length()==0)root.addView(text("尚未匯入音檔",13));
-            for(int n=0;n<clips.length();n++){
+            for(int n=clips.length()-1;n>=0;n--){
                 JSONObject clip=clips.getJSONObject(n);final String id=clip.getString("id");root.addView(text(clip.getString("name"),16));
-                if(!clip.has("schedule"))root.addView(text("保留舊版播放條件；按「套用條件」後改用下方設定。",13));final Spinner[] edit=scheduleFields(root,clip.optJSONObject("schedule"));
+                if(!clip.has("schedule"))root.addView(text("沿用舊設定；按「套用條件」更新。",13));final Spinner[] edit=scheduleFields(root,clip.optJSONObject("schedule"));
                 Button save=button("套用條件");root.addView(save);save.setOnClickListener(v->{try{store.setSchedule(id,selection(edit));notifyPlayer();build();report("已儲存播放條件");}catch(Exception ex){report("條件儲存失敗");}});
                 LinearLayout row=new LinearLayout(this);Button test=button("播放"),remove=button("移除");row.addView(test,new LinearLayout.LayoutParams(0,dp(48),1));row.addView(remove,new LinearLayout.LayoutParams(0,dp(48),1));root.addView(row);
                 test.setEnabled(store.acceptsFilename(clip.optString("name")));test.setOnClickListener(v->test(event,id));remove.setOnClickListener(v->{try{preview.stop();store.remove(id);notifyPlayer();build();}catch(Exception ex){report("移除失敗");}});
@@ -72,7 +72,7 @@ public class VoiceActivity extends Activity {
     @Override protected void onRestoreInstanceState(Bundle state){super.onRestoreInstanceState(state);pendingEvent=state.getString("voiceEvent");pendingLine=state.getString("voiceLine");selectedAnimation=state.getString("animationVoice");}
     @Override protected void onActivityResult(int request,int result,Intent data){super.onActivityResult(request,result,data);if(request!=PICK_AUDIO||result!=RESULT_OK||data==null||pendingEvent==null)return;
         List<Uri> files=new ArrayList<>();if(data.getClipData()!=null)for(int i=0;i<data.getClipData().getItemCount();i++)files.add(data.getClipData().getItemAt(i).getUri());else if(data.getData()!=null)files.add(data.getData());
-        final String event=pendingEvent,assignment=pendingLine==null?"{\"dayType\":\"all\",\"period\":\"all\"}":pendingLine;importing=true;report("正在原樣複製音檔……");
+        final String event=pendingEvent,assignment=pendingLine==null?"{\"dayType\":\"all\",\"period\":\"all\"}":pendingLine;importing=true;report("正在匯入音檔……");
         new Thread(()->{int count=0;List<String> errors=new ArrayList<>();for(Uri uri:files)try{store.importFile(event,new JSONObject(assignment),uri);count++;}catch(Exception e){errors.add(e.getMessage());}
             final int imported=count;runOnUiThread(()->{importing=false;if(isFinishing()||isDestroyed())return;try{notifyPlayer();build();report("已匯入 "+imported+" 段"+(errors.isEmpty()?"":"；"+errors.get(0)));}catch(Exception e){report("音檔清單更新失敗");}});
         },"Anzuki-audio-import").start();

@@ -17,7 +17,7 @@ const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
   await fs.copyFile(path.join(root,'LICENSE'),path.join(output,'LICENSE.Anzuki.txt'));
   await fs.cp(path.join(root,'materials/voice-v1'),path.join(output,'recording-guides'),{recursive:true});
   await fs.writeFile(path.join(output,'asset-manifest.json'),JSON.stringify({platform:'win32-x64',artwork:'720x1280 lossless RGBA; original asset bytes preserved',assetRevision:index.revision,assets},null,2)+'\n');
-  await fs.writeFile(path.join(output,'READ-ME.txt'),'Anzuki Windows 10/11 x64\r\n\r\n1. Extract this entire folder.\r\n2. Run Anzuki.exe. Node.js is not required.\r\nIf both pet and settings are invisible: exit Anzuki from the tray, then run Start-Compatible.cmd (software rendering; original artwork unchanged).\r\n3. Right-click the pet to configure animation and recorded voice.\r\n\r\nKeep resources and all DLLs beside the EXE.\r\nSettings and imported recordings: %APPDATA%\\Anzuki\\desktop\r\nOriginal 720x1280 lossless artwork is included unchanged.\r\nRecording scripts (including Japanese): recording-guides/\r\nNo official voice recordings are included yet.\r\n');
+  await fs.writeFile(path.join(output,'READ-ME.txt'),'Anzuki Windows 桌寵\r\n\r\n1. 完整解壓整個資料夾。\r\n2. 執行 Anzuki.exe。\r\n\r\n沒有畫面時，先結束桌寵，再執行 Start-Compatible.cmd。\r\n右鍵角色開啟設定；拖到底部放開可收起，從系統匣叫回。\r\n個人資料：%APPDATA%\\Anzuki\\desktop\r\n');
   console.log('Windows package:',output);
  }
 })().catch(e=>{console.error(e);process.exitCode=1;});

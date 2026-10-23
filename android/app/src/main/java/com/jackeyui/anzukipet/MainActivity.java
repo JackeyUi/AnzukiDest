@@ -61,9 +61,7 @@ public class MainActivity extends Activity {
             view.setPadding(dp(24), top+dp(20), dp(24), bottom+dp(24)); return insets;
         });
         scroll.addView(root); setContentView(scroll); root.requestApplyInsets();
-        root.addView(text("A LITTLE STARDUST",12,Color.rgb(224,198,140)));
         TextView title=text("Anzuki 星光桌寵",28,Color.rgb(236,241,255)); title.setTypeface(null,Typeface.BOLD);root.addView(title);
-        root.addView(text("在手機上，陪你一下。",16,Color.rgb(164,181,208)));
         preview=new ImageView(this);preview.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         root.addView(preview,new LinearLayout.LayoutParams(-1,dp(260)));
         status=text("",14,Color.rgb(164,181,208));root.addView(status);
@@ -105,7 +103,7 @@ public class MainActivity extends Activity {
             public void onProgressChanged(SeekBar bar,int progress,boolean user){speedLabel.setText(String.format(Locale.US,"點擊動畫速度  %.1f×",1+progress/10.0));if(user)prefs.edit().putInt("click_speed_step",progress).apply();}
             public void onStopTrackingTouch(SeekBar bar){}
         });
-        root.addView(text("1.0×–2.0×，每格 0.1。套用於下一次點擊，待機維持原速，抓起與落地固定 2 倍速。\n點上方角色可預覽點擊動作。",13,Color.rgb(164,181,208)));
+        root.addView(text("下次點擊生效，點上方角色可預覽。抓起、落地固定 2 倍速。",13,Color.rgb(164,181,208)));
         preview.setOnClickListener(v->{try{PetAssets a=new PetAssets(this);showPreview(a.click(),false);}catch(Exception ignored){}});
         Button behaviorSettings=button("動畫選單與自動行為",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(behaviorSettings);behaviorSettings.setOnClickListener(v->startActivity(new Intent(this,BehaviorActivity.class)));
         Button animationSettings=button("自訂動畫",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(animationSettings);animationSettings.setOnClickListener(v->startActivity(new Intent(this,AnimationActivity.class)));
@@ -118,11 +116,9 @@ public class MainActivity extends Activity {
                 if(PetService.running) { Intent i=new Intent(MainActivity.this,PetService.class);i.setAction(PetService.RESIZE);startService(i); }
             }
         });
-        root.addView(text("拖曳移動・點一下彈動・長按回到設定\n向下拖到螢幕底部放開可收起，從通知的「顯示桌寵」叫回。",14,Color.rgb(164,181,208)));
-        try { PetAssets assets=new PetAssets(this);root.addView(text("素材版本 "+assets.index.getString("revision"),11,Color.rgb(119,141,173))); }
-        catch(Exception e){Toast.makeText(this,"動畫素材讀取失敗",Toast.LENGTH_LONG).show();}
+        root.addView(text("拖曳移動・點擊互動・長按設定\n拖到底部收起，從通知叫回。",14,Color.rgb(164,181,208)));
     }
-    @Override protected void onResume(){super.onResume();status.setText(Settings.canDrawOverlays(this)?"懸浮顯示權限已開啟":"首次啟動需允許「顯示在其他應用程式上層」");
+    @Override protected void onResume(){super.onResume();status.setText(Settings.canDrawOverlays(this)?"懸浮權限已開啟":"請開啟「顯示在其他應用程式上層」");
         showIdlePreview();
         if(waitingForOverlay&&Settings.canDrawOverlays(this)){waitingForOverlay=false;requestNotificationsAndStart();}
     }
@@ -144,7 +140,7 @@ public class MainActivity extends Activity {
     @Override public void onRequestPermissionsResult(int code,String[] permissions,int[] results){super.onRequestPermissionsResult(code,permissions,results);if(code==1)startPet();}
     private void startPet(){
         if(!Settings.canDrawOverlays(this))return;
-        try{startForegroundService(new Intent(this,PetService.class));Toast.makeText(this,"桌寵已啟動，可以回到其他 App",Toast.LENGTH_SHORT).show();}
+        try{startForegroundService(new Intent(this,PetService.class));Toast.makeText(this,"桌寵已啟動",Toast.LENGTH_SHORT).show();}
         catch(Exception e){Toast.makeText(this,"無法啟動，請確認系統懸浮窗權限",Toast.LENGTH_LONG).show();}
     }
 }

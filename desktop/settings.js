@@ -11,7 +11,7 @@
  const manual=document.querySelector('#manual-animation');for(const item of config.behavior?.manual||[]){const option=document.createElement('option');option.value=item.id;option.textContent=item.label;manual.append(option);}document.querySelector('#play-animation').onclick=()=>api.playAnimation(manual.value);document.querySelector('#wake-animation').onclick=()=>api.playAnimation('idle');
  for(const [key,id] of [['napMinutes','nap-minutes'],['actionMinutes','action-minutes']])document.querySelector('#'+id).oninput=e=>{document.querySelector('#'+id+'-label').value=e.target.value+' 分鐘';api.setPreferences({[key]:Number(e.target.value)});};
  document.querySelector('#nap-enabled').onchange=e=>api.setPreferences({napEnabled:e.target.checked});document.querySelector('#auto-enabled').onchange=e=>api.setPreferences({autoEnabled:e.target.checked});
- for(const role of ['idle','click']){const button=document.querySelector('#import-'+role);button.onclick=async()=>{button.disabled=true;const status=document.querySelector('#animation-status');status.textContent='請選擇透明動態 WebP；匯入時會檢查影格。';try{const item=await api.importAnimation(role);status.textContent=item?'已原樣匯入並套用：'+item.label:'已取消';}catch(error){status.textContent=String(error.message).split('Error: ').pop();}finally{button.disabled=false;}};}
+ for(const role of ['idle','click']){const button=document.querySelector('#import-'+role);button.onclick=async()=>{button.disabled=true;const status=document.querySelector('#animation-status');status.textContent='請選擇透明動態 WebP。';try{const item=await api.importAnimation(role);status.textContent=item?'已原樣匯入並套用：'+item.label:'已取消';}catch(error){status.textContent=String(error.message).split('Error: ').pop();}finally{button.disabled=false;}};}
 idle.onchange=()=>api.setPreferences({idle:idle.value});
  speed.oninput=()=>{const value=Number(speed.value);label.value=value.toFixed(1)+'×';api.setPreferences({clickSpeed:value});};
  const muted=document.querySelector('#voice-muted'),volume=document.querySelector('#voice-volume'),idleEnabled=document.querySelector('#voice-idle-enabled'),interval=document.querySelector('#voice-interval'),groups=document.querySelector('#voice-clips'),status=document.querySelector('#voice-status');
@@ -30,14 +30,13 @@ idle.onchange=()=>api.setPreferences({idle:idle.value});
  }
  function renderVoiceGroup(p,event,parent){
    const group=document.createElement('section');group.className=event.id.startsWith('animation:')?'animation-voice-group':'voice-group';const title=document.createElement('h3');title.textContent=event.label;group.append(title);
-   const hint=document.createElement('p');hint.textContent='選擇播放條件，再加入你的檔案。檔名自由，不必對應預設台詞。';group.append(hint);
    const fields=scheduleFields(group,p.policy,choices.get(event.id)||{dayType:'all',period:'all'},event.label+' 新檔案');fields.onChange(()=>choices.set(event.id,fields.value()));
    const add=document.createElement('button');add.textContent='＋ 加入音檔';add.className='import-button';add.dataset.event=event.id;
-   add.onclick=async()=>{add.disabled=true;report('請選擇音檔；不接受影片。');try{const errors=await api.importVoice(event.id,fields.value());report(errors.length?errors.join('；'):'檔案清單已更新');}catch{report('匯入失敗，請確認檔案仍可讀取。');}finally{add.disabled=false;}};group.append(add);
-   if(!p.clips[event.id].length){const empty=document.createElement('p');empty.className='empty';empty.textContent='尚無檔案。可一次選取多個音檔，檔名自由。';group.append(empty);}
-   for(const clip of p.clips[event.id]){
+   add.onclick=async()=>{add.disabled=true;report('請選擇音檔。');try{const errors=await api.importVoice(event.id,fields.value());report(errors.length?errors.join('；'):'檔案清單已更新');}catch{report('匯入失敗，請確認檔案仍可讀取。');}finally{add.disabled=false;}};group.append(add);
+   if(!p.clips[event.id].length){const empty=document.createElement('p');empty.className='empty';empty.textContent='尚未加入音檔。';group.append(empty);}
+   for(const clip of [...p.clips[event.id]].reverse()){
     const row=document.createElement('article');row.className='voice-row';const name=document.createElement('strong');name.textContent=clip.name;row.append(name);
-    if(!clip.schedule){const legacy=document.createElement('p');legacy.textContent='保留舊版播放條件；按「套用條件」後改用下方設定。';row.append(legacy);}
+    if(!clip.schedule){const legacy=document.createElement('p');legacy.textContent='沿用舊設定；按「套用條件」更新。';row.append(legacy);}
     const schedule=scheduleFields(row,p.policy,clip.schedule||{dayType:'all',period:'all'},clip.name);
     const buttons=document.createElement('div');buttons.className='clip-actions';const save=document.createElement('button');save.textContent='套用條件';save.onclick=async()=>{try{await api.setVoiceSchedule(clip.id,schedule.value());report('已儲存播放條件');}catch{report('條件儲存失敗');}};
     const test=document.createElement('button');test.textContent=clip.unsupported?'僅接受音檔':'播放';test.disabled=!!clip.unsupported;test.onclick=()=>api.playVoice({event:event.id,id:clip.id});

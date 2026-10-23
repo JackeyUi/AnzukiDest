@@ -1,8 +1,11 @@
 # Anzuki maintenance
 
+- User-facing copy should be brief: keep labels, direct actions and necessary format/limit notices. Remove repeated explanations, implementation details, internal version hashes and assurances from settings/help screens. Keep desktop and Android wording aligned.
+- Display imported voice clips newest first in every generic and per-animation group on both platforms. Reverse a copy/the view traversal only; preserve saved order, filters, recordings and random playback behavior.
+
 - User verification preference: keep checks proportional to the change and run only directly relevant necessary checks. Do not repeatedly run the complete regression suite or add redundant tests to routine updates. The testing guidance below is scoped by this preference: reserve broader playback/startup interaction checks for substantial changes or observed failures; verify artwork pixels only when artwork changes. Documentation-only edits need no tests or builds.
 
-- Release verification currently focuses on `scripts/check-grab-start.cjs` against the patched Windows EXE, plus package integrity and Android build/synchronization. For future changes, select the affected check(s) in the workflows instead of blindly rerunning the full regression suite or leaving an unrelated old focus in place.
+- Select release checks for the change. The copy/list-order update uses direct settings rendering, package integrity and Android compilation/synchronization; it does not rerun grab/landing regression checks. For playback changes, restore the relevant native EXE check such as `scripts/check-grab-start.cjs`. Do not leave unrelated old checks running on every release.
 - Keep the drag animation prepared after startup: Windows retains its decoder and only one source-resolution first bitmap outside the ordinary encoded LRU; Android preloads and reserves its drag drawable. Idle/action/nap cache churn must not reintroduce a cold load on the first grab. Retain streaming for later frames, safe rapid release/re-grab cancellation and the fixed 2x speed.
 
 - ARTWORK IS THE HIGHEST PRIORITY. Preserve the original pixel resolution, frame rate and opaque character colors. Never downscale source assets, apply lossy re-encoding, convert RGBA to subsampled YUV, or trade visual quality for smaller downloads without explicit user approval.
