@@ -22,11 +22,13 @@ function clamp(bounds){const area=screen.getDisplayMatching(bounds).workArea;ret
 function resize(width){state.width=width;const b=win.getBounds();const height=Math.round(width*index.height/index.width);
  win.setBounds(clamp({x:Math.round(b.x+(b.width-width)/2),y:b.y+b.height-height,width,height}));save();}
 function reset(){const a=screen.getPrimaryDisplay().workArea;const b=win.getBounds();win.setBounds(clamp({...b,x:a.x+a.width-b.width-20,y:a.y+a.height-b.height-20}));save();}
-function recover(){if(!win||win.isDestroyed()||!index)return;logStartup('recover visible pet');if(win.isMinimized())win.restore();win.showInactive();win.setAlwaysOnTop(true);win.setOpacity(1);reset();updatePreferences({idle:index.idle});if(rendererStopped||!firstFrame){rendererStopped=false;firstFrame=false;win.webContents.reloadIgnoringCache();}const play=()=>win&&!win.isDestroyed()&&win.webContents.send('pet:play-animation','idle');if(win.webContents.isLoading())win.webContents.once('did-finish-load',play);else play();}
+function showPet(){if(!win||win.isDestroyed()||!index)return;if(win.isMinimized())win.restore();win.showInactive();win.setAlwaysOnTop(true);win.setOpacity(1);reset();if(rendererStopped||!firstFrame){rendererStopped=false;firstFrame=false;win.webContents.reloadIgnoringCache();}const show=()=>win&&!win.isDestroyed()&&win.webContents.send('pet:visibility',true);if(win.webContents.isLoading())win.webContents.once('did-finish-load',show);else show();}
+function hidePet(){if(!win||win.isDestroyed())return;save();win.__petHit=false;win.setIgnoreMouseEvents(true,{forward:true});win.webContents.send('pet:visibility',false);win.hide();logStartup('pet hidden after bottom-edge drag');}
+function recover(){if(!win||win.isDestroyed()||!index)return;logStartup('recover visible pet');updatePreferences({idle:index.idle});showPet();}
 function minutes(value){return Number.isInteger(value)&&value>=5&&value<=30?value:10;}
 function preferences(){return {idle:state.idle,clickSpeed:state.clickSpeed,clickAnimation:state.clickAnimation||'builtin',napMinutes:minutes(state.napMinutes),actionMinutes:minutes(state.actionMinutes),napEnabled:state.napEnabled!==false,autoEnabled:state.autoEnabled!==false};}
-function rebuild(){index=library.merge(baseIndex,state.clickAnimation);if(!index.idleOptions.includes(state.idle))state.idle=index.idle;if(!index.clickOptions.some(c=>c.id===state.clickAnimation))state.clickAnimation='builtin';}
-function snapshot(){return {...index,settings:preferences(),voice:voice.snapshot(),assetRoot:pathToFileURL(path.join(ROOT,'pet','anzuki-animation')).href+'/'};}
+function rebuild(){index=library.merge(baseIndex,state.clickAnimation);if(!index.idleOptions.includes(state.idle))state.idle=index.idle;if(!index.clickOptions.some(c=>c.id===state.clickAnimation))state.clickAnimation='builtin';voice.setAnimations(index);}
+function snapshot(){return {...index,settings:preferences(),voice:voice.snapshot(),visible:!win||win.isVisible(),assetRoot:pathToFileURL(path.join(ROOT,'pet','anzuki-animation')).href+'/'};}
 function broadcastLibrary(){rebuild();save();for(const w of [win,settingsWindow])if(w&&!w.isDestroyed())w.webContents.send('pet:library',snapshot());}
 function updatePreferences(p){
  if(p&&index.idleOptions.includes(p.idle))state.idle=p.idle;
@@ -55,7 +57,7 @@ function menu(){Menu.buildFromTemplate([
 ]).popup({window:win});}
 if(!app.requestSingleInstanceLock())app.quit();
 else app.whenReady().then(async()=>{
- app.on('second-instance',recover);
+ app.on('second-instance',showPet);
  try{index=JSON.parse(fs.readFileSync(path.join(ROOT,'pet','animations.json'),'utf8'));
  if(index.width!==720||index.height!==1280)throw new Error('Expected full-resolution 720x1280 artwork');
  for(const a of Object.values(index.animations))if(!fs.existsSync(path.join(ROOT,'pet','anzuki-animation',a.file)))throw new Error('Missing '+a.file);
@@ -78,8 +80,9 @@ else app.whenReady().then(async()=>{
  ipcMain.on('pet:painted',ev=>{if(valid(ev)&&!firstFrame){firstFrame=true;clearTimeout(startupTimer);logStartup('first frame displayed');}});
  ipcMain.on('pet:startup-error',(ev,message)=>{if(valid(ev)&&typeof message==='string')logStartup('renderer: '+message);});
  ipcMain.on('pet:recover',ev=>{if(trusted(ev))recover();});
+ ipcMain.on('pet:show',ev=>{if(trusted(ev))showPet();});
  ipcMain.handle('pet:config',ev=>{if(!trusted(ev))return null;return snapshot();});
- ipcMain.on('pet:play-animation',(ev,id)=>{if(trusted(ev)&&(id==='idle'||index.behavior?.manual.some(item=>item.id===id)))win.webContents.send('pet:play-animation',id);});
+ ipcMain.on('pet:play-animation',(ev,id)=>{if(trusted(ev)&&(id==='idle'||index.behavior?.manual.some(item=>item.id===id))) {if(!win.isVisible())showPet();win.webContents.send('pet:play-animation',id);}});
  ipcMain.on('pet:hit',(ev,inside)=>{if(valid(ev)&&typeof inside==='boolean'&&win.__petHit!==inside){win.__petHit=inside;win.setIgnoreMouseEvents(!inside,{forward:true});}});
  ipcMain.handle('pet:animation-import',async(ev,role)=>{
   if(!trusted(ev)||!['idle','click'].includes(role))throw Error('未知動畫用途');const chosen=await dialog.showOpenDialog(settingsWindow||win,{title:'加入透明動態 WebP',properties:['openFile'],filters:[{name:'透明動態 WebP',extensions:['webp']}]});if(chosen.canceled)return null;
@@ -88,7 +91,7 @@ else app.whenReady().then(async()=>{
  });
  ipcMain.handle('pet:animation-remove',(ev,id)=>{if(!trusted(ev))return;library.remove(id);broadcastLibrary();});
  ipcMain.handle('pet:voice-import' ,async(ev,event,lineId)=>{
-  if(!trusted(ev)||!voice.policy.events.some(e=>e.id===event))throw new Error('Unknown voice category');
+  if(!trusted(ev)||!voice.isEvent(event))throw new Error('Unknown voice category');
   const chosen=await dialog.showOpenDialog(settingsWindow||win,{title:'匯入角色音聲',properties:['openFile','multiSelections'],filters:[{name:'音檔',extensions:voice.policy.extensions}]});
   if(chosen.canceled)return [];const errors=await voice.import(event,chosen.filePaths,lineId,source=>win.webContents.executeJavaScript(`new Promise(resolve=>{
    const audio=document.createElement('video');let done=false;const finish=ok=>{if(done)return;done=true;clearTimeout(timer);audio.onloadeddata=null;audio.onerror=null;audio.pause();audio.removeAttribute('src');audio.load();resolve(ok);};
@@ -98,14 +101,14 @@ else app.whenReady().then(async()=>{
  ipcMain.on('pet:voice-preferences',(ev,p)=>{if(trusted(ev)){voice.update(p);broadcastVoice();}});
  ipcMain.handle('pet:voice-schedule',(ev,id,value)=>{if(!trusted(ev))return;voice.setSchedule(id,value);broadcastVoice();});
  ipcMain.on('pet:voice-remove',(ev,id)=>{if(trusted(ev)&&typeof id==='string'){voice.remove(id);broadcastVoice();}});
- ipcMain.on('pet:voice-play',(ev,p)=>{if(trusted(ev)&&p&&voice.policy.events.some(e=>e.id===p.event))win.webContents.send('pet:voice-play',{event:p.event,id:typeof p.id==='string'?p.id:undefined});});
+ ipcMain.on('pet:voice-play',(ev,p)=>{if(trusted(ev)&&p&&voice.isEvent(p.event))win.webContents.send('pet:voice-play',{event:p.event,id:typeof p.id==='string'?p.id:undefined});});
  ipcMain.on('pet:voice-stop',ev=>{if(trusted(ev))win.webContents.send('pet:voice-stop');});
  ipcMain.on('pet:voice-status',(ev,message)=>{if(valid(ev)&&typeof message==='string'&&settingsWindow&&!settingsWindow.isDestroyed())settingsWindow.webContents.send('pet:voice-status',message.slice(0,200));});
  ipcMain.handle('pet:animation',async(ev,name)=>{if(!valid(ev)||!Object.hasOwn(index.animations,name))throw new Error('Unknown animation');return new Uint8Array(await fs.promises.readFile(index.animations[name].custom?library.path(name):path.join(ROOT,'pet','anzuki-animation',index.animations[name].file)));});
  ipcMain.on('pet:preferences',(ev,p)=>{if(trusted(ev))updatePreferences(p);});
  ipcMain.on('pet:drag-start',(ev,p)=>{if(valid(ev)&&p&&Number.isFinite(p.x)&&Number.isFinite(p.y))drag={...win.getBounds(),startX:p.x,startY:p.y};});
  ipcMain.on('pet:drag-move',(ev,p)=>{if(valid(ev)&&drag&&p&&Number.isFinite(p.x)&&Number.isFinite(p.y)){drag.moved=true;win.setBounds(clamp({x:Math.round(drag.x+p.x-drag.startX),y:Math.round(drag.y+p.y-drag.startY),width:drag.width,height:drag.height}));}});
- ipcMain.on('pet:drag-end',ev=>{if(valid(ev)){const moved=drag?.moved;drag=null;if(moved)save();}});
+ ipcMain.on('pet:drag-end',(ev,p)=>{if(!valid(ev))return;const moved=drag?.moved;let dismiss=false;if(moved&&p?.cancelled!==true&&Number.isFinite(p?.x)&&Number.isFinite(p?.y)){const area=screen.getDisplayNearestPoint({x:Math.round(p.x),y:Math.round(p.y)}).workArea;dismiss=p.y-drag.startY>=24&&p.y>=area.y+area.height-24;}drag=null;if(dismiss)hidePet();else if(moved)save();});
  ipcMain.on('pet:menu',ev=>{if(valid(ev))menu();});
  ipcMain.on('pet:quit',ev=>{if(valid(ev))app.quit();});
  win.webContents.on('console-message',(_event,details,message)=>{const level=typeof details==='object'?details.level:details;if(level==='error'||level===3)logStartup('renderer console: '+(typeof details==='object'?details.message:message));});
@@ -114,7 +117,7 @@ else app.whenReady().then(async()=>{
  win.loadFile(path.join(__dirname,'index.html'));win.on('closed',()=>{win=null;});
  startupTimer=setTimeout(()=>{if(!firstFrame&&win&&!win.isDestroyed()){logStartup('no frame after 20 seconds');showSettings();dialog.showErrorBox('Anzuki 尚未顯示','動畫尚未成功載入。請按設定中的「顯示桌寵／回到右下角」。\n\n若仍無法顯示，啟動紀錄位於：\n'+startupLog);}},20000);
  win.webContents.on('render-process-gone',(_event,details)=>{logStartup('renderer stopped: '+JSON.stringify(details));if(details.reason!=='clean-exit'&&win&&!win.isDestroyed()){rendererStopped=true;showSettings();}});
- try{tray=new Tray(await app.getFileIcon(process.execPath,{size:'small'}));tray.setToolTip('Anzuki');tray.setContextMenu(Menu.buildFromTemplate([{label:'動畫／音聲設定…',click:showSettings},{label:'顯示桌寵／回到右下角',click:recover},{label:'結束 Anzuki',click:()=>app.quit()}]));tray.on('double-click',showSettings);}catch(error){console.warn('Tray icon unavailable',error);}
+ try{tray=new Tray(await app.getFileIcon(process.execPath,{size:'small'}));tray.setToolTip('Anzuki');tray.setContextMenu(Menu.buildFromTemplate([{label:'動畫／音聲設定…',click:showSettings},{label:'顯示桌寵',click:showPet},{label:'回到右下角／修復顯示',click:recover},{label:'結束 Anzuki',click:()=>app.quit()}]));tray.on('double-click',showSettings);}catch(error){console.warn('Tray icon unavailable',error);}
  screen.on('display-metrics-changed',()=>{if(win&&!win.isDestroyed())win.setBounds(clamp(win.getBounds()));});
  app.on('before-quit',()=>{clearTimeout(startupTimer);save();});
 });

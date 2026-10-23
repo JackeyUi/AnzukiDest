@@ -159,7 +159,11 @@
           "id": "catch-star",
           "label": "抓星星"
         }
-      ]
+      ],
+      "speeds": {
+        "drag-held": 2,
+        "land": 2
+      }
     }
   }
 }

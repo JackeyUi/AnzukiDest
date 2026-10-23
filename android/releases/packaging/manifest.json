@@ -1,7 +1,7 @@
 {
-  "apkBytes": 478520730,
-  "apkSha256": "7119d40f5268da2f58b99ac15dd88275af08be4d3734a109cb4b634082c16fbf",
-  "literalSha256": "a0b5966807c333a9064e522629fe9816b16fa4dec8bf66e9efa319fbe048d92f",
+  "apkBytes": 464778650,
+  "apkSha256": "2f218ef33d209da235cb10663e83d8b38b3d50e570f46be0e6c812d7efc5ea5c",
+  "literalSha256": "710e42041373945e8d183f946897936d9c78b5cf2d653f54348eb155e0ddd3ab",
   "parts": [
     {
       "kind": "literal",
@@ -11,13 +11,13 @@
     {
       "kind": "artwork",
       "path": "pet/anzuki-animation/adjust-hat.webp",
-      "length": 64113062,
-      "sha256": "2e2a763e32269e30e9bf854e5c28f873f7d6e74e2a5b21cc5bf93b31246bec0b"
+      "length": 50367250,
+      "sha256": "e1db95ba4ca29ddda59d379f5ee023c67ec10d3f33e8efced5f367c3ca2c1902"
     },
     {
       "kind": "literal",
       "offset": 2572,
-      "length": 1586
+      "length": 1646
     },
     {
       "kind": "artwork",
@@ -27,7 +27,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4158,
+      "offset": 4218,
       "length": 62
     },
     {
@@ -38,7 +38,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4220,
+      "offset": 4280,
       "length": 64
     },
     {
@@ -49,7 +49,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4284,
+      "offset": 4344,
       "length": 58
     },
     {
@@ -60,7 +60,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4342,
+      "offset": 4402,
       "length": 62
     },
     {
@@ -71,7 +71,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4404,
+      "offset": 4464,
       "length": 66
     },
     {
@@ -82,7 +82,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4470,
+      "offset": 4530,
       "length": 52
     },
     {
@@ -93,7 +93,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4522,
+      "offset": 4582,
       "length": 56
     },
     {
@@ -104,7 +104,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4578,
+      "offset": 4638,
       "length": 60
     },
     {
@@ -115,7 +115,7 @@
     },
     {
       "kind": "literal",
-      "offset": 4638,
+      "offset": 4698,
       "length": 58
     },
     {
@@ -126,8 +126,8 @@
     },
     {
       "kind": "literal",
-      "offset": 4696,
-      "length": 51692
+      "offset": 4756,
+      "length": 55364
     }
   ]
 }

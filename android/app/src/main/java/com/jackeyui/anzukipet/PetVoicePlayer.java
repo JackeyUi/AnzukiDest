@@ -17,6 +17,7 @@ final class PetVoicePlayer {
         catch(Exception ignored){stop();return;}
         if(player!=null)try{float v=store.volume()/100f;player.setVolume(v,v);}catch(IllegalStateException ignored){}
     }
+    boolean playAnimation(String name,String fallback){String event="animation:"+name;try{if(store.eligible(event,Calendar.getInstance()).isEmpty())return fallback!=null&&play(fallback,null,false);return play(event,null,false);}catch(Exception e){return false;}}
     boolean play(String event,String id,boolean preview){
         if(store.muted()||store.volume()==0){if(preview)status.show("目前為靜音或音量為 0");return false;}
         if(!preview&&(player!=null||manager.getRingerMode()!=AudioManager.RINGER_MODE_NORMAL||manager.isMusicActive()))return false;

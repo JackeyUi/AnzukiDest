@@ -29,6 +29,8 @@ final class VoiceStore {
     int idleMinutes(){return Math.max(1,Math.min(10,prefs.getInt("idleMinutes",defaults().optInt("idleMinutes",3))));}
     JSONObject clips() throws Exception{return new JSONObject(prefs.getString("clips","{}"));}
     JSONArray clips(String event) throws Exception {JSONArray a=clips().optJSONArray(event);return a==null?new JSONArray():a;}
+    JSONArray animationEvents() throws Exception {JSONObject animations=new PetAssets(context).index.getJSONObject("animations");JSONArray events=new JSONArray();Iterator<String> names=animations.keys();while(names.hasNext()){String name=names.next();events.put(new JSONObject().put("id","animation:"+name).put("label",animations.getJSONObject(name).optString("label",name)));}return events;}
+    boolean isEvent(String event) throws Exception {JSONArray events=policy.getJSONArray("events");for(int i=0;i<events.length();i++)if(event.equals(events.getJSONObject(i).getString("id")))return true;return event.startsWith("animation:")&&new PetAssets(context).index.getJSONObject("animations").has(event.substring(10));}
     JSONObject line(String id) throws Exception {for(String key:new String[]{"lines","legacyLines"}){JSONArray all=catalog.optJSONArray(key);if(all==null)continue;for(int i=0;i<all.length();i++){JSONObject l=all.getJSONObject(i);if(id.equals(l.getString("id")))return l;}}return null;}
     JSONObject schedule(JSONObject value) throws Exception {
         if(value==null)throw new IOException("無效的播放條件");String day=value.optString("dayType"),period=value.optString("period");boolean dayOK=false,periodOK=false;
@@ -47,8 +49,7 @@ final class VoiceStore {
 
     File file(JSONObject clip) throws Exception {String name=clip.getString("file");if(!name.matches("[a-f0-9-]+\\.[a-z0-9]+"))throw new IOException("Invalid audio file");return new File(folder,name);}
     String importFile(String event,JSONObject selection,Uri uri) throws Exception {
-        JSONArray events=policy.getJSONArray("events");boolean known=false;for(int i=0;i<events.length();i++)if(event.equals(events.getJSONObject(i).getString("id")))known=true;
-        if(!known)throw new IOException("未知音聲分類");JSONArray list=clips(event);if(list.length()>=policy.getInt("maxClipsPerEvent"))throw new IOException("每類最多 12 段音檔");
+        if(!isEvent(event))throw new IOException("未知音聲分類");JSONArray list=clips(event);if(list.length()>=policy.getInt("maxClipsPerEvent"))throw new IOException("每類最多 12 段音檔");
         String name="audio";try(Cursor cursor=context.getContentResolver().query(uri,new String[]{OpenableColumns.DISPLAY_NAME},null,null,null)){if(cursor!=null&&cursor.moveToFirst())name=cursor.getString(0);}
         if(name==null||name.isEmpty())name="media";int dot=name.lastIndexOf('.');String suffix=dot<0?"":name.substring(dot+1).toLowerCase(Locale.ROOT),ext=suffix.matches("[a-z0-9]{1,12}")?suffix:"bin";
         if(!acceptsFilename(name))throw new IOException("僅接受音檔，不接受影片或其他檔案");

@@ -28,7 +28,7 @@ public class BehaviorActivity extends Activity {
         toggle("未操作桌寵一段時間後自動小憩","nap_enabled");slider("小憩等待時間","nap_minutes");
         root.addView(text("先播放小憩開始，再循環小憩；觸碰或拖曳角色才喚醒。手機以未操作桌寵的時間計算，其他 App 的操作不列入。",14));
         toggle("定時隨機播放其他動作","auto_enabled");slider("隨機動作間隔","action_minutes");
-        root.addView(text("每次隨機播放拿書、扶帽子或抓星星其中一個。小憩及拖曳時暫停，動作播完交叉淡回所選呼吸動畫。\n所有新動畫維持原速，影片原有聲音一律不播放；自行匯入的角色音聲維持獨立設定。",14));
+        root.addView(text("每次隨機播放拿書、扶帽子或抓星星其中一個。小憩及拖曳時暫停，動作播完交叉淡回所選呼吸動畫。\n抓起與落地固定 2 倍速，其他動作維持原速。影片原有聲音一律不播放；可在音聲設定為每支動畫加入自己的音檔。",14));
         Button back=new Button(this);back.setText("返回");back.setOnClickListener(v->finish());root.addView(back);
     }
 }

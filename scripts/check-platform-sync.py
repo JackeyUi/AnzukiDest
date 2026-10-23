@@ -21,6 +21,10 @@ def main():
     if behavior:
         added=json.loads((ROOT/'materials/animation-v3/manifest.json').read_text());assert added['complete']
         for clip in added['clips']:verified[clip['name']]=clip;roots[clip['name']]=ROOT/'materials/animation-v3'
+    trimmed=ROOT/'materials/animation-v4-trim/manifest.json'
+    if trimmed.exists():
+        added=json.loads(trimmed.read_text());assert added['complete']
+        for clip in added['clips']:verified[clip['name']]=clip;roots[clip['name']]=trimmed.parent
     revision=hashlib.sha256()
     for name in index['animations']:
         source=ROOT/'pet/anzuki-animation'/(name+'.webp');source_sha=hashlib.sha256(source.read_bytes()).hexdigest()

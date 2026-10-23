@@ -67,7 +67,7 @@ public class MainActivity extends Activity {
         preview=new ImageView(this);preview.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         root.addView(preview,new LinearLayout.LayoutParams(-1,dp(260)));
         status=text("",14,Color.rgb(164,181,208));root.addView(status);
-        Button start=button("啟動懸浮桌寵",Color.rgb(221,196,139),Color.rgb(24,28,39));root.addView(start);
+        Button start=button("啟動／顯示懸浮桌寵",Color.rgb(221,196,139),Color.rgb(24,28,39));root.addView(start);
         start.setOnClickListener(v -> {
             if (!Settings.canDrawOverlays(this)) {
                 waitingForOverlay=true;
@@ -105,7 +105,7 @@ public class MainActivity extends Activity {
             public void onProgressChanged(SeekBar bar,int progress,boolean user){speedLabel.setText(String.format(Locale.US,"點擊動畫速度  %.1f×",1+progress/10.0));if(user)prefs.edit().putInt("click_speed_step",progress).apply();}
             public void onStopTrackingTouch(SeekBar bar){}
         });
-        root.addView(text("1.0×–2.0×，每格 0.1。套用於下一次點擊，待機維持原速。\n點上方角色可預覽點擊動作。",13,Color.rgb(164,181,208)));
+        root.addView(text("1.0×–2.0×，每格 0.1。套用於下一次點擊，待機維持原速，抓起與落地固定 2 倍速。\n點上方角色可預覽點擊動作。",13,Color.rgb(164,181,208)));
         preview.setOnClickListener(v->{try{PetAssets a=new PetAssets(this);showPreview(a.click(),false);}catch(Exception ignored){}});
         Button behaviorSettings=button("動畫選單與自動行為",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(behaviorSettings);behaviorSettings.setOnClickListener(v->startActivity(new Intent(this,BehaviorActivity.class)));
         Button animationSettings=button("自訂動畫",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(animationSettings);animationSettings.setOnClickListener(v->startActivity(new Intent(this,AnimationActivity.class)));
@@ -118,7 +118,7 @@ public class MainActivity extends Activity {
                 if(PetService.running) { Intent i=new Intent(MainActivity.this,PetService.class);i.setAction(PetService.RESIZE);startService(i); }
             }
         });
-        root.addView(text("拖曳移動・點一下彈動・長按回到設定\n也可從持續通知隨時停止桌寵。",14,Color.rgb(164,181,208)));
+        root.addView(text("拖曳移動・點一下彈動・長按回到設定\n向下拖到螢幕底部放開可收起，從通知的「顯示桌寵」叫回。",14,Color.rgb(164,181,208)));
         try { PetAssets assets=new PetAssets(this);root.addView(text("素材版本 "+assets.index.getString("revision"),11,Color.rgb(119,141,173))); }
         catch(Exception e){Toast.makeText(this,"動畫素材讀取失敗",Toast.LENGTH_LONG).show();}
     }

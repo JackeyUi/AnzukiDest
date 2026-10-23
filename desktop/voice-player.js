@@ -10,6 +10,7 @@
    clearInterval(this.timer);if(!this.destroyed&&p.idleEnabled&&!p.muted&&p.volume>0)this.timer=setInterval(()=>this.play('idle'),p.idleMinutes*60000);
   }
   stop(){if(this.audio){this.audio.onended=null;this.audio.onerror=null;this.audio.pause();this.audio.removeAttribute('src');this.audio.load();this.audio=null;}this.current=null;}
+  playAnimation(name,fallback){const rules=typeof module==='object'&&module.exports?require('../pet/voice-rules.js'):root.AnzukiVoiceRules,event='animation:'+name;return this.play(rules.eligible(this.snapshot,event).length?event:fallback||event);}
   async play(event,{id,preview=false}={}){
    const {settings:p,clips,policy}=this.snapshot;
    if(this.destroyed||p.muted||p.volume===0){if(preview)this.status('目前為靜音或音量為 0，請先開啟聲音。');return false;}

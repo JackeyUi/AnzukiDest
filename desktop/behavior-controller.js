@@ -7,11 +7,12 @@
   }
   update(settings){this.settings={...this.settings,...settings};this.nextActionAt=this.now()+this.minutes('actionMinutes')*60000;this.player.idle=this.settings.idle||this.config.idle;}
   minutes(key){const n=Number(this.settings[key]);return Number.isInteger(n)&&n>=5&&n<=30?n:10;}
+  speed(name){return this.policy?.speeds?.[name]||1;}
   setState(state){this.state=state;this.onState(state);}
   activity(){if(!this.state.startsWith('nap'))this.lastActivity=this.now();}
   interact(){this.lastActivity=this.now();}
   async idle(){if(this.closed)return;this.serial++;this.setState('idle');this.nextActionAt=this.now()+this.minutes('actionMinutes')*60000;await this.player.setIdle(this.settings.idle||this.config.idle,{force:true,fade:true});}
-  async action(name,state='action',speed=1){
+  async action(name,state='action',speed=this.speed(name)){
    if(this.closed)return;const token=++this.serial;this.setState(state);
    const ok=await this.player.stream(name,{speed,fade:true});if(!this.closed&&token===this.serial)await this.idle();return ok;
   }
@@ -21,7 +22,7 @@
    if(!ok){await this.idle();this.lastActivity=this.now();return;}
    this.setState('nap-loop');await this.player.stream(this.policy.nap.loop,{loop:true,fade:true});
   }
-  dragStart(){if(this.closed||!this.policy)return;this.interact();this.serial++;this.setState('drag');this.player.stream(this.policy.drag,{loop:true,fade:true});}
+  dragStart(){if(this.closed||!this.policy)return;this.interact();this.serial++;this.setState('drag');this.player.stream(this.policy.drag,{loop:true,speed:this.speed(this.policy.drag),fade:true});}
   dragEnd(){if(this.closed||this.state!=='drag')return;this.interact();return this.action(this.policy.land,'landing');}
   async click(){
    if(this.closed)return;this.interact();const token=++this.serial;this.setState('click');
@@ -35,6 +36,7 @@
    if(this.settings.napEnabled!==false&&stamp-this.lastActivity>=this.minutes('napMinutes')*60000){this.nap();return;}
    if(this.settings.autoEnabled!==false&&stamp>=this.nextActionAt){const pool=this.policy.random.animations;if(pool.length)this.action(pool[Math.floor(this.random()*pool.length)],'automatic');}
   }
+  suspend(){if(this.closed)return;this.serial++;this.setState('hidden');this.player.pause();}
   destroy(){this.closed=true;this.serial++;}
  }
  const api={BehaviorController};if(typeof module==='object'&&module.exports)module.exports=api;else root.AnzukiBehavior=api;

@@ -121,6 +121,7 @@
    }catch(error){if(!this.closed&&token===this.serial)console.error('Click decode failed',error);return false;}
    finally{if(token===this.serial&&!this.closed){this.busy=false;this.playingName=null;this.setIdle(this.idle);}}
   }
+  pause(){this.serial++;this.busy=false;this.playingName=null;this.cancelLoop();this.fade=null;}
   destroy(){this.closed=true;this.serial++;this.busy=false;this.cancelLoop();this.fade=null;for(const task of this.cache.values())task.then(track=>{for(const f of track.frames)f.close();}).catch(()=>{});this.cache.clear();this.idles.clear();}
  }
  const api={timeline,frameAt,FramePlayer};if(typeof module==='object'&&module.exports)module.exports=api;else root.AnzukiFrames=api;

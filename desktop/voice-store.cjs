@@ -6,9 +6,11 @@ class VoiceStore {
   this.policy=policy;this.catalog=catalog;this.folder=path.join(data,'voice');this.file=path.join(data,'voice-index.json');
   fs.mkdirSync(this.folder,{recursive:true});let saved={};try{saved=JSON.parse(fs.readFileSync(this.file,'utf8'));}catch{}
   this.settings={...policy.defaults};this.update(saved.settings,false);
-  this.clips={};for(const e of policy.events)this.clips[e.id]=(Array.isArray(saved.clips?.[e.id])?saved.clips[e.id]:[]).filter(c=>c&&/^[a-f0-9-]+\.[a-z0-9]+$/.test(c.file)&&typeof c.id==='string'&&typeof c.name==='string'&&fs.existsSync(path.join(this.folder,c.file))).slice(0,policy.maxClipsPerEvent);
+  this.animationEvents=[];this.clips={};const events=new Set([...policy.events.map(e=>e.id),...Object.keys(saved.clips||{}).filter(id=>/^animation:[a-z0-9-]+$/.test(id))]);for(const id of events)this.clips[id]=(Array.isArray(saved.clips?.[id])?saved.clips[id]:[]).filter(c=>c&&/^[a-f0-9-]+\.[a-z0-9]+$/.test(c.file)&&typeof c.id==='string'&&typeof c.name==='string'&&fs.existsSync(path.join(this.folder,c.file))).slice(0,policy.maxClipsPerEvent);
   this.persist();this.cleanup();
  }
+ setAnimations(index){this.animationEvents=Object.entries(index.animations).map(([id,a])=>({id:'animation:'+id,label:a.label||id}));for(const e of this.animationEvents)this.clips[e.id]||=[];}
+ isEvent(id){return this.policy.events.some(e=>e.id===id)||this.animationEvents.some(e=>e.id===id);}
  cleanup(){const used=new Set(Object.values(this.clips).flat().map(c=>c.file));for(const f of fs.readdirSync(this.folder))if(!used.has(f)&&/^[a-f0-9-]+\.[a-z0-9]+$/.test(f))try{fs.unlinkSync(path.join(this.folder,f));}catch{}}
  update(p,write=true){
   if(p){if(Number.isFinite(p.volume))this.settings.volume=Math.max(0,Math.min(100,Math.round(p.volume)));
@@ -17,10 +19,10 @@ class VoiceStore {
   if(write)this.persist();
  }
  persist(){const temp=this.file+'.tmp';fs.writeFileSync(temp,JSON.stringify({settings:this.settings,clips:this.clips||{}},null,2));fs.renameSync(temp,this.file);}
- snapshot(){return {policy:this.policy,catalog:this.catalog,settings:{...this.settings},clips:Object.fromEntries(Object.entries(this.clips).map(([k,v])=>[k,v.map(c=>({...c,unsupported:!acceptsFilename(c.name,this.policy),url:pathToFileURL(path.join(this.folder,c.file)).href}))]))};}
+ snapshot(){return {policy:this.policy,catalog:this.catalog,animationEvents:this.animationEvents,settings:{...this.settings},clips:Object.fromEntries(Object.entries(this.clips).map(([k,v])=>[k,v.map(c=>({...c,unsupported:!acceptsFilename(c.name,this.policy),url:pathToFileURL(path.join(this.folder,c.file)).href}))]))};}
  setSchedule(id,value){const schedule=normalizeSchedule(value,this.policy);for(const clips of Object.values(this.clips)){const clip=clips.find(c=>c.id===id);if(clip){clip.schedule=schedule;clip.lineId='generic';this.persist();return;}}}
  async import(event,files,selection,validate=async()=>true){
-  if(!Object.hasOwn(this.clips,event))throw new Error('Unknown voice category');const errors=[];
+  if(!this.isEvent(event))throw new Error('Unknown voice category');const errors=[];
   for(const source of files){
    if(this.clips[event].length>=this.policy.maxClipsPerEvent){errors.push('每類最多 '+this.policy.maxClipsPerEvent+' 段');break;}
    try{const suffix=path.extname(source).slice(1).toLowerCase(),ext=/^[a-z0-9]{1,12}$/.test(suffix)?suffix:'bin',stat=await fs.promises.stat(source);

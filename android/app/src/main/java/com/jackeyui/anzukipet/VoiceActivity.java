@@ -13,12 +13,12 @@ import java.util.*;
 
 public class VoiceActivity extends Activity {
     private VoiceStore store;private PetVoicePlayer preview;private TextView status;private ScrollView scroll;
-    private String pendingEvent,pendingLine;private boolean importing;private static final int PICK_AUDIO=41;
+    private String pendingEvent,pendingLine,selectedAnimation;private boolean importing;private static final int PICK_AUDIO=41;
     private int dp(float n){return Math.round(n*getResources().getDisplayMetrics().density);}
     private TextView text(String s,int size){TextView t=new TextView(this);t.setText(s);t.setTextSize(size);t.setTextColor(Color.rgb(226,234,250));t.setPadding(0,dp(9),0,dp(6));return t;}
     private Button button(String s){Button b=new Button(this);b.setText(s);b.setAllCaps(false);return b;}
     private void report(String message){if(status!=null)status.setText(message);}
-    @Override public void onCreate(Bundle state){super.onCreate(state);if(state!=null){pendingEvent=state.getString("voiceEvent");pendingLine=state.getString("voiceLine");}try{store=new VoiceStore(this);preview=new PetVoicePlayer(this,this::report);build();}catch(Exception e){Toast.makeText(this,"音聲設定讀取失敗",Toast.LENGTH_LONG).show();finish();}}
+    @Override public void onCreate(Bundle state){super.onCreate(state);if(state!=null){pendingEvent=state.getString("voiceEvent");pendingLine=state.getString("voiceLine");selectedAnimation=state.getString("animationVoice");}try{store=new VoiceStore(this);preview=new PetVoicePlayer(this,this::report);build();}catch(Exception e){Toast.makeText(this,"音聲設定讀取失敗",Toast.LENGTH_LONG).show();finish();}}
     private void notifyPlayer(){preview.apply();if(PetService.running){Intent i=new Intent(this,PetService.class);i.setAction(PetService.VOICE_UPDATE);startService(i);}}
     private void test(String event,String id){
         if(PetService.running){preview.stop();Intent i=new Intent(this,PetService.class);i.setAction(PetService.VOICE_TEST);i.putExtra("event",event);i.putExtra("clipId",id);startService(i);report("試聽已送出；依目前音量播放。");}
@@ -48,9 +48,15 @@ public class VoiceActivity extends Activity {
         interval.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){public void onStartTrackingTouch(SeekBar b){}public void onProgressChanged(SeekBar b,int p,boolean user){intervalLabel.setText("閒聊間隔  "+(p+1)+" 分鐘");}public void onStopTrackingTouch(SeekBar b){store.prefs.edit().putInt("idleMinutes",b.getProgress()+1).apply();notifyPlayer();}});
         root.addView(text("連點重新播放動畫；音檔播完前不打斷、不排隊。自動播放避開其他媒體與系統靜音；沒有當前時段適用的音檔時保持安靜。試聽可手動播放任一句。",13));
         status=text("尚未錄製的台詞可之後再匯入。",14);root.addView(status);Button stop=button("停止播放");root.addView(stop);stop.setOnClickListener(v->stopVoice());
+        root.addView(text("動畫聲音",22));root.addView(text("進入動畫時隨機播一段，循環不重播。聲音維持原速，不打斷、不排隊；點擊動畫沒有專屬音檔時沿用點擊回應。",13));
+        final JSONArray animations=store.animationEvents();final Spinner animationChoice=choice(root,"選擇動畫",animations,selectedAnimation);final LinearLayout animationPanel=new LinearLayout(this);animationPanel.setOrientation(LinearLayout.VERTICAL);root.addView(animationPanel);
+        animationChoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){public void onNothingSelected(AdapterView<?> p){}public void onItemSelected(AdapterView<?> p,View v,int position,long id){try{JSONObject item=animations.getJSONObject(position);selectedAnimation=item.getString("id");animationPanel.removeAllViews();appendVoiceGroup(animationPanel,item);}catch(Exception e){report("動畫聲音讀取失敗");}}});
         JSONArray events=store.policy.getJSONArray("events");
-        for(int e=0;e<events.length();e++){
-            JSONObject item=events.getJSONObject(e);final String event=item.getString("id");root.addView(text(item.getString("label"),20));
+        for(int e=0;e<events.length();e++)appendVoiceGroup(root,events.getJSONObject(e));
+        root.addView(text("僅可加入裝置能解碼的音檔，不接受影片；每檔最多 50 MB。匯入時會檢查音軌，無法播放的檔案會顯示原因。匯入後複製到 App 私有空間，原檔不動，也不會自動上傳。",13));scroll.post(()->scroll.scrollTo(0,oldY));
+    }
+    private void appendVoiceGroup(LinearLayout root,JSONObject item) throws Exception {
+        final String event=item.getString("id");root.addView(text(item.getString("label"),20));
             root.addView(text("選擇播放條件後加入檔案，不必先指定台詞或改檔名。",13));final Spinner[] fields=scheduleFields(root,null);
             Button add=button("＋ 加入音檔");root.addView(add);add.setOnClickListener(v->{if(importing)return;try{pendingEvent=event;pendingLine=selection(fields).toString();Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT);intent.addCategory(Intent.CATEGORY_OPENABLE);intent.setType("audio/*");intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true);startActivityForResult(intent,PICK_AUDIO);}catch(Exception ex){report("無法開啟檔案選擇器");}});
             JSONArray clips=store.clips(event);if(clips.length()==0)root.addView(text("尚未匯入音檔",13));
@@ -61,11 +67,9 @@ public class VoiceActivity extends Activity {
                 LinearLayout row=new LinearLayout(this);Button test=button("播放"),remove=button("移除");row.addView(test,new LinearLayout.LayoutParams(0,dp(48),1));row.addView(remove,new LinearLayout.LayoutParams(0,dp(48),1));root.addView(row);
                 test.setEnabled(store.acceptsFilename(clip.optString("name")));test.setOnClickListener(v->test(event,id));remove.setOnClickListener(v->{try{preview.stop();store.remove(id);notifyPlayer();build();}catch(Exception ex){report("移除失敗");}});
             }
-        }
-        root.addView(text("僅可加入裝置能解碼的音檔，不接受影片；每檔最多 50 MB。匯入時會檢查音軌，無法播放的檔案會顯示原因。匯入後複製到 App 私有空間，原檔不動，也不會自動上傳。",13));scroll.post(()->scroll.scrollTo(0,oldY));
     }
-    @Override protected void onSaveInstanceState(Bundle out){super.onSaveInstanceState(out);out.putString("voiceEvent",pendingEvent);out.putString("voiceLine",pendingLine);}
-    @Override protected void onRestoreInstanceState(Bundle state){super.onRestoreInstanceState(state);pendingEvent=state.getString("voiceEvent");pendingLine=state.getString("voiceLine");}
+    @Override protected void onSaveInstanceState(Bundle out){super.onSaveInstanceState(out);out.putString("voiceEvent",pendingEvent);out.putString("voiceLine",pendingLine);out.putString("animationVoice",selectedAnimation);}
+    @Override protected void onRestoreInstanceState(Bundle state){super.onRestoreInstanceState(state);pendingEvent=state.getString("voiceEvent");pendingLine=state.getString("voiceLine");selectedAnimation=state.getString("animationVoice");}
     @Override protected void onActivityResult(int request,int result,Intent data){super.onActivityResult(request,result,data);if(request!=PICK_AUDIO||result!=RESULT_OK||data==null||pendingEvent==null)return;
         List<Uri> files=new ArrayList<>();if(data.getClipData()!=null)for(int i=0;i<data.getClipData().getItemCount();i++)files.add(data.getClipData().getItemAt(i).getUri());else if(data.getData()!=null)files.add(data.getData());
         final String event=pendingEvent,assignment=pendingLine==null?"{\"dayType\":\"all\",\"period\":\"all\"}":pendingLine;importing=true;report("正在原樣複製音檔……");

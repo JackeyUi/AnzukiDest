@@ -4,6 +4,8 @@ contextBridge.exposeInMainWorld('Anzuki',{
  reportPainted:()=>ipcRenderer.send('pet:painted'),
  reportStartupError:message=>ipcRenderer.send('pet:startup-error',String(message)),
  recover:()=>ipcRenderer.send('pet:recover'),
+ show:()=>ipcRenderer.send('pet:show'),
+ onVisibility:fn=>ipcRenderer.on('pet:visibility',(_e,visible)=>fn(visible)),
  setHit:inside=>ipcRenderer.send('pet:hit',inside),
  onCursor:fn=>ipcRenderer.on('pet:cursor',(_e,p)=>fn(p)),
  onAnimation:fn=>ipcRenderer.on('pet:play-animation',(_e,id)=>fn(id)),
@@ -27,6 +29,6 @@ contextBridge.exposeInMainWorld('Anzuki',{
  onSettings:fn=>{const listener=(_event,p)=>fn(p);ipcRenderer.on('pet:settings',listener);return ()=>ipcRenderer.removeListener('pet:settings',listener);},
  dragStart:p=>ipcRenderer.send('pet:drag-start',p),
  dragMove:p=>ipcRenderer.send('pet:drag-move',p),
- dragEnd:()=>ipcRenderer.send('pet:drag-end'),
+ dragEnd:p=>ipcRenderer.send('pet:drag-end',p),
  menu:()=>ipcRenderer.send('pet:menu'),quit:()=>ipcRenderer.send('pet:quit')
 });

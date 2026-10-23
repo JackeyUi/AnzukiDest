@@ -21,6 +21,10 @@ def sync():
     if extra:
         added=json.loads(newer.read_text());assert added['complete'], 'New artwork verification is incomplete'
         verified.update({c['name']:c for c in added['clips']})
+    trimmed=ROOT/'materials/animation-v4-trim/manifest.json'
+    if trimmed.exists():
+        added=json.loads(trimmed.read_text());assert added['complete'], 'Trim verification is incomplete'
+        verified.update({c['name']:c for c in added['clips']})
     animations={};revision=hashlib.sha256()
     for name in names:
         if '/' in name or '\\' in name:raise ValueError('Invalid animation stem')
@@ -34,7 +38,7 @@ def sync():
         revision.update(name.encode());revision.update(sha.encode())
         animations[name]=dict(file=source.name,sourceFile=source.name,frames=record['frames'],fps=record['fps'],
             durationMs=round(record['frames']/record['fps']*1000),sourceSha256=sha,sha256=sha,losslessPixelVerified=True)
-        if 'label' in record:animations[name]['label']=record['label']
+        animations[name]['label']=record.get('label',{'idle-loop-long':'長循環','idle-loop-short':'短循環','click-bounce-1':'點擊彈動一','click-bounce-2':'點擊彈動二'}.get(name,name))
     index=dict(schema=3,revision=revision.hexdigest()[:16],idle=idle,idleOptions=options,clickSpeed=config['playback']['clickSpeed'],clicks=clicks,width=720,height=1280,
         qualityPolicy='Original resolution; RGBA lossless; identical desktop and Android bytes',animations=animations)
     if behavior:index['behavior']=behavior

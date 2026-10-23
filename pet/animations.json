@@ -1,6 +1,6 @@
 {
   "schema": 3,
-  "revision": "3c666fd8c3379c08",
+  "revision": "caea36d82b9b4a0f",
   "idle": "idle-loop-long",
   "idleOptions": [
     "idle-loop-long",
@@ -28,7 +28,8 @@
       "durationMs": 3917,
       "sourceSha256": "703bbc38358c42379d85d9a560aa503d059d8f5e0f1ad86c0f5a86c728ba73f3",
       "sha256": "703bbc38358c42379d85d9a560aa503d059d8f5e0f1ad86c0f5a86c728ba73f3",
-      "losslessPixelVerified": true
+      "losslessPixelVerified": true,
+      "label": "長循環"
     },
     "idle-loop-short": {
       "file": "idle-loop-short.webp",
@@ -38,7 +39,8 @@
       "durationMs": 2500,
       "sourceSha256": "85163a90769d1577f04d3549de4df8dc82c267fb96b988fa4ec97c36c0a6d0e0",
       "sha256": "85163a90769d1577f04d3549de4df8dc82c267fb96b988fa4ec97c36c0a6d0e0",
-      "losslessPixelVerified": true
+      "losslessPixelVerified": true,
+      "label": "短循環"
     },
     "click-bounce-1": {
       "file": "click-bounce-1.webp",
@@ -48,7 +50,8 @@
       "durationMs": 2250,
       "sourceSha256": "56ffc143754e4407e9ce0dade4b1d3fc48d3fbfc8b4f0137494bb6e2c3addfd7",
       "sha256": "56ffc143754e4407e9ce0dade4b1d3fc48d3fbfc8b4f0137494bb6e2c3addfd7",
-      "losslessPixelVerified": true
+      "losslessPixelVerified": true,
+      "label": "點擊彈動一"
     },
     "click-bounce-2": {
       "file": "click-bounce-2.webp",
@@ -58,7 +61,8 @@
       "durationMs": 2333,
       "sourceSha256": "6b216258cc66769845756c4933b9579e084d7c90056c247a676c7915e1e18409",
       "sha256": "6b216258cc66769845756c4933b9579e084d7c90056c247a676c7915e1e18409",
-      "losslessPixelVerified": true
+      "losslessPixelVerified": true,
+      "label": "點擊彈動二"
     },
     "drag-held": {
       "file": "drag-held.webp",
@@ -118,11 +122,11 @@
     "adjust-hat": {
       "file": "adjust-hat.webp",
       "sourceFile": "adjust-hat.webp",
-      "frames": 240,
+      "frames": 192,
       "fps": 24,
-      "durationMs": 10000,
-      "sourceSha256": "2e2a763e32269e30e9bf854e5c28f873f7d6e74e2a5b21cc5bf93b31246bec0b",
-      "sha256": "2e2a763e32269e30e9bf854e5c28f873f7d6e74e2a5b21cc5bf93b31246bec0b",
+      "durationMs": 8000,
+      "sourceSha256": "e1db95ba4ca29ddda59d379f5ee023c67ec10d3f33e8efced5f367c3ca2c1902",
+      "sha256": "e1db95ba4ca29ddda59d379f5ee023c67ec10d3f33e8efced5f367c3ca2c1902",
       "losslessPixelVerified": true,
       "label": "扶帽子"
     },
@@ -195,6 +199,10 @@
         "id": "catch-star",
         "label": "抓星星"
       }
-    ]
+    ],
+    "speeds": {
+      "drag-held": 2,
+      "land": 2
+    }
   }
 }
