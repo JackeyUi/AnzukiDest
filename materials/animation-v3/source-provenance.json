@@ -1,0 +1,62 @@
+{
+  "sourceFolder": "https://drive.google.com/drive/folders/14mmDOWWdUvNSDFu7DjHB7qjiEemyuyur",
+  "archive": {
+    "driveFileId": "1vGSn5qHG11WOxS8y3GOpcgx4p2FzPvg3",
+    "file": "original/桌寵_動畫v1.rar",
+    "extractedFiles": [
+      "抓起.mp4",
+      "拿書.mp4",
+      "小憩_loop.mp4",
+      "小憩_start.mp4",
+      "扶帽子.mp4",
+      "抓星星.mp4"
+    ]
+  },
+  "landing": {
+    "driveFileId": "1YD3AwWv8QG5DjuYJxucjFW7gJtmNw1KN",
+    "file": "original/落地_裁切.mp4"
+  },
+  "policy": "Original uploaded archive and all extracted/source MP4s are preserved byte-for-byte; source audio is retained only in archival MP4 and is never played by the pet.",
+  "files": [
+    {
+      "file": "小憩_loop.mp4",
+      "bytes": 1490993,
+      "sha256": "775e5c65e0f83810abb6981f1f55017bd782e2c511d94837fb6b0e48103ebff5"
+    },
+    {
+      "file": "小憩_start.mp4",
+      "bytes": 4314452,
+      "sha256": "95bf2e67b77cafaf6996a6d290fd6fb7b001f43fce6793bad2bb3ccaf803698b"
+    },
+    {
+      "file": "扶帽子.mp4",
+      "bytes": 4692723,
+      "sha256": "548be698348ccb22b478cdd065e83078bc3da1c8a02ff1c1a6858e6972d667bd"
+    },
+    {
+      "file": "抓星星.mp4",
+      "bytes": 3919758,
+      "sha256": "7ad7b2b7bbec70a1cdf5e8e35bda1c7b2587a7cb6e56494f07a4ecc519ea2e59"
+    },
+    {
+      "file": "抓起.mp4",
+      "bytes": 3810529,
+      "sha256": "cea73336f66c9922a6de92cb0c5ba1abc96c59b0ee5b30af60c8f5d2a8a80cb8"
+    },
+    {
+      "file": "拿書.mp4",
+      "bytes": 3847211,
+      "sha256": "551cd525328294c075789aa9ac97bf484f303ae06cce4484c1f0e3167bb6a41b"
+    },
+    {
+      "file": "桌寵_動畫v1.rar",
+      "bytes": 21836933,
+      "sha256": "c2043e958587ab1b1850ae115b073d354670bef35d384d87c6500680b583c1d6"
+    },
+    {
+      "file": "落地_裁切.mp4",
+      "bytes": 2337392,
+      "sha256": "1818075bab24e0d21fd7faa90483a7a00d74ea4bbedc4b9738e32ab3fe549710"
+    }
+  ]
+}

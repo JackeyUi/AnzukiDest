@@ -26,7 +26,9 @@
       "idle-loop-long"
     ],
     "turn": [],
-    "drag": [],
+    "drag": [
+      "drag-held"
+    ],
     "clicks": [
       "click-bounce-1",
       "click-bounce-2"
@@ -99,6 +101,65 @@
       "max": 2.0,
       "step": 0.1,
       "default": 1.0
+    },
+    "behavior": {
+      "drag": "drag-held",
+      "land": "land",
+      "nap": {
+        "start": "nap-start",
+        "loop": "nap-loop",
+        "defaultMinutes": 10,
+        "minMinutes": 5,
+        "maxMinutes": 30,
+        "wake": "pet-interaction-only"
+      },
+      "random": {
+        "animations": [
+          "read-book",
+          "adjust-hat",
+          "catch-star"
+        ],
+        "defaultMinutes": 10,
+        "minMinutes": 5,
+        "maxMinutes": 30,
+        "selection": "random-single"
+      },
+      "crossfadeMs": 250,
+      "animationAudio": false,
+      "manual": [
+        {
+          "id": "nap",
+          "label": "小憩（開始後持續循環）"
+        },
+        {
+          "id": "drag-held",
+          "label": "抓起（單次）"
+        },
+        {
+          "id": "land",
+          "label": "落地"
+        },
+        {
+          "id": "nap-start",
+          "label": "小憩開始（單次）"
+        },
+        {
+          "id": "nap-loop",
+          "label": "小憩循環（單次）"
+        },
+        {
+          "id": "read-book",
+          "label": "拿書"
+        },
+        {
+          "id": "adjust-hat",
+          "label": "扶帽子"
+        },
+        {
+          "id": "catch-star",
+          "label": "抓星星"
+        }
+      ]
     }
   }
 }

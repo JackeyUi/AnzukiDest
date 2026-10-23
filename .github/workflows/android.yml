@@ -49,6 +49,7 @@ jobs:
           node --check desktop/voice-player.js
           node scripts/check-voice.cjs
           node scripts/check-playback.cjs
+          node scripts/check-behavior.cjs
           node launch.mjs --check
       - name: Verify committed desktop and Android assets
         run: python scripts/check-platform-sync.py --assets-only

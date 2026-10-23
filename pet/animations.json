@@ -1,6 +1,6 @@
 {
   "schema": 3,
-  "revision": "20e2acd627e0c890",
+  "revision": "3c666fd8c3379c08",
   "idle": "idle-loop-long",
   "idleOptions": [
     "idle-loop-long",
@@ -59,6 +59,142 @@
       "sourceSha256": "6b216258cc66769845756c4933b9579e084d7c90056c247a676c7915e1e18409",
       "sha256": "6b216258cc66769845756c4933b9579e084d7c90056c247a676c7915e1e18409",
       "losslessPixelVerified": true
+    },
+    "drag-held": {
+      "file": "drag-held.webp",
+      "sourceFile": "drag-held.webp",
+      "frames": 240,
+      "fps": 24,
+      "durationMs": 10000,
+      "sourceSha256": "02e3c0b98988c79859795eb5d970f72b841811ebfe7045526eb396261843fecc",
+      "sha256": "02e3c0b98988c79859795eb5d970f72b841811ebfe7045526eb396261843fecc",
+      "losslessPixelVerified": true,
+      "label": "抓起"
+    },
+    "land": {
+      "file": "land.webp",
+      "sourceFile": "land.webp",
+      "frames": 119,
+      "fps": 24,
+      "durationMs": 4958,
+      "sourceSha256": "b18d558779d8df9f42a305e1cc3b0b6a23664e42c313ce27588322cd2859677f",
+      "sha256": "b18d558779d8df9f42a305e1cc3b0b6a23664e42c313ce27588322cd2859677f",
+      "losslessPixelVerified": true,
+      "label": "落地"
+    },
+    "nap-start": {
+      "file": "nap-start.webp",
+      "sourceFile": "nap-start.webp",
+      "frames": 240,
+      "fps": 24,
+      "durationMs": 10000,
+      "sourceSha256": "16a145252f9a7db2d9ef1003dad9e743d064213c2da18cf859866b9ca41b9bb8",
+      "sha256": "16a145252f9a7db2d9ef1003dad9e743d064213c2da18cf859866b9ca41b9bb8",
+      "losslessPixelVerified": true,
+      "label": "小憩開始"
+    },
+    "nap-loop": {
+      "file": "nap-loop.webp",
+      "sourceFile": "nap-loop.webp",
+      "frames": 63,
+      "fps": 24,
+      "durationMs": 2625,
+      "sourceSha256": "8c32c4ad546cd1d43e101d576fa96f46ed60d9584ff5e4b1616441ce1435a0e6",
+      "sha256": "8c32c4ad546cd1d43e101d576fa96f46ed60d9584ff5e4b1616441ce1435a0e6",
+      "losslessPixelVerified": true,
+      "label": "小憩循環"
+    },
+    "read-book": {
+      "file": "read-book.webp",
+      "sourceFile": "read-book.webp",
+      "frames": 240,
+      "fps": 24,
+      "durationMs": 10000,
+      "sourceSha256": "0ffa96b870a5e745ebd1ae7eb7ec39abec3345492e95f0441c59c04ac585411f",
+      "sha256": "0ffa96b870a5e745ebd1ae7eb7ec39abec3345492e95f0441c59c04ac585411f",
+      "losslessPixelVerified": true,
+      "label": "拿書"
+    },
+    "adjust-hat": {
+      "file": "adjust-hat.webp",
+      "sourceFile": "adjust-hat.webp",
+      "frames": 240,
+      "fps": 24,
+      "durationMs": 10000,
+      "sourceSha256": "2e2a763e32269e30e9bf854e5c28f873f7d6e74e2a5b21cc5bf93b31246bec0b",
+      "sha256": "2e2a763e32269e30e9bf854e5c28f873f7d6e74e2a5b21cc5bf93b31246bec0b",
+      "losslessPixelVerified": true,
+      "label": "扶帽子"
+    },
+    "catch-star": {
+      "file": "catch-star.webp",
+      "sourceFile": "catch-star.webp",
+      "frames": 240,
+      "fps": 24,
+      "durationMs": 10000,
+      "sourceSha256": "c3c910edf26e24fb68ea2fd1273d6d11bd3a183eb15d37b62ca0c46ed8c5ebca",
+      "sha256": "c3c910edf26e24fb68ea2fd1273d6d11bd3a183eb15d37b62ca0c46ed8c5ebca",
+      "losslessPixelVerified": true,
+      "label": "抓星星"
     }
+  },
+  "behavior": {
+    "drag": "drag-held",
+    "land": "land",
+    "nap": {
+      "start": "nap-start",
+      "loop": "nap-loop",
+      "defaultMinutes": 10,
+      "minMinutes": 5,
+      "maxMinutes": 30,
+      "wake": "pet-interaction-only"
+    },
+    "random": {
+      "animations": [
+        "read-book",
+        "adjust-hat",
+        "catch-star"
+      ],
+      "defaultMinutes": 10,
+      "minMinutes": 5,
+      "maxMinutes": 30,
+      "selection": "random-single"
+    },
+    "crossfadeMs": 250,
+    "animationAudio": false,
+    "manual": [
+      {
+        "id": "nap",
+        "label": "小憩（開始後持續循環）"
+      },
+      {
+        "id": "drag-held",
+        "label": "抓起（單次）"
+      },
+      {
+        "id": "land",
+        "label": "落地"
+      },
+      {
+        "id": "nap-start",
+        "label": "小憩開始（單次）"
+      },
+      {
+        "id": "nap-loop",
+        "label": "小憩循環（單次）"
+      },
+      {
+        "id": "read-book",
+        "label": "拿書"
+      },
+      {
+        "id": "adjust-hat",
+        "label": "扶帽子"
+      },
+      {
+        "id": "catch-star",
+        "label": "抓星星"
+      }
+    ]
   }
 }

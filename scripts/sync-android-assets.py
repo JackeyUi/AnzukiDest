@@ -10,11 +10,17 @@ def sync():
     idle=config['animations']['idle'][0];clicks=config['animations']['clicks']
     options=config['playback']['idleOptions']
     assert idle in options
-    names=list(dict.fromkeys([*options,*clicks]))
+    behavior=config['playback'].get('behavior')
+    extra=[behavior['drag'],behavior['land'],behavior['nap']['start'],behavior['nap']['loop'],*behavior['random']['animations']] if behavior else []
+    names=list(dict.fromkeys([*options,*clicks,*extra]))
     out=ROOT/'android/app/src/main/assets';out.mkdir(parents=True,exist_ok=True)
     for voice_file in ['voice-config.json','voice-lines.json']:shutil.copy2(ROOT/'pet'/voice_file,out/voice_file)
     manifest=json.loads((ROOT/'materials/animation-v2-lossless/manifest.json').read_text())
     verified={c['name']:c for c in manifest['clips']}
+    newer=ROOT/'materials/animation-v3/manifest.json'
+    if extra:
+        added=json.loads(newer.read_text());assert added['complete'], 'New artwork verification is incomplete'
+        verified.update({c['name']:c for c in added['clips']})
     animations={};revision=hashlib.sha256()
     for name in names:
         if '/' in name or '\\' in name:raise ValueError('Invalid animation stem')
@@ -26,10 +32,12 @@ def sync():
         shutil.copy2(source,out/source.name)
         assert (out/source.name).read_bytes()==data
         revision.update(name.encode());revision.update(sha.encode())
-        animations[name]=dict(file=source.name,sourceFile=source.name,frames=record['frames'],fps=24,
-            durationMs=round(record['frames']/24*1000),sourceSha256=sha,sha256=sha,losslessPixelVerified=True)
+        animations[name]=dict(file=source.name,sourceFile=source.name,frames=record['frames'],fps=record['fps'],
+            durationMs=round(record['frames']/record['fps']*1000),sourceSha256=sha,sha256=sha,losslessPixelVerified=True)
+        if 'label' in record:animations[name]['label']=record['label']
     index=dict(schema=3,revision=revision.hexdigest()[:16],idle=idle,idleOptions=options,clickSpeed=config['playback']['clickSpeed'],clicks=clicks,width=720,height=1280,
         qualityPolicy='Original resolution; RGBA lossless; identical desktop and Android bytes',animations=animations)
+    if behavior:index['behavior']=behavior
     (out/'animations.json').write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n')
     # Desktop uses the same index and exact same source images.
     (ROOT/'pet/animations.json').write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n')

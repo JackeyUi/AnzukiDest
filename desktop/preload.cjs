@@ -3,6 +3,8 @@ const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('Anzuki',{
  setHit:inside=>ipcRenderer.send('pet:hit',inside),
  onCursor:fn=>ipcRenderer.on('pet:cursor',(_e,p)=>fn(p)),
+ onAnimation:fn=>ipcRenderer.on('pet:play-animation',(_e,id)=>fn(id)),
+ playAnimation:id=>ipcRenderer.send('pet:play-animation',id),
  importAnimation:role=>ipcRenderer.invoke('pet:animation-import',role),
  removeAnimation:id=>ipcRenderer.invoke('pet:animation-remove',id),
  onLibrary:fn=>ipcRenderer.on('pet:library',(_e,p)=>fn(p)),

@@ -40,8 +40,9 @@ final class PetAssets {
         JSONArray choices = index.getJSONArray("clicks");
         return choices.length() == 0 ? idle() : choices.getString(random.nextInt(choices.length()));
     }
-    Drawable load(String name, boolean loop) throws Exception {
-        JSONObject record=index.getJSONObject("animations").getJSONObject(name);String file=record.getString("file");double speed=loop?1:clickSpeed();String key=name+":"+speed+":"+loop;if(cache.containsKey(key))return cache.get(key);
+    Drawable load(String name, boolean loop) throws Exception {return load(name,loop,loop?1:clickSpeed());}
+    synchronized Drawable load(String name, boolean loop,double speed) throws Exception {
+        JSONObject record=index.getJSONObject("animations").getJSONObject(name);String file=record.getString("file");String key=name+":"+speed+":"+loop;if(cache.containsKey(key))return cache.get(key);
         ImageDecoder.Source source;
         if(name.startsWith("custom-")){byte[] original=java.nio.file.Files.readAllBytes(library.file(record).toPath());source=ImageDecoder.createSource(ByteBuffer.wrap(speed==1?original:WebPTiming.retime(original,speed)));}
         else if(speed==1)source=ImageDecoder.createSource(context.getAssets(),file);

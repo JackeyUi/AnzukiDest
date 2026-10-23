@@ -8,22 +8,25 @@ fs.mkdirSync(DATA,{recursive:true});app.setPath('userData',DATA);
 const voice=new VoiceStore(DATA,JSON.parse(fs.readFileSync(path.join(ROOT,'pet','voice-config.json'),'utf8')),JSON.parse(fs.readFileSync(path.join(ROOT,'pet','voice-lines.json'),'utf8')));
 const library=new AnimationStore(DATA);let baseIndex;
 const stateFile=path.join(DATA,'position.json');
-let tray,win,settingsWindow,index,drag=null,state={width:180,clickSpeed:1};
+let tray,win,settingsWindow,index,drag=null,state={width:180,clickSpeed:1,napMinutes:10,actionMinutes:10,napEnabled:true,autoEnabled:true};
 try{state={...state,...JSON.parse(fs.readFileSync(stateFile,'utf8'))};}catch{}
-const save=()=>{if(win&&!win.isDestroyed()){const b=win.getBounds();fs.writeFileSync(stateFile,JSON.stringify({...b,width:state.width,idle:state.idle,clickSpeed:state.clickSpeed,clickAnimation:state.clickAnimation}));}};
+const save=()=>{if(win&&!win.isDestroyed()){const b=win.getBounds();fs.writeFileSync(stateFile,JSON.stringify({...b,width:state.width,...preferences()}));}};
 function clamp(bounds){const area=screen.getDisplayMatching(bounds).workArea;return {...bounds,
  x:Math.max(area.x,Math.min(bounds.x,area.x+area.width-bounds.width)),
  y:Math.max(area.y,Math.min(bounds.y,area.y+area.height-bounds.height))};}
 function resize(width){state.width=width;const b=win.getBounds();const height=Math.round(width*index.height/index.width);
  win.setBounds(clamp({x:Math.round(b.x+(b.width-width)/2),y:b.y+b.height-height,width,height}));save();}
 function reset(){const a=screen.getPrimaryDisplay().workArea;const b=win.getBounds();win.setBounds(clamp({...b,x:a.x+a.width-b.width-20,y:a.y+a.height-b.height-20}));save();}
-function preferences(){return {idle:state.idle,clickSpeed:state.clickSpeed,clickAnimation:state.clickAnimation||'builtin'};}
+function minutes(value){return Number.isInteger(value)&&value>=5&&value<=30?value:10;}
+function preferences(){return {idle:state.idle,clickSpeed:state.clickSpeed,clickAnimation:state.clickAnimation||'builtin',napMinutes:minutes(state.napMinutes),actionMinutes:minutes(state.actionMinutes),napEnabled:state.napEnabled!==false,autoEnabled:state.autoEnabled!==false};}
 function rebuild(){index=library.merge(baseIndex,state.clickAnimation);if(!index.idleOptions.includes(state.idle))state.idle=index.idle;if(!index.clickOptions.some(c=>c.id===state.clickAnimation))state.clickAnimation='builtin';}
 function snapshot(){return {...index,settings:preferences(),voice:voice.snapshot(),assetRoot:pathToFileURL(path.join(ROOT,'pet','anzuki-animation')).href+'/'};}
 function broadcastLibrary(){rebuild();save();for(const w of [win,settingsWindow])if(w&&!w.isDestroyed())w.webContents.send('pet:library',snapshot());}
 function updatePreferences(p){
  if(p&&index.idleOptions.includes(p.idle))state.idle=p.idle;
  if(p&&Number.isFinite(p.clickSpeed)&&p.clickSpeed>=1&&p.clickSpeed<=2&&Math.abs(p.clickSpeed*10-Math.round(p.clickSpeed*10))<1e-7)state.clickSpeed=p.clickSpeed;
+ for(const key of ['napMinutes','actionMinutes'])if(p&&Number.isInteger(p[key])&&p[key]>=5&&p[key]<=30)state[key]=p[key];
+ for(const key of ['napEnabled','autoEnabled'])if(p&&typeof p[key]==='boolean')state[key]=p[key];
  if(p&&index.clickOptions.some(c=>c.id===p.clickAnimation)&&p.clickAnimation!==state.clickAnimation){state.clickAnimation=p.clickAnimation;broadcastLibrary();return;}
  save();for(const w of [win,settingsWindow])if(w&&!w.isDestroyed())w.webContents.send('pet:settings',preferences());
 }
@@ -37,6 +40,7 @@ function showSettings(){
 }
 function menu(){Menu.buildFromTemplate([
  {label:'動畫／音聲設定…',click:showSettings},
+ {label:'播放動畫',submenu:[...(index.behavior?.manual||[]).map(item=>({label:item.label,click:()=>win.webContents.send('pet:play-animation',item.id)})),{type:'separator'},{label:'回到呼吸動畫／喚醒',click:()=>win.webContents.send('pet:play-animation','idle')}]},
  {label:'靜音',type:'checkbox',checked:voice.settings.muted,click:item=>{voice.update({muted:item.checked});broadcastVoice();}},
  {label:'待機動畫',submenu:index.idleOptions.map((name,i)=>({label:index.animations[name].label||(i===0?'長循環':'短循環'),type:'radio',checked:state.idle===name,click:()=>updatePreferences({idle:name})}))},
  {label:'角色大小',submenu:[150,180,240,300,360].map(n=>({label:n+' px',type:'radio',checked:state.width===n,click:()=>resize(n)}))},
@@ -59,12 +63,13 @@ else app.whenReady().then(async()=>{
   hasShadow:false,resizable:false,alwaysOnTop:true,skipTaskbar:true,focusable:false,
   title:'Anzuki',webPreferences:{backgroundThrottling:false,autoplayPolicy:'no-user-gesture-required',preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
  win.setIgnoreMouseEvents(true,{forward:true});win.__petHit=false;
- const cursorTimer=setInterval(()=>{if(win&&!win.isDestroyed()){const point=screen.getCursorScreenPoint(),bounds=win.getBounds();win.webContents.send('pet:cursor',{x:point.x-bounds.x,y:point.y-bounds.y});}},16);win.on('closed',()=>clearInterval(cursorTimer));
+ const cursorTimer=setInterval(()=>{if(win&&!win.isDestroyed()){const point=screen.getCursorScreenPoint(),bounds=win.getBounds();win.webContents.send('pet:cursor',{x:point.x-bounds.x,y:point.y-bounds.y,screenX:point.x,screenY:point.y});}},16);win.on('closed',()=>clearInterval(cursorTimer));
  win.webContents.setWindowOpenHandler(()=>({action:'deny'}));
  win.webContents.on('will-navigate',event=>event.preventDefault());
  const valid=ev=>win&&!win.isDestroyed()&&ev.sender===win.webContents;
  const trusted=ev=>valid(ev)||(settingsWindow&&!settingsWindow.isDestroyed()&&ev.sender===settingsWindow.webContents);
  ipcMain.handle('pet:config',ev=>{if(!trusted(ev))return null;return snapshot();});
+ ipcMain.on('pet:play-animation',(ev,id)=>{if(trusted(ev)&&(id==='idle'||index.behavior?.manual.some(item=>item.id===id)))win.webContents.send('pet:play-animation',id);});
  ipcMain.on('pet:hit',(ev,inside)=>{if(valid(ev)&&typeof inside==='boolean'&&win.__petHit!==inside){win.__petHit=inside;win.setIgnoreMouseEvents(!inside,{forward:true});}});
  ipcMain.handle('pet:animation-import',async(ev,role)=>{
   if(!trusted(ev)||!['idle','click'].includes(role))throw Error('未知動畫用途');const chosen=await dialog.showOpenDialog(settingsWindow||win,{title:'加入透明動態 WebP',properties:['openFile'],filters:[{name:'透明動態 WebP',extensions:['webp']}]});if(chosen.canceled)return null;

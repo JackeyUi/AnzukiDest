@@ -40,6 +40,7 @@ jobs:
           python scripts/check-platform-sync.py
           node scripts/check-voice.cjs
           node scripts/check-playback.cjs
+          node scripts/check-behavior.cjs
           node launch.mjs --check
           for file in desktop/*.js desktop/*.cjs; do node --check "$file"; done
           java -jar "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" verify --verbose android/releases/Anzuki-Android.apk

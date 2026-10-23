@@ -107,6 +107,7 @@ public class MainActivity extends Activity {
         });
         root.addView(text("1.0×–2.0×，每格 0.1。套用於下一次點擊，待機維持原速。\n點上方角色可預覽點擊動作。",13,Color.rgb(164,181,208)));
         preview.setOnClickListener(v->{try{PetAssets a=new PetAssets(this);showPreview(a.click(),false);}catch(Exception ignored){}});
+        Button behaviorSettings=button("動畫選單與自動行為",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(behaviorSettings);behaviorSettings.setOnClickListener(v->startActivity(new Intent(this,BehaviorActivity.class)));
         Button animationSettings=button("自訂動畫",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(animationSettings);animationSettings.setOnClickListener(v->startActivity(new Intent(this,AnimationActivity.class)));
         Button voiceSettings=button("音聲設定與試聽",Color.rgb(33,47,70),Color.rgb(226,234,250));root.addView(voiceSettings);voiceSettings.setOnClickListener(v->startActivity(new Intent(this,VoiceActivity.class)));
         root.addView(text("角色大小",16,Color.rgb(226,234,250)));

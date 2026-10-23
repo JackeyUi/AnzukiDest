@@ -25,7 +25,7 @@ async function walk(folder,prefix=''){let files=[];for(const entry of await fs.r
    console.log('PE_DIFFERENCE '+JSON.stringify({code:a.sections.map((s,i)=>({name:s.name,equal:JSON.stringify(s)===JSON.stringify(b.sections[i])})),resourcesEqual:JSON.stringify(a.resources)===JSON.stringify(b.resources)}));
   }
   // Runtime changes require explicit inclusion; normal app updates must not silently re-ship it.
-  if(!rel.startsWith('resources/app.asar')&&!rel.startsWith('resources/pet/')&&!rel.startsWith('recording-guides/')&&!['asset-manifest.json','READ-ME.txt','LICENSE.Anzuki.txt','CUSTOM-ANIMATIONS.md'].includes(rel))throw Error('Electron runtime changed; review required before creating incremental package: '+rel);
+  if(!rel.startsWith('resources/app.asar')&&!rel.startsWith('resources/pet/')&&!rel.startsWith('recording-guides/')&&!['asset-manifest.json','READ-ME.txt','LICENSE.Anzuki.txt','CUSTOM-ANIMATIONS.md','ANIMATION-BEHAVIORS.md'].includes(rel))throw Error('Electron runtime changed; review required before creating incremental package: '+rel);
   await fs.mkdir(path.dirname(path.join(output,rel)),{recursive:true});await fs.writeFile(path.join(output,rel),bytes);files.push({path:rel,sha256:sha,previousSha256:oldHash,bytes:bytes.length});
  }
  if(!files.length)throw Error('No changed application files');

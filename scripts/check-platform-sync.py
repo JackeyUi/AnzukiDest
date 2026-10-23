@@ -15,14 +15,20 @@ def main():
     assert index['clicks']==config['animations']['clicks'], 'Android click pool differs from desktop'
     manifest=json.loads((ROOT/'materials/animation-v2-lossless/manifest.json').read_text())
     verified={clip['name']:clip for clip in manifest['clips']}
+    roots={name:ROOT/'materials/animation-v2-lossless' for name in verified}
+    behavior=config['playback'].get('behavior')
+    assert index.get('behavior')==behavior, 'Behavior policy differs between platforms'
+    if behavior:
+        added=json.loads((ROOT/'materials/animation-v3/manifest.json').read_text());assert added['complete']
+        for clip in added['clips']:verified[clip['name']]=clip;roots[clip['name']]=ROOT/'materials/animation-v3'
     revision=hashlib.sha256()
-    for name in dict.fromkeys([*index['idleOptions'],*index['clicks']]):
+    for name in index['animations']:
         source=ROOT/'pet/anzuki-animation'/(name+'.webp');source_sha=hashlib.sha256(source.read_bytes()).hexdigest()
         revision.update(name.encode());revision.update(source_sha.encode())
         record=index['animations'][name]
         assert source_sha==verified[name]['sha256'] and verified[name]['losslessPixelVerified'], 'Unverified artwork: '+name
         assert verified[name]['opaquePixelsChanged']==0, 'Opaque character colors changed: '+name
-        master=ROOT/'materials/animation-v2-lossless'/verified[name]['master']
+        master=roots[name]/verified[name]['master']
         assert hashlib.sha256(master.read_bytes()).hexdigest()==source_sha, 'Master/runtime mismatch: '+name
         assert record['sourceSha256']==source_sha, 'Stale Android source: '+name
         assert record['sha256']==source_sha, 'Android must use byte-identical lossless artwork'

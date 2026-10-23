@@ -6,7 +6,16 @@
 <section id="custom-animations"><h2>自訂動畫</h2><p>加入透明背景的動態 WebP，原尺寸、原幀率保存。匯入後會自動套用，可在上方切回內建動畫。</p><div class="clip-actions"><button id="import-idle">加入待機動畫</button><button id="import-click">加入點擊動畫</button></div><div id="animation-library"></div><p id="animation-status" role="status" aria-live="polite"></p></section>
 <label for="speed">點擊動畫速度 <output id="speed-label" for="speed">1.0×</output></label>
 <input id="speed" type="range" min="1" max="2" step="0.1" value="1"><div class="ends"><span>1.0×</span><span>2.0×</span></div>
-<p>自動儲存。倍速套用於下一次點擊，待機維持原速。</p><section id="voice-settings"><h2>角色音聲</h2>
+<p>自動儲存。倍速套用於下一次點擊，待機及其他動作維持原速。</p>
+<section><h2>小憩與隨機動作</h2>
+<label class="check"><input id="nap-enabled" type="checkbox" checked>鼠標未移動一段時間後小憩</label>
+<label for="nap-minutes">小憩等待時間 <output id="nap-minutes-label">10 分鐘</output></label><input id="nap-minutes" type="range" min="5" max="30" step="1" value="10">
+<p>先播放小憩開始，再循環小憩。只有點擊／拖曳角色或選擇喚醒才結束；移動鼠標不會吵醒。</p>
+<label class="check"><input id="auto-enabled" type="checkbox" checked>定時隨機播放其他動作</label>
+<label for="action-minutes">隨機動作間隔 <output id="action-minutes-label">10 分鐘</output></label><input id="action-minutes" type="range" min="5" max="30" step="1" value="10">
+<p>每次隨機播放拿書、扶帽子或抓星星其中一個，小憩／拖曳時暫停。動作結束交叉淡回所選呼吸動畫，影片原有聲音一律不播放。</p>
+<label for="manual-animation">主動播放</label><select id="manual-animation"></select><div class="clip-actions"><button id="play-animation">播放選擇的動畫</button><button id="wake-animation">喚醒／回到呼吸</button></div></section>
+<section id="voice-settings"><h2>角色音聲</h2>
 <label class="check"><input id="voice-muted" type="checkbox">靜音</label>
 <label for="voice-volume">音聲音量 <output id="voice-volume-label">70%</output></label><input id="voice-volume" type="range" min="0" max="100" step="1" value="70">
 <label class="check"><input id="voice-idle-enabled" type="checkbox">待機時自動閒聊</label>
