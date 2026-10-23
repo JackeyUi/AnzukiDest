@@ -47,7 +47,13 @@ final class PetAssets {
         if(name.startsWith("custom-")){byte[] original=java.nio.file.Files.readAllBytes(library.file(record).toPath());source=ImageDecoder.createSource(ByteBuffer.wrap(speed==1?original:WebPTiming.retime(original,speed)));}
         else if(speed==1)source=ImageDecoder.createSource(context.getAssets(),file);
         else{byte[] original;try(InputStream in=context.getAssets().open(file)){ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] chunk=new byte[65536];int n;while((n=in.read(chunk))!=-1)out.write(chunk,0,n);original=out.toByteArray();}source=ImageDecoder.createSource(ByteBuffer.wrap(WebPTiming.retime(original,speed)));}
-        Drawable drawable=ImageDecoder.decodeDrawable(source,(decoder,info,src)->decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE));cache.put(key,drawable);if(cache.size()>4)cache.remove(cache.keySet().iterator().next());
+        Drawable drawable=ImageDecoder.decodeDrawable(source,(decoder,info,src)->decoder.setAllocator(ImageDecoder.ALLOCATOR_SOFTWARE));cache.put(key,drawable);
+        // Reserve the drag drawable in addition to four ordinary LRU entries. Automatic
+        // actions and naps must not evict it and force asset reading/retiming on a grab.
+        JSONObject behavior=index.optJSONObject("behavior");String drag=behavior==null?"":behavior.optString("drag");
+        JSONObject speeds=behavior==null?null:behavior.optJSONObject("speeds");String pinned=drag+":"+(speeds==null?1.0:speeds.optDouble(drag,1))+":true";
+        int limit=cache.containsKey(pinned)?5:4;
+        if(cache.size()>limit)for(String candidate:new java.util.ArrayList<String>(cache.keySet()))if(!candidate.equals(pinned)){cache.remove(candidate);break;}
         if (drawable instanceof AnimatedImageDrawable) {
             ((AnimatedImageDrawable) drawable).setRepeatCount(loop ? AnimatedImageDrawable.REPEAT_INFINITE : 0);
         }

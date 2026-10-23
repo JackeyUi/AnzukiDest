@@ -31,12 +31,37 @@
     }catch(error){for(const frame of frames)frame.close();throw error;}finally{decoder.close();}
    })();this.cache.set(name,task);task.catch(()=>this.cache.delete(name));return task;
   }
-  async warm(){for(const name of this.config.clicks){if(this.closed)return;try{await this.prepare(name);}catch(error){if(!this.closed)console.warn('Click frame preload failed',error);}}}
+  async prepareDrag(){
+   const name=this.config.behavior?.drag;if(!name||!this.config.animations[name]||this.closed)return null;
+   if(!this.dragTask){
+    const task=(async()=>{
+     let decoder,first;
+     try{
+      const bytes=await this.loadClick(name),clock=timeline(bytes);if(this.closed)return null;
+      decoder=new ImageDecoder({data:new Uint8Array(bytes),type:'image/webp',preferAnimation:true,colorSpaceConversion:'none'});
+      await decoder.tracks.ready;await decoder.completed;
+      const {image}=await decoder.decode({frameIndex:0,completeFramesOnly:true});
+      try{first=await createImageBitmap(image,{colorSpaceConversion:'none',premultiplyAlpha:'premultiply'});}finally{image.close();}
+      if(this.closed){first.close();decoder.close();return null;}
+      // Keep just the drag decoder and first original-size frame outside the encoded LRU.
+      // Repeated idle/automatic/nap transitions must never make the next grab a cold load.
+      this.dragTrack={name,clock,decoder,first};this.element.dataset.dragReady='true';return this.dragTrack;
+     }catch(error){first?.close();decoder?.close();throw error;}
+    })();this.dragTask=task;task.catch(()=>{if(this.dragTask===task)this.dragTask=null;});
+   }
+   return this.dragTask;
+  }
+  async warm(){
+   try{await this.prepareDrag();}catch(error){if(!this.closed)console.warn('Drag preload failed',error);}
+   for(const name of this.config.clicks){if(this.closed)return;try{await this.prepare(name);}catch(error){if(!this.closed)console.warn('Click frame preload failed',error);}}
+  }
+  releaseBitmap(bitmap){if(bitmap&&bitmap!==this.dragTrack?.first)bitmap.close();}
+  releaseDecoder(decoder){if(decoder&&decoder!==this.dragTrack?.decoder)decoder.close();}
   cancelLoop(){
    cancelAnimationFrame(this.raf);this.finishFrameLoop?.(false);this.finishFrameLoop=null;
    this.closeLookahead?.();this.closeLookahead=null;
-   if(this.idleDecoder){this.idleDecoder.close();this.idleDecoder=null;}
-   this.streamBitmap?.close();this.streamBitmap=null;
+   if(this.idleDecoder){this.releaseDecoder(this.idleDecoder);this.idleDecoder=null;}
+   this.releaseBitmap(this.streamBitmap);this.streamBitmap=null;
   }
   beginFade(enabled){
    this.fade=null;if(!enabled||!this.painted)return;
@@ -69,11 +94,14 @@
    if(this.closed)return false;this.beginFade(fade);const token=++this.serial;this.cancelLoop();this.busy=!idle;this.playingName=name;
    let decoder;
    try{
-    const {bytes,clock}=await this.encoded(name);if(token!==this.serial||this.closed)return false;
-    decoder=new ImageDecoder({data:new Uint8Array(bytes),type:'image/webp',preferAnimation:true,colorSpaceConversion:'none'});this.idleDecoder=decoder;await decoder.tracks.ready;await decoder.completed;
+    const prepared=name===this.config.behavior?.drag?await this.prepareDrag():null;
+    const track=prepared||await this.encoded(name),clock=track.clock;if(token!==this.serial||this.closed)return false;
+    decoder=prepared?.decoder||new ImageDecoder({data:new Uint8Array(track.bytes),type:'image/webp',preferAnimation:true,colorSpaceConversion:'none'});this.idleDecoder=decoder;
+    if(!prepared){await decoder.tracks.ready;await decoder.completed;}
+    if(token!==this.serial||this.closed)return false;
     const completion=new Promise(resolve=>{this.finishFrameLoop=resolve;});let started=null,previous=-1,ahead=null;const presented=new Set();
-    const decodeBitmap=async index=>{const {image}=await decoder.decode({frameIndex:index,completeFramesOnly:true});let bitmap;try{bitmap=await createImageBitmap(image,{colorSpaceConversion:'none',premultiplyAlpha:'premultiply'});}finally{image.close();}if(token!==this.serial||this.closed){bitmap.close();return null;}return bitmap;};
-    const discardAhead=()=>{const item=ahead;ahead=null;item?.promise.then(bitmap=>bitmap?.close()).catch(()=>{});};
+    const decodeBitmap=async index=>{if(prepared&&index===0)return prepared.first;const {image}=await decoder.decode({frameIndex:index,completeFramesOnly:true});let bitmap;try{bitmap=await createImageBitmap(image,{colorSpaceConversion:'none',premultiplyAlpha:'premultiply'});}finally{image.close();}if(token!==this.serial||this.closed){bitmap.close();return null;}return bitmap;};
+    const discardAhead=()=>{const item=ahead;ahead=null;item?.promise.then(bitmap=>this.releaseBitmap(bitmap)).catch(()=>{});};
     this.closeLookahead=discardAhead;
     const tick=async now=>{
      if(token!==this.serial||this.closed)return;
@@ -85,8 +113,8 @@
       if(changed){
        let bitmap;if(ahead?.index===index){const item=ahead;ahead=null;bitmap=await item.promise;}else{discardAhead();bitmap=await decodeBitmap(index);}
        if(!bitmap)return;
-       if(token!==this.serial||this.closed){bitmap.close();return;}
-       this.streamBitmap?.close();this.streamBitmap=bitmap;previous=index;presented.add(index);this.element.dataset.frameIndex=String(index);
+       if(token!==this.serial||this.closed){this.releaseBitmap(bitmap);return;}
+       this.releaseBitmap(this.streamBitmap);this.streamBitmap=bitmap;previous=index;presented.add(index);this.element.dataset.frameIndex=String(index);
        const next=index+1<clock.frames?index+1:loop?0:null;
        if(next!==null)ahead={index:next,promise:decodeBitmap(next).catch(error=>{if(token===this.serial&&!this.closed)console.warn('Frame lookahead failed',error);return null;})};
       }
@@ -96,7 +124,7 @@
     };
     await tick(performance.now());if(loop)return token===this.serial&&!!this.streamBitmap;return await completion;
    }catch(error){if(token===this.serial&&!this.closed)console.error('Animation load failed',error);return false;}
-   finally{if(!loop&&token===this.serial){this.closeLookahead?.();this.closeLookahead=null;if(this.idleDecoder===decoder){decoder?.close();this.idleDecoder=null;}this.streamBitmap?.close();this.streamBitmap=null;this.busy=false;}}
+   finally{if(!loop&&token===this.serial){this.closeLookahead?.();this.closeLookahead=null;if(this.idleDecoder===decoder){this.releaseDecoder(decoder);this.idleDecoder=null;}this.releaseBitmap(this.streamBitmap);this.streamBitmap=null;this.busy=false;}}
   }
   async setIdle(name,{force=false,fade=true}={}){
    this.idle=name;if(this.closed||this.busy&&!force)return;
@@ -122,7 +150,7 @@
    finally{if(token===this.serial&&!this.closed){this.busy=false;this.playingName=null;this.setIdle(this.idle);}}
   }
   pause(){this.serial++;this.busy=false;this.playingName=null;this.cancelLoop();this.fade=null;}
-  destroy(){this.closed=true;this.serial++;this.busy=false;this.cancelLoop();this.fade=null;for(const task of this.cache.values())task.then(track=>{for(const f of track.frames)f.close();}).catch(()=>{});this.cache.clear();this.idles.clear();}
+  destroy(){this.closed=true;this.serial++;this.busy=false;this.cancelLoop();this.dragTrack?.first.close();this.dragTrack?.decoder.close();this.dragTrack=null;this.dragTask=null;this.fade=null;for(const task of this.cache.values())task.then(track=>{for(const f of track.frames)f.close();}).catch(()=>{});this.cache.clear();this.idles.clear();}
  }
  const api={timeline,frameAt,FramePlayer};if(typeof module==='object'&&module.exports)module.exports=api;else root.AnzukiFrames=api;
 })(globalThis);

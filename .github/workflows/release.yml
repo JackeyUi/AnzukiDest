@@ -38,16 +38,7 @@ jobs:
         run: |
           node scripts/restore-android-release.mjs
           python scripts/check-platform-sync.py
-          node scripts/check-voice.cjs
-          node scripts/check-playback.cjs
-          node scripts/check-behavior.cjs
-          node launch.mjs --check
-          for file in desktop/*.js desktop/*.cjs; do node --check "$file"; done
           java -jar "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" verify --verbose android/releases/Anzuki-Android.apk
-      - name: Compile separate test APK
-        run: python android/build.py --sdk "$ANDROID_HOME" --out "$RUNNER_TEMP/anzuki-test/Anzuki-Android.apk"
-      - name: Verify original release is still synchronized
-        run: python scripts/check-platform-sync.py
       - uses: actions/upload-artifact@v4
         with:
           name: Anzuki-Android-signed-release

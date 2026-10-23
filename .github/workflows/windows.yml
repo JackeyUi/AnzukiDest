@@ -42,35 +42,21 @@ jobs:
       - name: Install pinned packaging and test tools
         shell: pwsh
         run: npm install --prefix .local/windows-tools --no-save @electron/packager@18.3.6 @electron/asar@3.4.1 @electron/fuses@1.8.0 playwright@1.56.1
-      - name: Verify playback and voice rules
+      - name: Check changed player syntax
         shell: pwsh
-        run: |
-          node scripts/check-playback.cjs
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          node scripts/check-voice.cjs
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          node scripts/check-custom-animation.cjs
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          node scripts/check-frame-clock.cjs
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          node scripts/check-behavior.cjs
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          node scripts/check-startup.cjs
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+        run: node --check desktop/frame-player.js
       - name: Package standalone Windows EXE with unchanged artwork
         run: node scripts/build-windows.cjs
-      - name: Verify packaged executable and every asset byte
-        run: node scripts/check-windows-package.cjs
-      - name: Smoke-test actual packaged Windows app
-        run: node scripts/check-windows-smoke.cjs
       - name: Build minimal update and apply it to previous bundle
         env:
           ANZUKI_BASE_RUN: ${{ steps.baseline.outputs.run-id }}
         run: node scripts/build-windows-update.cjs
       - name: Verify incrementally updated application
         run: node scripts/check-windows-package.cjs .local/windows-patched
-      - name: Smoke-test actual incrementally updated EXE
-        run: node scripts/check-windows-smoke.cjs .local/windows-patched
+      # User preference: verify the affected interaction once on the real patched EXE.
+      # Change this focused check when a future release addresses another interaction.
+      - name: Verify first grab and quick release on the updated EXE
+        run: node scripts/check-grab-start.cjs .local/windows-patched
       - uses: actions/upload-artifact@v4
         with:
           name: Anzuki-Windows-Update

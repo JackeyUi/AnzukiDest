@@ -67,7 +67,7 @@ public class PetService extends Service {
             else if(intent==null||intent.getAction()==null||SHOW.equals(intent.getAction()))showPet();
             if(intent!=null){String a=intent.getAction();
                 if(RESIZE.equals(a))resize();
-                else if(UPDATE.equals(a)){playSerial++;assets=new PetAssets(this);policy=assets.index.getJSONObject("behavior");if(!"hidden".equals(mode))showIdle();}
+                else if(UPDATE.equals(a)){playSerial++;assets=new PetAssets(this);policy=assets.index.getJSONObject("behavior");if(!"hidden".equals(mode))showIdle();warmDrag();}
                 else if(POLICY.equals(a))scheduleAction();
                 else if(PLAY.equals(a))manual(intent.getStringExtra("animation"));
             }
@@ -80,7 +80,7 @@ public class PetService extends Service {
         position.height=Math.round(position.width*assets.aspect());position.gravity=Gravity.TOP|Gravity.LEFT;
         DisplayMetrics screen=new DisplayMetrics();wm.getDefaultDisplay().getRealMetrics(screen);
         position.x=prefs.getInt("x",screen.widthPixels-position.width-dp(16));position.y=prefs.getInt("y",screen.heightPixels-position.height-dp(100));clamp();
-        wm.addView(pet,position);running=true;activity();showIdle();handler.postDelayed(tick,1000);
+        wm.addView(pet,position);running=true;activity();showIdle();warmDrag();handler.postDelayed(tick,1000);
         if(voices!=null){voices.play("greeting",null,false);scheduleVoice();}
         pet.setOnClickListener(v->{activity();try{mode="click";play(assets.click(),false,assets.clickSpeed(),this::showIdle,false);}catch(Exception ignored){showIdle();}});
         pet.setOnTouchListener((view,event)->{
@@ -112,9 +112,14 @@ public class PetService extends Service {
         if(id==null)return;if("hidden".equals(mode))showPet();activity();if("idle".equals(id)){showIdle();return;}if("nap".equals(id)){nap();return;}
         JSONArray options=policy.optJSONArray("manual");if(options!=null)for(int i=0;i<options.length();i++)if(id.equals(options.optJSONObject(i).optString("id"))){action(id,"manual");return;}
     }
+    private void warmDrag(){
+        final PetAssets library=assets;final String name=policy.optString("drag");final double rate=speed(name);
+        decoding.execute(()->{if(!destroyed)try{library.load(name,true,rate);}catch(Exception ignored){}});
+    }
     private void play(String name,boolean loop,double speed,Runnable finished,boolean fade){
         if(destroyed||pet==null)return;final int serial=++playSerial;final PetAssets library=assets;
         decoding.execute(()->{
+            if(destroyed||serial!=playSerial)return;
             try{Drawable next=library.load(name,loop,speed);handler.post(()->{
                 if(destroyed||serial!=playSerial)return;
                 if(drawable instanceof AnimatedImageDrawable){((AnimatedImageDrawable)drawable).clearAnimationCallbacks();((AnimatedImageDrawable)drawable).stop();}

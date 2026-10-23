@@ -2,6 +2,9 @@
 
 - User verification preference: keep checks proportional to the change and run only directly relevant necessary checks. Do not repeatedly run the complete regression suite or add redundant tests to routine updates. The testing guidance below is scoped by this preference: reserve broader playback/startup interaction checks for substantial changes or observed failures; verify artwork pixels only when artwork changes. Documentation-only edits need no tests or builds.
 
+- Release verification currently focuses on `scripts/check-grab-start.cjs` against the patched Windows EXE, plus package integrity and Android build/synchronization. For future changes, select the affected check(s) in the workflows instead of blindly rerunning the full regression suite or leaving an unrelated old focus in place.
+- Keep the drag animation prepared after startup: Windows retains its decoder and only one source-resolution first bitmap outside the ordinary encoded LRU; Android preloads and reserves its drag drawable. Idle/action/nap cache churn must not reintroduce a cold load on the first grab. Retain streaming for later frames, safe rapid release/re-grab cancellation and the fixed 2x speed.
+
 - ARTWORK IS THE HIGHEST PRIORITY. Preserve the original pixel resolution, frame rate and opaque character colors. Never downscale source assets, apply lossy re-encoding, convert RGBA to subsampled YUV, or trade visual quality for smaller downloads without explicit user approval.
 - The canonical playback format is original-size 720×1280 lossless RGBA animated WebP. Verify decoded pixels against every keyed frame. Desktop and Android must use byte-identical assets; display sizing is not permission to reduce file resolution.
 
