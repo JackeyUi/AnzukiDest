@@ -25,13 +25,22 @@ def main():
     if trimmed.exists():
         added=json.loads(trimmed.read_text());assert added['complete']
         for clip in added['clips']:verified[clip['name']]=clip;roots[clip['name']]=trimmed.parent
+    cleaned=ROOT/'materials/animation-v5-hair-cleanup/manifest.json'
+    if cleaned.exists():
+        added=json.loads(cleaned.read_text());assert added['complete']
+        for clip in added['clips']:verified[clip['name']]=clip;roots[clip['name']]=cleaned.parent
     revision=hashlib.sha256()
     for name in index['animations']:
         source=ROOT/'pet/anzuki-animation'/(name+'.webp');source_sha=hashlib.sha256(source.read_bytes()).hexdigest()
         revision.update(name.encode());revision.update(source_sha.encode())
         record=index['animations'][name]
         assert source_sha==verified[name]['sha256'] and verified[name]['losslessPixelVerified'], 'Unverified artwork: '+name
-        assert verified[name]['opaquePixelsChanged']==0, 'Opaque character colors changed: '+name
+        clip=verified[name]
+        if roots[name]==cleaned.parent:
+            # Requested green/cyan fringe repair may affect opaque edge pixels.
+            assert clip['edgeColorRepairAuthorized'] and clip['protectedCorePixelsChanged']==0, 'Protected character colors changed: '+name
+            assert clip['visibleGreenDominantPixels']==0, 'Green spill remains: '+name
+        else:assert clip['opaquePixelsChanged']==0, 'Opaque character colors changed: '+name
         master=roots[name]/verified[name]['master']
         assert hashlib.sha256(master.read_bytes()).hexdigest()==source_sha, 'Master/runtime mismatch: '+name
         assert record['sourceSha256']==source_sha, 'Stale Android source: '+name

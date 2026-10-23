@@ -2,7 +2,9 @@
 
 以你提供的動畫製作的桌面與 Android 懸浮桌寵。平時播放 `loop_long`，點擊時隨機播放從 10 秒影片擷取的兩段原地彈動，播完回到待機。
 
-**美術品質優先：保留原始 720×1280 解析度，使用無損 RGBA 動畫 WebP；桌面和 Android 使用逐位元相同的素材。** 不為了縮小檔案而縮圖、有損轉碼或犧牲色彩細節。去背會改動綠幕及半透明邊緣，角色完全不透明區域保留解碼後的原始 RGB。原始 MP4 原封不動保留。
+**美術品質優先：保留原始 720×1280 解析度，使用無損 RGBA 動畫 WebP；桌面和 Android 使用逐位元相同的素材。** 不為了縮小檔案而縮圖、有損轉碼或犧牲色彩細節。去背會改動綠幕及受污染的色邊（可能包含不透明邊緣），受保護的角色內部保留解碼後的原始 RGB。原始 MP4 原封不動保留。
+
+目前 11 組動畫採用[細髮綠邊修復版](materials/animation-v5-hair-cleanup/)，優先保留原本髮絲、髮尾與半透明輪廓；新版抓起使用你提供的 `grab_loop.mp4`，109 幀，沿用固定 2 倍速與背景預載。
 
 ## 新動畫與自動行為
 
@@ -67,8 +69,8 @@ PC 點擊動作會先預解碼並快取，再依播放時鐘顯示原始畫面�
 下載後以 Chrome、Edge 或 Firefox 開啟 `preview.html`。可切換背景、點擊角色或使用「原尺寸檢視」檢查細節。桌寵視窗的顯示尺寸可調，素材檔始終保留 720×1280。
 
 - [未修改的三段原始 MP4](materials/animation-v1/original/)
-- [新版無損母版與處理說明](materials/animation-v2-lossless/README.md)
-- [逐幀像素雜湊及來源紀錄](materials/animation-v2-lossless/manifest.json)
+- [目前無損母版與髮絲綠邊處理說明](materials/animation-v5-hair-cleanup/README.md)
+- [目前逐幀像素雜湊及來源紀錄](materials/animation-v5-hair-cleanup/manifest.json)
 - [桌面與 Android 共用動作索引](pet/animations.json)
 - [驗證紀錄](VALIDATION.md)
 
@@ -76,7 +78,7 @@ PC 點擊動作會先預解碼並快取，再依播放時鐘顯示原始畫面�
 
 ## 同步重製
 
-需要 Python 3、numpy、Pillow、支援 libwebp_anim 的 FFmpeg；建置 Android 另需 Java JDK 17+、Android SDK platform 35 和 build-tools 35.0.0。
+需要 Python 3、numpy、scipy、Pillow、pymatting 1.1.16、支援 libwebp_anim 的 FFmpeg；建置 Android 另需 Java JDK 17+、Android SDK platform 35 和 build-tools 35.0.0。
 
 ```sh
 python scripts/update-all.py --sdk /path/to/android-sdk

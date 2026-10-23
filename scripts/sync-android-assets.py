@@ -25,6 +25,10 @@ def sync():
     if trimmed.exists():
         added=json.loads(trimmed.read_text());assert added['complete'], 'Trim verification is incomplete'
         verified.update({c['name']:c for c in added['clips']})
+    cleaned=ROOT/'materials/animation-v5-hair-cleanup/manifest.json'
+    if cleaned.exists():
+        added=json.loads(cleaned.read_text());assert added['complete'], 'Hair cleanup verification is incomplete'
+        verified.update({c['name']:c for c in added['clips']})
     animations={};revision=hashlib.sha256()
     for name in names:
         if '/' in name or '\\' in name:raise ValueError('Invalid animation stem')
