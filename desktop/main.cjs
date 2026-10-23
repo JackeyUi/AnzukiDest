@@ -39,7 +39,7 @@ function updatePreferences(p){
 function broadcastVoice(){for(const w of [win,settingsWindow])if(w&&!w.isDestroyed())w.webContents.send('pet:voice-changed',voice.snapshot());}
 function showSettings(){
  if(settingsWindow&&!settingsWindow.isDestroyed()){settingsWindow.show();settingsWindow.focus();return;}
- settingsWindow=new BrowserWindow({width:640,height:Math.min(850,screen.getPrimaryDisplay().workArea.height-40),parent:win,resizable:true,title:'Anzuki 動畫與音聲設定',autoHideMenuBar:true,
+ settingsWindow=new BrowserWindow({width:640,height:Math.min(850,screen.getPrimaryDisplay().workArea.height-40),resizable:true,title:'Anzuki 動畫與音聲設定',autoHideMenuBar:true,
   backgroundColor:'#10182a',webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
  settingsWindow.webContents.setWindowOpenHandler(()=>({action:'deny'}));settingsWindow.webContents.on('will-navigate',e=>e.preventDefault());
  settingsWindow.loadFile(path.join(__dirname,'settings.html'));settingsWindow.on('closed',()=>{settingsWindow=null;});
@@ -108,6 +108,7 @@ else app.whenReady().then(async()=>{
  ipcMain.on('pet:drag-end',ev=>{if(valid(ev)){const moved=drag?.moved;drag=null;if(moved)save();}});
  ipcMain.on('pet:menu',ev=>{if(valid(ev))menu();});
  ipcMain.on('pet:quit',ev=>{if(valid(ev))app.quit();});
+ win.webContents.on('console-message',(_event,details,message)=>{const level=typeof details==='object'?details.level:details;if(level==='error'||level===3)logStartup('renderer console: '+(typeof details==='object'?details.message:message));});
  win.webContents.on('did-fail-load',(_event,code,message,url)=>logStartup('page load failed: '+code+' '+message+' '+url));
  win.webContents.on('preload-error',(_event,file,error)=>logStartup('preload failed: '+file+' '+String(error?.stack||error)));
  win.loadFile(path.join(__dirname,'index.html'));win.on('closed',()=>{win=null;});
