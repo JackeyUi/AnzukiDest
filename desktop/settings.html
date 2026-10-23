@@ -1,6 +1,7 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>Anzuki 動畫與音聲設定</title>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'">
 <link rel="stylesheet" href="settings.css"></head><body><h1>動畫與音聲設定</h1>
+<button id="recover-pet" type="button">顯示桌寵／回到右下角</button>
 <label for="idle">待機動畫</label><select id="idle"><option value="idle-loop-long">長循環</option><option value="idle-loop-short">短循環</option></select>
 <label for="click-animation">點擊動畫</label><select id="click-animation"><option value="builtin">內建隨機</option></select>
 <section id="custom-animations"><h2>自訂動畫</h2><p>加入透明背景的動態 WebP，原尺寸、原幀率保存。匯入後會自動套用，可在上方切回內建動畫。</p><div class="clip-actions"><button id="import-idle">加入待機動畫</button><button id="import-click">加入點擊動畫</button></div><div id="animation-library"></div><p id="animation-status" role="status" aria-live="polite"></p></section>

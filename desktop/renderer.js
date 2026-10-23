@@ -10,9 +10,10 @@
  async function install(next){
   config=next;settings={idle:next.idle,clickSpeed:1,napMinutes:10,actionMinutes:10,napEnabled:true,autoEnabled:true,...next.settings};
   behavior?.destroy();player?.destroy();hit.ready=false;updateHit();
-  const active=new AnzukiFrames.FramePlayer(pet,next,name=>api.animation(name),source=>{hit.update(source);updateHit();});player=active;
+  let painted=false;const active=new AnzukiFrames.FramePlayer(pet,next,name=>api.animation(name),source=>{hit.update(source);updateHit();if(!painted){painted=true;api.reportPainted();active.warm();}});player=active;
   behavior=new AnzukiBehavior.BehaviorController(active,next,settings,{onState:state=>pet.dataset.behavior=state});window.__AnzukiBehavior=behavior;pet.dataset.behavior='idle';
-  await active.setIdle(settings.idle,{fade:false});if(active===player)active.warm();
+  const loading=active.setIdle(settings.idle,{fade:false}),attempt=active.serial;const ok=await loading;
+  if(ok===false&&active===player&&active.serial===attempt){api.reportStartupError('Cannot load idle '+settings.idle);if(settings.idle!==next.idle){settings.idle=next.idle;behavior.update(settings);api.setPreferences({idle:next.idle});await active.setIdle(next.idle,{force:true,fade:false});}}
  }
  api.onLibrary(install);api.onSettings(next=>{settings={...settings,...next};behavior?.update(settings);player?.setIdle(settings.idle);});
  api.onAnimation(id=>behavior?.manual(id));
@@ -26,4 +27,4 @@
  const timer=setInterval(()=>behavior?.tick(),1000);
  window.addEventListener('resize',()=>{if(player?.canvas?.width&&pet.firstChild===player.canvas){hit.update(player.canvas);updateHit();}});
  window.addEventListener('beforeunload',()=>{clearInterval(timer);voices.destroy();behavior?.destroy();player?.destroy();});await install(initial);voices.play('greeting');
-})();
+})().catch(error=>window.Anzuki?.reportStartupError(error?.stack||String(error)));

@@ -40,6 +40,8 @@ MP4 的原音軌只保存在原始素材中，**桌寵不載入或播放這些�
 
 Windows 下載 `Anzuki-Windows-Update` 必要更新 ZIP，退出桌寵後完整覆蓋到原安裝資料夾。這次新增完整畫質素材，更新包會較大；不重送未變更的 Electron、舊動畫或個人設定。Android 安裝同簽章的新版 APK。
 
+Windows 更新包會一併補齊目前程式需要的小型共用程式／設定檔，避免跳過前一次純程式更新後開出透明空視窗。若看不到角色，可從系統匣開啟設定，按「顯示桌寵／回到右下角」；它會切回內建呼吸並保留匯入素材、錄音及其他設定。重開程式也會嘗試帶回既有視窗。啟動失敗會顯示訊息並記錄在 `%APPDATA%\Anzuki\desktop\startup.log`。
+
 - [原始 RAR、原始 MP4](materials/animation-v3/original/)
 - [逐幀驗證與無損母版](materials/animation-v3/)
 - [兩平台共用動畫與行為設定](pet/animations.json)

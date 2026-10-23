@@ -94,7 +94,7 @@
       this.raf=requestAnimationFrame(tick);
      }catch(error){if(token===this.serial&&!this.closed){console.error('Animation frame failed',error);this.finishFrameLoop?.(false);this.finishFrameLoop=null;}}
     };
-    await tick(performance.now());if(loop)return true;return await completion;
+    await tick(performance.now());if(loop)return token===this.serial&&!!this.streamBitmap;return await completion;
    }catch(error){if(token===this.serial&&!this.closed)console.error('Animation load failed',error);return false;}
    finally{if(!loop&&token===this.serial){this.closeLookahead?.();this.closeLookahead=null;if(this.idleDecoder===decoder){decoder?.close();this.idleDecoder=null;}this.streamBitmap?.close();this.streamBitmap=null;this.busy=false;}}
   }

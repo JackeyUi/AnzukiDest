@@ -1,6 +1,7 @@
 'use strict';
 (async()=>{
  const api=window.Anzuki;let config=await api.config();const choices=new Map();
+ document.querySelector('#recover-pet').onclick=()=>api.recover();
  const idle=document.querySelector('#idle'),speed=document.querySelector('#speed'),label=document.querySelector('#speed-label');
  const clickChoice=document.querySelector('#click-animation');
  const render=p=>{idle.value=p.idle;clickChoice.value=p.clickAnimation||'builtin';speed.value=p.clickSpeed;label.value=Number(p.clickSpeed).toFixed(1)+'×';for(const [key,id] of [['napMinutes','nap-minutes'],['actionMinutes','action-minutes']]){document.querySelector('#'+id).value=p[key]||10;document.querySelector('#'+id+'-label').value=(p[key]||10)+' 分鐘';}document.querySelector('#nap-enabled').checked=p.napEnabled!==false;document.querySelector('#auto-enabled').checked=p.autoEnabled!==false;};

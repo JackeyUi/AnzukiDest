@@ -55,6 +55,8 @@ jobs:
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           node scripts/check-behavior.cjs
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node scripts/check-startup.cjs
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Package standalone Windows EXE with unchanged artwork
         run: node scripts/build-windows.cjs
       - name: Verify packaged executable and every asset byte

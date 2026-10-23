@@ -1,14 +1,19 @@
 'use strict';
 const {app,BrowserWindow,ipcMain,Menu,screen,dialog,Tray}=require('electron');
 const fs=require('node:fs');const path=require('node:path');const {pathToFileURL}=require('node:url');
-const {VoiceStore}=require('./voice-store.cjs');const {AnimationStore}=require('./animation-store.cjs');
 const ROOT=app.isPackaged?process.resourcesPath:path.resolve(__dirname,'..');
 const DATA=app.isPackaged?path.join(app.getPath('appData'),'Anzuki','desktop'):path.join(ROOT,'data','desktop');
+const startupLog=path.join(DATA,'startup.log');let fatalHandled=false;
+function logStartup(message){try{fs.mkdirSync(DATA,{recursive:true});fs.appendFileSync(startupLog,new Date().toISOString()+' '+String(message).slice(0,6000)+'\n');}catch{}}
+function fatalStartup(error){if(fatalHandled)return;fatalHandled=true;const message=String(error?.stack||error);logStartup(message);dialog.showErrorBox('Anzuki 啟動失敗',message+'\n\n啟動紀錄：'+startupLog);app.exit(1);}
+process.on('uncaughtException',fatalStartup);process.on('unhandledRejection',fatalStartup);
 fs.mkdirSync(DATA,{recursive:true});app.setPath('userData',DATA);
+const {VoiceStore}=require('./voice-store.cjs');const {AnimationStore}=require('./animation-store.cjs');
+logStartup('start '+app.getVersion()+' '+process.arch);
 const voice=new VoiceStore(DATA,JSON.parse(fs.readFileSync(path.join(ROOT,'pet','voice-config.json'),'utf8')),JSON.parse(fs.readFileSync(path.join(ROOT,'pet','voice-lines.json'),'utf8')));
 const library=new AnimationStore(DATA);let baseIndex;
 const stateFile=path.join(DATA,'position.json');
-let tray,win,settingsWindow,index,drag=null,state={width:180,clickSpeed:1,napMinutes:10,actionMinutes:10,napEnabled:true,autoEnabled:true};
+let tray,win,settingsWindow,index,drag=null,firstFrame=false,rendererStopped=false,startupTimer,state={width:180,clickSpeed:1,napMinutes:10,actionMinutes:10,napEnabled:true,autoEnabled:true};
 try{state={...state,...JSON.parse(fs.readFileSync(stateFile,'utf8'))};}catch{}
 const save=()=>{if(win&&!win.isDestroyed()){const b=win.getBounds();fs.writeFileSync(stateFile,JSON.stringify({...b,width:state.width,...preferences()}));}};
 function clamp(bounds){const area=screen.getDisplayMatching(bounds).workArea;return {...bounds,
@@ -17,6 +22,7 @@ function clamp(bounds){const area=screen.getDisplayMatching(bounds).workArea;ret
 function resize(width){state.width=width;const b=win.getBounds();const height=Math.round(width*index.height/index.width);
  win.setBounds(clamp({x:Math.round(b.x+(b.width-width)/2),y:b.y+b.height-height,width,height}));save();}
 function reset(){const a=screen.getPrimaryDisplay().workArea;const b=win.getBounds();win.setBounds(clamp({...b,x:a.x+a.width-b.width-20,y:a.y+a.height-b.height-20}));save();}
+function recover(){if(!win||win.isDestroyed()||!index)return;logStartup('recover visible pet');if(win.isMinimized())win.restore();win.showInactive();win.setAlwaysOnTop(true);win.setOpacity(1);reset();updatePreferences({idle:index.idle});if(rendererStopped||!firstFrame){rendererStopped=false;firstFrame=false;win.webContents.reloadIgnoringCache();}const play=()=>win&&!win.isDestroyed()&&win.webContents.send('pet:play-animation','idle');if(win.webContents.isLoading())win.webContents.once('did-finish-load',play);else play();}
 function minutes(value){return Number.isInteger(value)&&value>=5&&value<=30?value:10;}
 function preferences(){return {idle:state.idle,clickSpeed:state.clickSpeed,clickAnimation:state.clickAnimation||'builtin',napMinutes:minutes(state.napMinutes),actionMinutes:minutes(state.actionMinutes),napEnabled:state.napEnabled!==false,autoEnabled:state.autoEnabled!==false};}
 function rebuild(){index=library.merge(baseIndex,state.clickAnimation);if(!index.idleOptions.includes(state.idle))state.idle=index.idle;if(!index.clickOptions.some(c=>c.id===state.clickAnimation))state.clickAnimation='builtin';}
@@ -49,6 +55,7 @@ function menu(){Menu.buildFromTemplate([
 ]).popup({window:win});}
 if(!app.requestSingleInstanceLock())app.quit();
 else app.whenReady().then(async()=>{
+ app.on('second-instance',recover);
  try{index=JSON.parse(fs.readFileSync(path.join(ROOT,'pet','animations.json'),'utf8'));
  if(index.width!==720||index.height!==1280)throw new Error('Expected full-resolution 720x1280 artwork');
  for(const a of Object.values(index.animations))if(!fs.existsSync(path.join(ROOT,'pet','anzuki-animation',a.file)))throw new Error('Missing '+a.file);
@@ -68,6 +75,9 @@ else app.whenReady().then(async()=>{
  win.webContents.on('will-navigate',event=>event.preventDefault());
  const valid=ev=>win&&!win.isDestroyed()&&ev.sender===win.webContents;
  const trusted=ev=>valid(ev)||(settingsWindow&&!settingsWindow.isDestroyed()&&ev.sender===settingsWindow.webContents);
+ ipcMain.on('pet:painted',ev=>{if(valid(ev)&&!firstFrame){firstFrame=true;clearTimeout(startupTimer);logStartup('first frame displayed');}});
+ ipcMain.on('pet:startup-error',(ev,message)=>{if(valid(ev)&&typeof message==='string')logStartup('renderer: '+message);});
+ ipcMain.on('pet:recover',ev=>{if(trusted(ev))recover();});
  ipcMain.handle('pet:config',ev=>{if(!trusted(ev))return null;return snapshot();});
  ipcMain.on('pet:play-animation',(ev,id)=>{if(trusted(ev)&&(id==='idle'||index.behavior?.manual.some(item=>item.id===id)))win.webContents.send('pet:play-animation',id);});
  ipcMain.on('pet:hit',(ev,inside)=>{if(valid(ev)&&typeof inside==='boolean'&&win.__petHit!==inside){win.__petHit=inside;win.setIgnoreMouseEvents(!inside,{forward:true});}});
@@ -98,9 +108,13 @@ else app.whenReady().then(async()=>{
  ipcMain.on('pet:drag-end',ev=>{if(valid(ev)){const moved=drag?.moved;drag=null;if(moved)save();}});
  ipcMain.on('pet:menu',ev=>{if(valid(ev))menu();});
  ipcMain.on('pet:quit',ev=>{if(valid(ev))app.quit();});
+ win.webContents.on('did-fail-load',(_event,code,message,url)=>logStartup('page load failed: '+code+' '+message+' '+url));
+ win.webContents.on('preload-error',(_event,file,error)=>logStartup('preload failed: '+file+' '+String(error?.stack||error)));
  win.loadFile(path.join(__dirname,'index.html'));win.on('closed',()=>{win=null;});
- try{tray=new Tray(await app.getFileIcon(process.execPath,{size:'small'}));tray.setToolTip('Anzuki');tray.setContextMenu(Menu.buildFromTemplate([{label:'動畫／音聲設定…',click:showSettings},{label:'結束 Anzuki',click:()=>app.quit()}]));tray.on('double-click',showSettings);}catch(error){console.warn('Tray icon unavailable',error);}
+ startupTimer=setTimeout(()=>{if(!firstFrame&&win&&!win.isDestroyed()){logStartup('no frame after 20 seconds');showSettings();dialog.showErrorBox('Anzuki 尚未顯示','動畫尚未成功載入。請按設定中的「顯示桌寵／回到右下角」。\n\n若仍無法顯示，啟動紀錄位於：\n'+startupLog);}},20000);
+ win.webContents.on('render-process-gone',(_event,details)=>{logStartup('renderer stopped: '+JSON.stringify(details));if(details.reason!=='clean-exit'&&win&&!win.isDestroyed()){rendererStopped=true;showSettings();}});
+ try{tray=new Tray(await app.getFileIcon(process.execPath,{size:'small'}));tray.setToolTip('Anzuki');tray.setContextMenu(Menu.buildFromTemplate([{label:'動畫／音聲設定…',click:showSettings},{label:'顯示桌寵／回到右下角',click:recover},{label:'結束 Anzuki',click:()=>app.quit()}]));tray.on('double-click',showSettings);}catch(error){console.warn('Tray icon unavailable',error);}
  screen.on('display-metrics-changed',()=>{if(win&&!win.isDestroyed())win.setBounds(clamp(win.getBounds()));});
- app.on('before-quit',save);
+ app.on('before-quit',()=>{clearTimeout(startupTimer);save();});
 });
 app.on('window-all-closed',()=>app.quit());

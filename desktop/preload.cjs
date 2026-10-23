@@ -1,6 +1,9 @@
 'use strict';
 const {contextBridge,ipcRenderer}=require('electron');
 contextBridge.exposeInMainWorld('Anzuki',{
+ reportPainted:()=>ipcRenderer.send('pet:painted'),
+ reportStartupError:message=>ipcRenderer.send('pet:startup-error',String(message)),
+ recover:()=>ipcRenderer.send('pet:recover'),
  setHit:inside=>ipcRenderer.send('pet:hit',inside),
  onCursor:fn=>ipcRenderer.on('pet:cursor',(_e,p)=>fn(p)),
  onAnimation:fn=>ipcRenderer.on('pet:play-animation',(_e,id)=>fn(id)),
