@@ -1,0 +1,174 @@
+{
+  "format": "anzuki-live2d-interaction-plan",
+  "version": 1,
+  "status": "design-only-not-loadable-by-current-app",
+  "baseStableCommit": "a0fac76b8d04de0c9e7730335f66774096a4655a",
+  "runtimeModel": null,
+  "artwork": {
+    "priority": "highest",
+    "preserveSourceBytes": true,
+    "allowAutomaticDownscale": false,
+    "allowLossyTextures": false,
+    "sharedModelBundleForWindowsAndAndroid": true
+  },
+  "gaze": {
+    "desktop": "global-cursor-even-outside-pet-window",
+    "android": "touch-within-pet-then-return-to-neutral",
+    "requiresCamera": false,
+    "eyeTrackingDefault": true,
+    "headTrackingDefault": false,
+    "smoothing": "time-based-exponential-calibrate-with-model",
+    "parameterBindings": [
+      {
+        "role": "eyeX",
+        "suggestedId": "ParamEyeBallX",
+        "actualId": null,
+        "actualRange": null,
+        "invert": null,
+        "required": true
+      },
+      {
+        "role": "eyeY",
+        "suggestedId": "ParamEyeBallY",
+        "actualId": null,
+        "actualRange": null,
+        "invert": null,
+        "required": true
+      },
+      {
+        "role": "leftEyeOpen",
+        "suggestedId": "ParamEyeLOpen",
+        "actualId": null,
+        "actualRange": null,
+        "invert": null,
+        "required": true
+      },
+      {
+        "role": "rightEyeOpen",
+        "suggestedId": "ParamEyeROpen",
+        "actualId": null,
+        "actualRange": null,
+        "invert": null,
+        "required": true
+      },
+      {
+        "role": "breath",
+        "suggestedId": "ParamBreath",
+        "actualId": null,
+        "actualRange": null,
+        "invert": null,
+        "required": true
+      },
+      {
+        "role": "headX",
+        "suggestedId": "ParamAngleX",
+        "actualId": null,
+        "actualRange": null,
+        "invert": null,
+        "required": false
+      },
+      {
+        "role": "headY",
+        "suggestedId": "ParamAngleY",
+        "actualId": null,
+        "actualRange": null,
+        "invert": null,
+        "required": false
+      }
+    ]
+  },
+  "hitTesting": {
+    "visibleAlphaRequired": true,
+    "transparentPixelsPassThrough": true,
+    "followDeformedModel": true,
+    "coordinateHandedness": "character-left-and-right",
+    "overlapPolicy": "resolve-visible-occlusion-then-specific-region-before-general-region",
+    "screenSpaceBoundingBoxOnly": false,
+    "regionBindings": [
+      {
+        "name": "CheekL",
+        "phase": 1,
+        "suggestedMotionGroup": "TapCheekL",
+        "drawableIds": [],
+        "motionBinding": null,
+        "notes": "可先共用臉頰回應，左右差異之後擴充"
+      },
+      {
+        "name": "CheekR",
+        "phase": 1,
+        "suggestedMotionGroup": "TapCheekR",
+        "drawableIds": [],
+        "motionBinding": null,
+        "notes": "角色自身右側"
+      },
+      {
+        "name": "HandL",
+        "phase": 1,
+        "suggestedMotionGroup": "TapHandL",
+        "drawableIds": [],
+        "motionBinding": null
+      },
+      {
+        "name": "HandR",
+        "phase": 1,
+        "suggestedMotionGroup": "TapHandR",
+        "drawableIds": [],
+        "motionBinding": null
+      },
+      {
+        "name": "Head",
+        "phase": 1,
+        "suggestedMotionGroup": "TapHead",
+        "drawableIds": [],
+        "motionBinding": null
+      },
+      {
+        "name": "Cape",
+        "phase": 2,
+        "suggestedMotionGroup": "TapCape",
+        "drawableIds": [],
+        "motionBinding": null
+      },
+      {
+        "name": "Shoes",
+        "phase": 2,
+        "suggestedMotionGroup": "TapShoes",
+        "drawableIds": [],
+        "motionBinding": null
+      }
+    ],
+    "visibleUnmappedRegionMotion": "TapDefault",
+    "actualOcclusionAndPriorityCalibration": null
+  },
+  "playback": {
+    "idleGroup": "Idle",
+    "clickRestart": "immediate-new-timeline-from-zero",
+    "queueClicks": false,
+    "cooldownMs": 0,
+    "blendDurationSeconds": null,
+    "blendDurationNote": "收到模型後實看調整；不延後新動作的起播",
+    "clickSpeed": {
+      "min": 1,
+      "max": 2,
+      "step": 0.1
+    },
+    "gazeOwnership": "reduce-per-parameter-weight-only-where-reaction-takes-control",
+    "returnToSelectedIdle": true
+  },
+  "audio": {
+    "source": "user-recordings-only",
+    "interrupt": false,
+    "queue": false,
+    "rejectWhileLoadingOrPlaying": true,
+    "animationSpeedChangesAudioRate": false,
+    "automaticUpload": false
+  },
+  "pending": [
+    "定稿與分層補畫",
+    "綁定模型、貼圖、動作、表情、物理",
+    "Windows Web SDK 與 Android Java SDK/Core 選版及授權核對",
+    "透明渲染與精確點穿整合",
+    "實際參數、命中與混合校準",
+    "Windows 和 Android 實機驗證"
+  ]
+}

@@ -1,5 +1,7 @@
 # Anzuki 桌寵
 
+> 此分支為 Live2D 互動模型調查與素材準備實驗，播放器尚未改動。請先看 [Live2D 實驗入口](LIVE2D.md)；原可用版本保存在 [WebP 備份分支](https://github.com/JackeyUi/AnzukiDest/tree/archive/webp-stable-2026-10-23)。
+
 以你提供的動畫製作的桌面與 Android 懸浮桌寵。平時播放 `loop_long`，點擊時隨機播放從 10 秒影片擷取的兩段原地彈動，播完回到待機。
 
 **美術品質優先：保留原始 720×1280 解析度，使用無損 RGBA 動畫 WebP；桌面和 Android 使用逐位元相同的素材。** 不為了縮小檔案而縮圖、有損轉碼或犧牲色彩細節。去背會改動綠幕及半透明邊緣，角色完全不透明區域保留解碼後的原始 RGB。原始 MP4 原封不動保留。

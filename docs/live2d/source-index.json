@@ -1,0 +1,177 @@
+{
+  "accessedDate": "2026-10-23",
+  "scope": "GitHub primary documents and source code; no application or model runtime test",
+  "sources": [
+    {
+      "id": "S1",
+      "repository": "Live2D/CubismWebSamples",
+      "commit": "b1de66b0b1f1cb881d95fb6158622aeb6a2827bd",
+      "path": "README.md",
+      "url": "https://github.com/Live2D/CubismWebSamples/blob/b1de66b0b1f1cb881d95fb6158622aeb6a2827bd/README.md",
+      "note": "官方 Web SDK、Core 分開下載與版本相容資訊",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S2",
+      "repository": "Live2D/CubismWebSamples",
+      "commit": "b1de66b0b1f1cb881d95fb6158622aeb6a2827bd",
+      "path": "Samples/TypeScript/Demo/src/lappmodel.ts",
+      "url": "https://github.com/Live2D/CubismWebSamples/blob/b1de66b0b1f1cb881d95fb6158622aeb6a2827bd/Samples/TypeScript/Demo/src/lappmodel.ts",
+      "note": "視線參數與動作強制優先權",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S3",
+      "repository": "Live2D/CubismWebSamples",
+      "commit": "b1de66b0b1f1cb881d95fb6158622aeb6a2827bd",
+      "path": "Samples/TypeScript/Demo/src/lapplive2dmanager.ts",
+      "url": "https://github.com/Live2D/CubismWebSamples/blob/b1de66b0b1f1cb881d95fb6158622aeb6a2827bd/Samples/TypeScript/Demo/src/lapplive2dmanager.ts",
+      "note": "頭部／身體點擊分派",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S4",
+      "repository": "Live2D/CubismWebFramework",
+      "commit": "d4da0aa07e47d2c1e4f5fa7ea6047861ea5e5d0b",
+      "path": "src/model/cubismusermodel.ts",
+      "url": "https://github.com/Live2D/CubismWebFramework/blob/d4da0aa07e47d2c1e4f5fa7ea6047861ea5e5d0b/src/model/cubismusermodel.ts",
+      "note": "isHit 使用變形後頂點的 AABB",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S5",
+      "repository": "Live2D/CubismWebSamples",
+      "commit": "b1de66b0b1f1cb881d95fb6158622aeb6a2827bd",
+      "path": "Samples/Resources/Haru/Haru.model3.json",
+      "url": "https://github.com/Live2D/CubismWebSamples/blob/b1de66b0b1f1cb881d95fb6158622aeb6a2827bd/Samples/Resources/Haru/Haru.model3.json",
+      "note": "模型、貼圖、動作、表情、物理及 HitAreas 檔案結構",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S6",
+      "repository": "DenchiSoft/VTubeStudio",
+      "commit": "6dd6f9072686be374f44af0041e499df7b63337f",
+      "path": "README.md",
+      "url": "https://github.com/DenchiSoft/VTubeStudio/blob/6dd6f9072686be374f44af0041e499df7b63337f/README.md",
+      "note": "追蹤參數注入、熱鍵、認證與熱鍵冷卻／排隊",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S7",
+      "repository": "emilianavt/OpenSeeFace",
+      "commit": "50c09741897010faad721a218b2bbe14ecad6251",
+      "path": "README.md",
+      "url": "https://github.com/emilianavt/OpenSeeFace/blob/50c09741897010faad721a218b2bbe14ecad6251/README.md",
+      "note": "攝影機追蹤與渲染軟體分工",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S8",
+      "repository": "EasyLive2D/live2d-py",
+      "commit": "1f1e7adda0dfebd08981a29bb549da34bdf60d8c",
+      "path": "README.md",
+      "url": "https://github.com/EasyLive2D/live2d-py/blob/1f1e7adda0dfebd08981a29bb549da34bdf60d8c/README.md",
+      "note": "原生桌面模型顯示、視線與部位點擊能力",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S9",
+      "repository": "LorisYounger/VPet",
+      "commit": "37989091954f020f294b6a2137632186b2bc22c6",
+      "path": "README_zht.md",
+      "url": "https://github.com/LorisYounger/VPet/blob/37989091954f020f294b6a2137632186b2bc22c6/README_zht.md",
+      "note": "桌寵狀態／互動與 PNG 動畫架構",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S10",
+      "repository": "PC2005-cloud/dsh-pet",
+      "commit": "48007b64ac0bebb2e97ac88344aed62de8399dd4",
+      "path": "README.md",
+      "url": "https://github.com/PC2005-cloud/dsh-pet/blob/48007b64ac0bebb2e97ac88344aed62de8399dd4/README.md",
+      "note": "原參考的影片素材管線與桌面互動",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S11",
+      "repository": "guansss/pixi-live2d-display",
+      "commit": "31317b37d5e22955a44d5b11f37f421e94a11269",
+      "path": "docs/docs/interactions.md",
+      "url": "https://github.com/guansss/pixi-live2d-display/blob/31317b37d5e22955a44d5b11f37f421e94a11269/docs/docs/interactions.md",
+      "note": "focus 與 tap 分工",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S12",
+      "repository": "guansss/pixi-live2d-display",
+      "commit": "31317b37d5e22955a44d5b11f37f421e94a11269",
+      "path": "README.md",
+      "url": "https://github.com/guansss/pixi-live2d-display/blob/31317b37d5e22955a44d5b11f37f421e94a11269/README.md",
+      "note": "Pixi 6 與 Cubism 2.1／4 相容需求",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S13",
+      "repository": "Live2D/CubismJavaSamples",
+      "commit": "8ce6803de7030a4816bccd8a3efcad69ea1d1186",
+      "path": "README.md",
+      "url": "https://github.com/Live2D/CubismJavaSamples/blob/8ce6803de7030a4816bccd8a3efcad69ea1d1186/README.md",
+      "note": "官方 Android Java 整合途徑",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S14",
+      "repository": "Live2D/CubismJavaSamples",
+      "commit": "8ce6803de7030a4816bccd8a3efcad69ea1d1186",
+      "path": "Sample/src/full/java/com/live2d/demo/full/MainActivity.java",
+      "url": "https://github.com/Live2D/CubismJavaSamples/blob/8ce6803de7030a4816bccd8a3efcad69ea1d1186/Sample/src/full/java/com/live2d/demo/full/MainActivity.java",
+      "note": "GLSurfaceView／GLES 2.0 與觸控處理",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S15",
+      "repository": "EsotericSoftware/spine-runtimes",
+      "commit": "9f7d44b725df0766b3995093cea8e7342faf9367",
+      "path": "README.md",
+      "url": "https://github.com/EsotericSoftware/spine-runtimes/blob/9f7d44b725df0766b3995093cea8e7342faf9367/README.md",
+      "note": "Spine Runtime 授權與 Editor 版本配對",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S16",
+      "repository": "EsotericSoftware/spine-runtimes",
+      "commit": "9f7d44b725df0766b3995093cea8e7342faf9367",
+      "path": "spine-ts/spine-core/src/SkeletonBounds.ts",
+      "url": "https://github.com/EsotericSoftware/spine-runtimes/blob/9f7d44b725df0766b3995093cea8e7342faf9367/spine-ts/spine-core/src/SkeletonBounds.ts",
+      "note": "跟隨骨骼更新的互動多邊形",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S17",
+      "repository": "inochi2d/inochi2d",
+      "commit": "4975d247f9b946a74d18e0ba9b3e9475eb636efb",
+      "path": "README.md",
+      "url": "https://github.com/inochi2d/inochi2d/blob/4975d247f9b946a74d18e0ba9b3e9475eb636efb/README.md",
+      "note": "Inochi2D 參數網格、C FFI 與 WASM 路徑",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S18",
+      "repository": "Live2D/CubismWebSamples",
+      "commit": "b1de66b0b1f1cb881d95fb6158622aeb6a2827bd",
+      "path": "LICENSE.md",
+      "url": "https://github.com/Live2D/CubismWebSamples/blob/b1de66b0b1f1cb881d95fb6158622aeb6a2827bd/LICENSE.md",
+      "note": "Framework／Core／範例模型的不同授權",
+      "accessedDate": "2026-10-23"
+    },
+    {
+      "id": "S19",
+      "repository": "funnycups/petto",
+      "commit": "476138cd235c9957088de7814ffad695a5d0469c",
+      "path": "README.md",
+      "url": "https://github.com/funnycups/petto/blob/476138cd235c9957088de7814ffad695a5d0469c/README.md",
+      "note": "桌寵控制與外部模型宿主的分工",
+      "accessedDate": "2026-10-23"
+    }
+  ]
+}

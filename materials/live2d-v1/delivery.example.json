@@ -1,0 +1,56 @@
+{
+  "format": "anzuki-live2d-delivery",
+  "version": 1,
+  "status": "example-fill-before-delivery",
+  "revision": null,
+  "approvedReference": null,
+  "artist": null,
+  "rigger": null,
+  "credits": null,
+  "rights": {
+    "windowsAndAndroidDistribution": null,
+    "publicGitHubSourceAndModel": null,
+    "modificationAllowed": null,
+    "thirdPartyAssets": [],
+    "termsFile": null
+  },
+  "source": {
+    "layeredPsd": null,
+    "originalCanvasPixels": null,
+    "colorProfile": null,
+    "layerAlignmentNotes": null
+  },
+  "editableProject": {
+    "modelCmo3": null,
+    "animationCan3Files": [],
+    "editorVersion": null
+  },
+  "runtime": {
+    "root": null,
+    "model3Json": null,
+    "mocVersion": null,
+    "exportSettings": null,
+    "textureSheets": [],
+    "motionGroups": {},
+    "expressions": [],
+    "physicsFile": null
+  },
+  "bindings": {
+    "parameters": [],
+    "hitAreas": [],
+    "motionParameterOwnership": []
+  },
+  "review": {
+    "recordings": [],
+    "knownLimitations": [],
+    "windowsTested": false,
+    "androidPhysicalDeviceTested": false
+  },
+  "files": [],
+  "filesEntryExample": {
+    "path": "layers/r1/Anzuki.psd",
+    "bytes": null,
+    "sha256": null,
+    "externalGitHubReleaseUrl": null
+  }
+}
