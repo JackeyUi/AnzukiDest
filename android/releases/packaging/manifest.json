@@ -1,12 +1,34 @@
 {
-  "apkBytes": 89506761,
-  "apkSha256": "f2c52ee089338bf76934ccbffe3aee5a9d5127ba2ce8db80ecd1630b3aa9fa7e",
-  "literalSha256": "0ec6a9992a62ea8798e6a7b8dfee8ea8d15c95e0dc862227ab69698e7169de41",
+  "apkBytes": 478520730,
+  "apkSha256": "7119d40f5268da2f58b99ac15dd88275af08be4d3734a109cb4b634082c16fbf",
+  "literalSha256": "a0b5966807c333a9064e522629fe9816b16fa4dec8bf66e9efa319fbe048d92f",
   "parts": [
     {
       "kind": "literal",
       "offset": 0,
-      "length": 3200
+      "length": 2572
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/adjust-hat.webp",
+      "length": 64113062,
+      "sha256": "2e2a763e32269e30e9bf854e5c28f873f7d6e74e2a5b21cc5bf93b31246bec0b"
+    },
+    {
+      "kind": "literal",
+      "offset": 2572,
+      "length": 1586
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/catch-star.webp",
+      "length": 63779606,
+      "sha256": "c3c910edf26e24fb68ea2fd1273d6d11bd3a183eb15d37b62ca0c46ed8c5ebca"
+    },
+    {
+      "kind": "literal",
+      "offset": 4158,
+      "length": 62
     },
     {
       "kind": "artwork",
@@ -16,7 +38,7 @@
     },
     {
       "kind": "literal",
-      "offset": 3200,
+      "offset": 4220,
       "length": 64
     },
     {
@@ -27,7 +49,18 @@
     },
     {
       "kind": "literal",
-      "offset": 3264,
+      "offset": 4284,
+      "length": 58
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/drag-held.webp",
+      "length": 67817026,
+      "sha256": "02e3c0b98988c79859795eb5d970f72b841811ebfe7045526eb396261843fecc"
+    },
+    {
+      "kind": "literal",
+      "offset": 4342,
       "length": 62
     },
     {
@@ -38,7 +71,7 @@
     },
     {
       "kind": "literal",
-      "offset": 3326,
+      "offset": 4404,
       "length": 66
     },
     {
@@ -49,8 +82,52 @@
     },
     {
       "kind": "literal",
-      "offset": 3392,
-      "length": 44905
+      "offset": 4470,
+      "length": 52
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/land.webp",
+      "length": 35058160,
+      "sha256": "b18d558779d8df9f42a305e1cc3b0b6a23664e42c313ce27588322cd2859677f"
+    },
+    {
+      "kind": "literal",
+      "offset": 4522,
+      "length": 56
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/nap-loop.webp",
+      "length": 20713168,
+      "sha256": "8c32c4ad546cd1d43e101d576fa96f46ed60d9584ff5e4b1616441ce1435a0e6"
+    },
+    {
+      "kind": "literal",
+      "offset": 4578,
+      "length": 60
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/nap-start.webp",
+      "length": 77558978,
+      "sha256": "16a145252f9a7db2d9ef1003dad9e743d064213c2da18cf859866b9ca41b9bb8"
+    },
+    {
+      "kind": "literal",
+      "offset": 4638,
+      "length": 58
+    },
+    {
+      "kind": "artwork",
+      "path": "pet/anzuki-animation/read-book.webp",
+      "length": 59965878,
+      "sha256": "0ffa96b870a5e745ebd1ae7eb7ec39abec3345492e95f0441c59c04ac585411f"
+    },
+    {
+      "kind": "literal",
+      "offset": 4696,
+      "length": 51692
     }
   ]
 }

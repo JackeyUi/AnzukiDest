@@ -4,6 +4,12 @@
 
 **美術品質優先：保留原始 720×1280 解析度，使用無損 RGBA 動畫 WebP；桌面和 Android 使用逐位元相同的素材。** 不為了縮小檔案而縮圖、有損轉碼或犧牲色彩細節。去背會改動綠幕及半透明邊緣，角色完全不透明區域保留解碼後的原始 RGB。原始 MP4 原封不動保留。
 
+## 新動畫與自動行為
+
+拖曳時抓起、放手落地；可設定 5～30 分鐘進入小憩（預設 10 分鐘），小憩開始後循環，只有點擊／拖曳角色才喚醒。另一個獨立滑條設定 5～30 分鐘隨機播放拿書、扶帽子或抓星星其中一個。右鍵二級選單可主動播放全部新動作；Android 在「動畫選單與自動行為」操作。動作結束交叉淡回所選呼吸動畫，影片聲音一律不播放。詳見 [操作說明](ANIMATION-BEHAVIORS.md) 與 [原始／無損素材](materials/animation-v3/)。
+
+Live2D 調查先擱置，保留於 [獨立實驗分支](https://github.com/JackeyUi/AnzukiDest/tree/experiment/live2d-interaction)，此版繼續使用原尺寸無損 WebP。
+
 ## Windows 桌面版（免裝 Node.js）
 
 [第一次安裝：Windows x64 完整版](https://github.com/JackeyUi/AnzukiDest/actions/workflows/windows.yml)
