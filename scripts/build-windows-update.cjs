@@ -28,13 +28,13 @@ async function walk(folder,prefix=''){let files=[];for(const entry of await fs.r
    console.log('PE_DIFFERENCE '+JSON.stringify({code:a.sections.map((s,i)=>({name:s.name,equal:JSON.stringify(s)===JSON.stringify(b.sections[i])})),resourcesEqual:JSON.stringify(a.resources)===JSON.stringify(b.resources)}));
   }
   // Runtime changes require explicit inclusion; normal app updates must not silently re-ship it.
-  if(!rel.startsWith('resources/app.asar')&&!rel.startsWith('resources/pet/')&&!rel.startsWith('recording-guides/')&&!['asset-manifest.json','READ-ME.txt','LICENSE.Anzuki.txt','CUSTOM-ANIMATIONS.md','ANIMATION-BEHAVIORS.md'].includes(rel))throw Error('Electron runtime changed; review required before creating incremental package: '+rel);
+  if(!rel.startsWith('resources/app.asar')&&!rel.startsWith('resources/pet/')&&!rel.startsWith('recording-guides/')&&!['Start-Compatible.cmd','asset-manifest.json','READ-ME.txt','LICENSE.Anzuki.txt','CUSTOM-ANIMATIONS.md','ANIMATION-BEHAVIORS.md'].includes(rel))throw Error('Electron runtime changed; review required before creating incremental package: '+rel);
   await fs.mkdir(path.dirname(path.join(output,rel)),{recursive:true});await fs.writeFile(path.join(output,rel),bytes);files.push({path:rel,sha256:sha,previousSha256:oldHash,bytes:bytes.length});
  }
  if(!files.length)throw Error('No changed application files');
  const manifest={schema:1,platform:'win32-x64',baseWorkflowRun:process.env.ANZUKI_BASE_RUN||null,revision:process.env.GITHUB_SHA||null,electronVersion:'43.3.0',compatibilityFiles:[...compatibilityFiles],files};
  await fs.writeFile(path.join(output,'update-manifest.json'),JSON.stringify(manifest,null,2)+'\n');
- await fs.writeFile(path.join(output,'更新說明.txt'),'Anzuki Windows 必要檔案更新包\r\n\r\n1. 先在桌寵右鍵選「結束 Anzuki」。\r\n2. 將本 ZIP 完整解壓到原本 Anzuki.exe 所在資料夾，覆蓋同名檔案。\r\n3. 再執行原本的 Anzuki.exe。\r\n\r\n請保留原有 EXE、DLL、resources/pet 素材與其他檔案。\r\n個人設定與音檔位於 %APPDATA%\\Anzuki\\desktop，不會被此更新覆蓋。\r\n本包僅含以下必要更新與相容性依賴：\r\n'+files.map(f=>'- '+f.path).join('\r\n')+'\r\n\r\n本包以最近一次 Windows 發行版為基準；基準與雜湊見 update-manifest.json。\r\n');
+ await fs.writeFile(path.join(output,'更新說明.txt'),'Anzuki Windows 必要檔案更新包\r\n\r\n1. 先在桌寵右鍵選「結束 Anzuki」。\r\n2. 將本 ZIP 完整解壓到原本 Anzuki.exe 所在資料夾，覆蓋同名檔案。\r\n3. 再執行原本的 Anzuki.exe；若角色與設定都沒有畫面，先結束 Anzuki，再改開 Start-Compatible.cmd。\r\n\r\n請保留原有 EXE、DLL、resources/pet 素材與其他檔案。\r\n個人設定與音檔位於 %APPDATA%\\Anzuki\\desktop，不會被此更新覆蓋。\r\n本包僅含以下必要更新與相容性依賴：\r\n'+files.map(f=>'- '+f.path).join('\r\n')+'\r\n\r\n本包以最近一次 Windows 發行版為基準；基準與雜湊見 update-manifest.json。\r\n');
  await fs.rm(patched,{recursive:true,force:true});await fs.cp(baseline,patched,{recursive:true});
  // Simulate an installation that skipped earlier small dependency updates.
  // Artwork and the Electron runtime remain the actual previous release bytes.
